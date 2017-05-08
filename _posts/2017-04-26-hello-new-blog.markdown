@@ -48,7 +48,7 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
             title="Yosemite"
             caption="Trip to Yosemite. Wow, captioning in Kramdown <a href='https://superdevresources.com/image-caption-jekyll/'>isn't easy!</a>" %}
   
-* Code. Damn right son, we're going to need 'em. 
+* Code. We are going to need code.
     {% highlight Python %}
   def dot_product(v1, v2):
     # v1, v2 are lists
