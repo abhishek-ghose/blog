@@ -7,7 +7,7 @@ googlewebfonts: Raleway
 ---
 <script type="text/x-mathjax-config"> 
     MathJax.Hub.Config({ 
-        "HTML-CSS": { scale: 100, linebreaks: { automatic: true } }, 
+        "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
         SVG: { linebreaks: { automatic:true } }, 
         displayAlign: "center" });
 </script>
