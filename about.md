@@ -15,6 +15,6 @@ About this blog:
 * My domain registrar is Namecheap
 * Theme: Minima with minor changes
 * Markdown flavor: Kramdown
-* The font is [Calluna](https://typekit.com/fonts/calluna)
+* The font used is [Calluna](https://typekit.com/fonts/calluna)
 * I'm also using [Font Awesome](http://fontawesome.io/) for some of the icons
 * For comments, I am self-hosting [Isso](https://posativ.org/isso/) on a Linode server 
