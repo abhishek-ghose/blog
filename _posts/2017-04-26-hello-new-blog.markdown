@@ -23,7 +23,11 @@ Moving to a new place can often be exciting, hectic and even tiresome, all at th
 
 I tend towards writing technical posts when I tend towards writing at all these days, and [blogger](https://www.blogger.com) doesn’t give me the presentation options I need. So, for now, its GitHub pages[^2], but with my own domain. That way, if I decide to move again, my (almost non-existent) readers won’t be sent scrambling to find my (almost non-existent) content.
 
-The old blog was titled “Random Thoughts”. I wanted something different and bit more original this time, so I Googled “Not So Random Thoughts”. Obviously. Yeah, right. So many hits it isn't even funny. So many, that you couldn't squint and ignore. And that is exactly why you are stuck with "A Not So Primordial Soup"; which, by the way, does a good job of telling you that this is going to be a mixed bag of the deep and the frivolous.
+The old blog was titled “Random Thoughts”. I wanted something different and bit more original this time, so I Googled “Not So Random Thoughts”. Obviously. 
+
+Yeah, right. 
+
+So many hits it isn't even funny. So many, that you couldn't squint and ignore. And that is exactly why you are stuck with "A Not So Primordial Soup"; which, by the way, does a good job of telling you that this is going to be a mixed bag of the deep and the frivolous.
 
 Just for the record, "The Psionic Poodle" was on the list. In case you were wondering if I can be fun. 
 
