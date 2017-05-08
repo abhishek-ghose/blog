@@ -40,7 +40,7 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
     
 * Images. Of course. 
   {% include image.html
-            img="/assets/yosemite-random.jpg"
+            img="https://raw.githubusercontent.com/abhishek-ghose/blog/gh-pages/assets/yosemite-random.jpg"
             title="Yosemite"
             caption="Trip to Yosemite. Wow, captioning in Kramdown <a href='https://superdevresources.com/image-caption-jekyll/'>isn't easy!</a>" %}
   
