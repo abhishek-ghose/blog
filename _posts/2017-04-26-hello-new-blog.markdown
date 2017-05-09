@@ -25,7 +25,7 @@ I tend towards writing technical posts when I tend towards writing at all these 
 
 The old blog was titled “Random Thoughts”. I wanted something different and little more original this time, so I Googled “Not So Random Thoughts”. Obviously. 
 
-Ha ha.
+Ha ha ...
 
 Stop.
 
