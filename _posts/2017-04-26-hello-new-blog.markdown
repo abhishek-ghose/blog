@@ -57,7 +57,7 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
         result = sum(map(lambda x: x[0] * x[1], zip(v1, v2)))
     return result
   {% endhighlight %}
-* Tables. Basic. I mightn't need them, but since we're on a roll here ...
+* Tables. Basic. I mightn't need them, but since we're on a roll ...
 
   |-----------------+------------+-----------------+----------------|
   | Default aligned |Left aligned| Center aligned  | Right aligned  |
