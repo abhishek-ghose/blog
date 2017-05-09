@@ -80,5 +80,5 @@ See you later then?
  _  _  _  _
 <br>
 
-[^1]: If that link doesn’t work, it means I have managed to miraculously migrate all my posts. Overcoming my lethargy is the miracle here. But don’t worry, that’s not bound to happen anytime soon.
+[^1]: If that link doesn’t work, it means I have managed to miraculously migrate all my posts. Overcoming my lethargy would be the miracle here. But don’t worry, that’s not bound to happen anytime soon.
 [^2]: As of writing this post. Check the "About" section for details and updates.
