@@ -71,7 +71,7 @@ During my research to move, I discovered, quite to my surprise, that having a re
 
 Either platforms have their own systems tied to them (like blogger) or there are third party plug-n-play systems like [Disqus](https://disqus.com/) and [Discourse](https://www.discourse.org/). Maybe I shouldn’t bundle them together since Disqus receives a lot of hate (albeit easy to set up), while Discourse receives more of critique for their idiosyncratic system, if that: many people seem to like it. Personally, I almost like it. 
 
-There are several self-hosted solutions in this category too, and I am going to try one of those: [Isso](https://posativ.org/isso/). Will take a while to get it running I suppose. I’ve had this small-ish Linode server running forever, for which I convince myself to pay as an emergency back-up machine. You know, for times when I'd need to save the world by running a few experiments. In times like those, you don't want to delay matters by looking for machines to run them on. You would be surprised to know that need has never come up. So its going to become useful soon by hosting some comments.
+There are several self-hosted solutions in this category too, and I am going to try one of those: [Isso](https://posativ.org/isso/). Will take a while to get it running I suppose. I’ve had this small-ish Linode server running forever, for which I convince myself to pay as an emergency back-up machine. You know, for times when I'd need to save the world by running a few experiments. In such times, you don't want to be caught looking for machines to run them on. Imagine how stupid you'd look. Well, you would be surprised to know that need has never come up. So its going to become useful soon by hosting some comments.
 
 See you later then?
 <br>
