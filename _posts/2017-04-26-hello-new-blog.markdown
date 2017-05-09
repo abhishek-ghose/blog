@@ -46,7 +46,7 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
   {% include image.html
             img="assets/yosemite-random.jpg"
             title="Yosemite"
-            caption="Trip to Yosemite. Wow, captioning in Kramdown <a href='https://superdevresources.com/image-caption-jekyll/'>isn't easy!</a>" %}
+            caption="Trip to Yosemite. Wow, captions in Kramdown <a href='https://superdevresources.com/image-caption-jekyll/'>aren't easy!</a>" %}
   
 * Code. We are going to need code.
     {% highlight Python %}
