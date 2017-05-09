@@ -27,7 +27,9 @@ The old blog was titled “Random Thoughts”. I wanted something different and 
 
 Ha ha.
 
-No. So many hits it isn't even funny. And that is exactly why you are stuck with "A Not So Primordial Soup"; which, by the way, does a good job of telling you that this is going to be a mixed bag of the deep and the frivolous.
+Stop.
+
+So many hits it isn't even funny. And that is exactly why you are stuck with "A Not So Primordial Soup"; which, by the way, does a good job of telling you that this is going to be a mixed bag of the deep and the frivolous.
 
 Just for the record, "The Psionic Poodle" was on the list. In case you were wondering if I can be fun. 
 
