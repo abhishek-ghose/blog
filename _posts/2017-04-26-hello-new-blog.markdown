@@ -23,7 +23,7 @@ Moving to a new place can often be exciting, hectic and even tiresome, all at th
 
 I tend towards writing technical posts when I tend towards writing at all these days, and [blogger](https://www.blogger.com) doesn’t give me the presentation options I need. So, for now, its GitHub pages[^2], but with my own domain. That way, if I decide to move again, my (almost non-existent) readers won’t be sent scrambling to find my (almost non-existent) content.
 
-The old blog was titled “Random Thoughts”. I wanted something different and little more original this time, so I Googled “Not So Random Thoughts”. Obviously. 
+The old blog was titled “Random Thoughts”. I wanted something different and a little more original this time, so I Googled “Not So Random Thoughts”. Obviously. 
 
 Ha ha ...
 
