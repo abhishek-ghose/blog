@@ -67,11 +67,9 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
   {:.mbtablestyle}
   
 
-During my research to move, I discovered, quite to my surprise, that having a reliable comment system is something of a challenge. _In 2017_. I mean in a few years I could be sitting in my self-driving car and worrying about comment systems.
+During my move, I discovered, quite to my surprise, that having a reliable comment system is something of a challenge. _In 2017_. I mean in a few years I could be sitting in my self-driving car and worrying about comment systems.
 
-Either platforms have their own systems tied to them (like blogger) or there are third party plug-n-play systems like [Disqus](https://disqus.com/) and [Discourse](https://www.discourse.org/). Maybe I shouldn’t bundle them together since Disqus receives a lot of hate (albeit easy to set up), while Discourse receives more of critique for their idiosyncratic system, if that: many people seem to like it. Personally, I almost like it. 
-
-There are several self-hosted solutions in this category too, and I am going to try one of those: [Isso](https://posativ.org/isso/). Will take a while to get it running I suppose. I’ve had this small-ish Linode server running forever, for which I convince myself to pay as an emergency back-up machine. You know, for times when I'd need to save the world by running experiments. I'd feel downright stupid if I had to go looking for machines right about then. That's no way to save anyone.
+Either platforms have their own systems tied to them (like blogger) or there are third party plug-n-play systems like [Disqus](https://disqus.com/) and [Discourse](https://www.discourse.org/). I am going to try one of self-hosted solutions in the latter category: [Isso](https://posativ.org/isso/). It was a close call between Discourse and Isso if you must know. Will take a while to get it running I suppose. I’ve had this small-ish Linode server running forever, for which I convince myself to pay as an emergency back-up machine. You know, for times when I'd need to save the world by running experiments. I'd feel downright stupid if I had to go looking for machines right about then. That's no way to save anyone.
 
 Surprisingly that need has never come up. So its going to become very useful very soon by hosting comments.
 
