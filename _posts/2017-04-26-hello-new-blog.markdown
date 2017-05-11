@@ -2,7 +2,7 @@
 layout: post
 title:  "Hello New Blog!"
 date:   2017-04-26 08:01:36 -0700
-categories: jekyll update
+categories: update
 googlewebfonts: Raleway
 ---
 <script type="text/x-mathjax-config"> 
