@@ -17,4 +17,4 @@ About this blog:
 * Markdown flavor: Kramdown
 * The font used is Helvetica (the default for Minima)
 * I'm also using [Font Awesome](http://fontawesome.io/) for some of the icons
-* For comments, I am self-hosting [Isso](https://posativ.org/isso/) on a Linode server 
+* For comments, I am self-hosting [Isso](https://posativ.org/isso/) on a Linode server (working on it!)
