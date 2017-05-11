@@ -15,7 +15,7 @@
 # in the templates via {{ site.myvariable }}.
 title: A Not-So Primordial Soup
 email: 
-description: My thoughts. Possibly food for your thoughts.
+description: My thoughts. Food for your thoughts?
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://blog.quipu-strands.com" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: 
