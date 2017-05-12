@@ -30,7 +30,9 @@ Stop. So many hits it isn't even funny. And that is exactly why you are stuck wi
 
 Just for the record, "The Psionic Poodle" was on the list. In case you were wondering if I can be fun. 
 
-[Someone recently asked me what does the domain name "quipu strands" mean? Quipus or khipus were rudimentary recording devices used by the Incas and certain other cultures, that involved representing information using colored threads. More information [here](https://en.wikipedia.org/wiki/Quipu). I first came across the term in a [Biggles](https://en.wikipedia.org/wiki/Biggles) story :-). Analogously, my blog is a recording device for me. Quipus are also known as "talking knots". And in a typical show of staircase wit, I now realize that could have been a good name too -_-.] 
+[Someone recently asked me what does the domain name "quipu strands" mean? _Quipus_ or _khipus_ were rudimentary recording devices used by the Incas and certain other cultures, that involved representing information using colored threads. More information [here](https://en.wikipedia.org/wiki/Quipu). I first came across the term in a [Biggles](https://en.wikipedia.org/wiki/Biggles) story :-). Analogously, my blog is a recording device for me. 
+
+Quipus are also known as "talking knots". And in a typical show of staircase wit, I now realize that could have been a good name too -_-.] 
 
 Now for some quick tests to see if this platform holds up. Grouping them here, so that if I switch to a new platform/theme etc, I can use this post as a quick check to see if the various non-text entities I use are displayed correctly. 
 
