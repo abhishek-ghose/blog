@@ -2,8 +2,7 @@
 layout: post
 title:  "Hello New Blog!"
 date:   2017-04-26 08:01:36 -0700
-categories: update
-googlewebfonts: Raleway
+tags: misc 
 ---
 <script type="text/x-mathjax-config"> 
     MathJax.Hub.Config({ 
