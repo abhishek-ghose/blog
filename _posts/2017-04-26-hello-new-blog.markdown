@@ -70,7 +70,7 @@ During my move, I discovered, quite to my surprise, that having a reliable comme
 
 Either platforms have their own systems tied to them (like blogger) or there are third party plug-n-play systems like [Disqus](https://disqus.com/) and [Discourse](https://www.discourse.org/). I am going to try one of the self-hosted solutions in the latter category: [Isso](https://posativ.org/isso/). It was a close call between that and Discourse in the end. I’ve had this small-ish Linode server running forever, for which I convince myself to pay as an emergency back-up machine. Presumably for times when I'd need to save the world by running experiments. I'd feel downright stupid if I had to go looking for machines right about then. That's no way to save anyone.
 
-Surprisingly that need has never come up. So its going to become very useful very soon by hosting comments.
+Would you believe it if I told you that need has never come up? So its going to become very useful very soon by hosting comments.
 
 See you later then?
 <br>
