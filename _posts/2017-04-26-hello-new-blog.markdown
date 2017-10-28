@@ -51,7 +51,7 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
             title="Yosemite"
             caption="Trip to Yosemite. Wow, captions in Kramdown <a href='https://superdevresources.com/image-caption-jekyll/'>aren't easy!</a>" %}
   
-* Code. We are going to need code.
+* Code. There's no way we are not going to need code.
     {% highlight Python %}
   def dot_product(v1, v2):
     # v1, v2 are lists
@@ -60,7 +60,7 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
         result = sum(map(lambda x: x[0] * x[1], zip(v1, v2)))
     return result
   {% endhighlight %}
-* Tables. Basic. I mightn't need them, but since we're on a roll ...
+* Tables. Basic. I am not sure I'd need them, but since we're on a roll ...
 
   |-----------------+------------+-----------------+----------------|
   | Default aligned |Left aligned| Center aligned  | Right aligned  |
@@ -72,7 +72,7 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
 
 During my move, I discovered, quite to my surprise, that having a reliable comment system is something of a challenge. _In 2017_. I mean in a few years I could be sitting in my self-driving car and worrying about comment systems.
 
-Either platforms have their own systems tied to them (like blogger) or there are third party plug-n-play systems like [Disqus](https://disqus.com/) and [Discourse](https://www.discourse.org/). I am going to try one of the self-hosted solutions in the latter category: [Isso](https://posativ.org/isso/). It was a close call between that and Discourse in the end. I’ve had this small-ish Linode server running forever, for which I convince myself to pay as an emergency back-up machine. Presumably for times when I'd need to save the world by running experiments. I'd feel downright stupid if I had to go looking for machines right about then. That's no way to save anyone.
+Either platforms have their own systems tied to them (like blogger) or there are third party plug-n-play systems like [Disqus](https://disqus.com/) and [Discourse](https://www.discourse.org/). I am going to try one of the self-hosted solutions in the latter category: [Isso](https://posativ.org/isso/). It was a close call between that and Discourse in the end. I’ve had this small-ish Linode server running forever, for which I convince myself to pay as an emergency back-up machine. Presumably for times when I'd need to save the world by running experiments. Can you imagine how stupid I'd feel if I had to go looking for machines right about then? That's no way to save anyone.
 
 As incredible it might sound, that need has never come up. So its going to become very useful very soon by hosting comments.
 
