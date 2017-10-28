@@ -26,9 +26,9 @@ There was the small matter of picking a name. The old blog was titled “Random 
 
 Ha ha ...
 
-Stop. So many hits it isn't even funny. And that is exactly why you are stuck with "A Not So Primordial Soup"; which, by the way, does a good job of telling you that this is going to be a mixed bag of the deep and the frivolous.
+Stop. So many hits it isn't even funny. And that is exactly why you are stuck with "A Not So Primordial Soup"; which, I think, does a good job of telling you that this is going to be a mixed bag of the deep and the frivolous.
 
-Just for the record, "The Psionic Poodle" was on the list. In case you were wondering if I can be fun. 
+Just for the record, "The Psionic Poodle" was on the list. In case you were wondering if I am fun. 
 
 [Someone recently asked me what does the domain name "quipu strands" mean? _Quipus_ or _khipus_ were rudimentary recording devices used by the Incas and certain other cultures, that involved representing information using colored threads. More information [here](https://en.wikipedia.org/wiki/Quipu). I first came across the term in a [Biggles](https://en.wikipedia.org/wiki/Biggles) story :-). Analogously, my blog is a recording device for me. 
 
