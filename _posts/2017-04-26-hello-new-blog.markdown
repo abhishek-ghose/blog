@@ -85,3 +85,12 @@ See you later then?
 
 [^1]: If that link doesn’t work, it means I have miraculously managed to migrate all my posts. Overcoming my lethargy would be the miracle here. But don’t worry, that’s not bound to happen anytime soon.
 [^2]: As of writing this post. Check the "About" section for details and updates.
+
+<script>talkyardCommentsServerUrl='https://comments-for-blog-quipu-strands-com.talkyard.net';</script>
+<script async defer src="https://cdn.talkyard.net/-/talkyard-comments.min.js"></script>
+<!-- You can specify a per page discussion id on the next line, if your URLs might change. -->
+<div class="talkyard-comments" data-discussion-id="" style="margin-top: 45px;">
+<noscript>Please enable Javascript to view comments.</noscript>
+<p style="margin-top: 25px; opacity: 0.9; font-size: 96%">Comments powered by
+<a href="https://www.talkyard.io">Talkyard</a>.</p>
+</div>
