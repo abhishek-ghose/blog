@@ -72,7 +72,7 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
 
 During my move, I discovered, quite to my surprise, that having a reliable and standard comment system is something of a challenge. _In 2017_. I mean in a few years I could be sitting in my self-driving car and worrying about comment systems.
 
-To be fair, however, it does look like it has the attention of the dev community - see the comment by user *KajMagnus* on this HackerNews [post](https://news.ycombinator.com/item?id=15851385). 
+To be fair, however, it does look like it has the attention of the dev community - see the comment by user _KajMagnus_ on this HackerNews [post](https://news.ycombinator.com/item?id=15851385). 
 
 Initially, I had decided to go with [Isso](https://posativ.org/isso/), a self-hosted solution. But then I realized, self-hosting doesn't really behove someone with my lifestyle i.e. one where one can barely get up from the bed in late mornings. Or any time really. So a hosted solution it is. I've decided to give [Talkyard](https://www.talkyard.io/blog-comments) a shot. Incidentally, user KajMagnus is the developer. 
 
