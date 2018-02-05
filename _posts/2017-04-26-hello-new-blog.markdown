@@ -18,7 +18,9 @@ tags: misc
 
 
 
-Moving to a new place can often be exciting, hectic and even tiresome, all at the same time. I am moving my blog, from [here](http://quipu-strands.blogspot.com/), and it’s none of those.[^1] Yeesh ... feeble attempt at a [garden path sentence](https://en.wikipedia.org/wiki/Garden_path_sentence).
+Moving to a new place can often be exciting, hectic and even tiresome, all at the same time. I am moving my blog, from [here](http://quipu-strands.blogspot.com/), and it’s none of those.[^1] 
+
+Yeesh ... feeble attempt at a [garden path sentence](https://en.wikipedia.org/wiki/Garden_path_sentence). Anyhoo ...
 
 I tend towards writing technical posts when I tend towards writing at all these days, and [blogger](https://www.blogger.com) doesn’t give me the presentation options I need. So, for now, its GitHub pages[^2], but with my own domain. That way, if I decide to move again, my (almost non-existent) readers won’t be sent scrambling to find my (almost non-existent) content.
 
