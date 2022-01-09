@@ -63,7 +63,7 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
   {:.mbtablestyle}
   
 
-During my research to move, I discovered, quite to my surprise, that having a reliable comment system is something of a challenge. _In 2017_. I mean in a few years I could be sitting in my self-driving car and worrying about comment systems.
+During my research to move, I discovered, quite to my surprise, that having a reliable comment system is something of a challenge. _In 2017_. I mean in a few years I could be sitting in my self-driving car (Update in 2022: yeah, this dated well.) and worrying about comment systems.
 
 Either platforms have their own systems tied to them (like blogger) or there are third party plug-n-play systems like [Disqus](https://disqus.com/) and [Discourse](https://www.discourse.org/). Maybe I shouldn’t bundle them together since Disqus receives a lot of hate (albeit easy to set up), while Discourse receives more of critique for their idiosyncratic system, if that: many people seem to like it. Personally, I almost like it. 
 
