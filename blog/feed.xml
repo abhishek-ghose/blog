@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2022-01-11T12:29:42-08:00</updated><id>/blog/feed.xml</id><title type="html">A Not-So Primordial Soup</title><subtitle>A place to put down some of my thoughts. You don't want all of them - many are pretty useless. Come to think of it, some of the ones here might be too.</subtitle><entry><title type="html">Hello New Blog!</title><link href="/blog/jekyll/update/2017/04/26/hello-new-blog.html" rel="alternate" type="text/html" title="Hello New Blog!" /><published>2017-04-26T08:01:36-07:00</published><updated>2017-04-26T08:01:36-07:00</updated><id>/blog/jekyll/update/2017/04/26/hello-new-blog</id><content type="html" xml:base="/blog/jekyll/update/2017/04/26/hello-new-blog.html"><![CDATA[<script type="text/x-mathjax-config"> 
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2022-01-11T12:38:15-08:00</updated><id>/blog/feed.xml</id><title type="html">A Not-So Primordial Soup</title><subtitle>A place to put down some of my thoughts. You don't want all of them - many are pretty useless. Come to think of it, some of the ones here might be too.</subtitle><entry><title type="html">Hello New Blog!</title><link href="/blog/jekyll/update/2017/04/26/hello-new-blog.html" rel="alternate" type="text/html" title="Hello New Blog!" /><published>2017-04-26T08:01:36-07:00</published><updated>2017-04-26T08:01:36-07:00</updated><id>/blog/jekyll/update/2017/04/26/hello-new-blog</id><content type="html" xml:base="/blog/jekyll/update/2017/04/26/hello-new-blog.html"><![CDATA[<script type="text/x-mathjax-config"> 
     MathJax.Hub.Config({ 
         "HTML-CSS": { scale: 100, linebreaks: { automatic: true } }, 
         SVG: { linebreaks: { automatic:true } }, 
@@ -97,6 +97,8 @@
 <hr />
 <p><br /></p>
 
+<p><br /><br />
+<strong>References</strong></p>
 <ol class="bibliography"><li><span id="compactem_software">Ghose, A. (2021). <i>compactem: build accurate small models</i> (Version 0.9.6) [Computer Software]. https://compactem.readthedocs.io</span></li>
 <li><span id="frontiers_density_tree">Ghose, A., &amp; Ravindran, B. (2020). Interpretability With Accurate Small Models. <i>Frontiers in Artificial Intelligence</i>, <i>3</i>, 3. https://doi.org/10.3389/frai.2020.00003</span></li></ol>
 <div class="footnotes" role="doc-endnotes">
