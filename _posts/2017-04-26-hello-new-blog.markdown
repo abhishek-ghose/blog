@@ -19,15 +19,19 @@ googlewebfonts: Raleway
 
 
 
-Moving to a new place can often be exciting, hectic and even tiresome, all at the same time. I am moving my blog, from [here](http://quipu-strands.blogspot.com/), and it’s none of those.[^1]
+Moving to a new place can be hectic and tiresome. I am moving my blog, from [here](http://quipu-strands.blogspot.com/), and it’s none of those.[^1]
+
+Yeesh, a feeble attempt at a [Paraprosdokian](https://en.wikipedia.org/wiki/Paraprosdokian). Anyhoo.
 
 I tend towards writing technical posts when I tend towards writing at all these days, and [blogger](https://www.blogger.com) doesn’t give me the presentation options I need. So, for now, its GitHub pages[^2], but with my own domain. That way, if I decide to move again, my (almost non-existent) readers won’t be sent scrambling to find my (almost non-existent) content.
 
-The old blog was titled “Random Thoughts”. I wanted something different and bit more original this time, so I Googled “Not So Random Thoughts”. Obviously. Yeah, right. So many hits it isn't even funny. So many, that you couldn't squint and ignore. And that is exactly why you are stuck with "A Not So Primordial Soup"; which, by the way, does a good job of telling you that this is going to be a mixed bag of the deep and the frivolous.
+The old blog was titled “Random Thoughts”. I wanted something different and bit more original this time, so I Googled “Not So Random Thoughts”. Obviously. 
 
-Just for the record, "The Psionic Poodle" was on the list. In case you were wondering if I can be fun. 
+So many hits it isn't even funny. So many, that you couldn't squint and ignore. And that is exactly why you are stuck with "A Not So Primordial Soup"; which, by the way, does a good job of telling you that this is going to be a mixed bag of the deep and the frivolous.
 
-Now for some quick tests to see if this platform holds up. Grouping them here, so that if I switch to a new platform/theme etc, I can use this post as a quick check to see if the various non-text entities I use are displayed correctly. 
+Just for the record, "The Psionic Poodle" was on the list. Since that isn't the title, joy to us, things might have been worse. 
+
+Now for some quick tests to see if this platform holds up. Grouping them here, so that if I switch to a new platform/theme etc, I can use this post as a quick check to see if the various non-text entities I use are displayed correctly. My regression tests, if you will. 
 
 * Math. Trust me this is going to come up.
     
@@ -40,11 +44,11 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
     
 * Images. Of course. 
   {% include image.html
-            img="assets/yosemite-random.jpg"
+            img="/blog/assets/yosemite-random.jpg"
             title="Yosemite"
-            caption="Trip to Yosemite. Wow, captioning in Kramdown <a href='https://superdevresources.com/image-caption-jekyll/'>isn't easy!</a>" %}
+            caption="From a trip to Yosemite. Wow, captioning in Kramdown <a href='https://superdevresources.com/image-caption-jekyll/'>isn't straightforward!</a>" %}
   
-* Code. Damn right son, we're going to need 'em. 
+* Code. You bet. 
     {% highlight Python %}
   def dot_product(v1, v2):
     # v1, v2 are lists
@@ -65,9 +69,7 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
 
 During my research to move, I discovered, quite to my surprise, that having a reliable comment system is something of a challenge. _In 2017_. I mean in a few years I could be sitting in my self-driving car (Update in 2022: yeah, this dated well.) and worrying about comment systems.
 
-Either platforms have their own systems tied to them (like blogger) or there are third party plug-n-play systems like [Disqus](https://disqus.com/) and [Discourse](https://www.discourse.org/). Maybe I shouldn’t bundle them together since Disqus receives a lot of hate (albeit easy to set up), while Discourse receives more of critique for their idiosyncratic system, if that: many people seem to like it. Personally, I almost like it. 
-
-There are several self-hosted solutions in this category too, and I am going to try one of those: [Isso](https://posativ.org/isso/). Will take a while to get it running I suppose. I’ve had this small-ish Linode server running forever, for which I convince myself to pay as an emergency back-up machine. You know, for times when I'd need to save the world by running a few experiments, and I really don't want to delay imminent glory by doing stupid things like looking for machines to run them on. You would be surprised to know that need has never come up. So it better get to hosting some comments if it wants me to keep paying for it. 
+More updates from 2022: When I had initially moved to GitHub pages, commenting systems left much to be desired. I did have [Talkyard](https://www.talkyard.io/) on here for a while, which is a nifty system. But now we have options like [utterances](https://utteranc.es/) and [giscus](https://giscus.app/), which feel like a more natural fit for something that's hosted on GitHub. I am going to integrate one of them soon.
 
 See you later then?
 <br>
