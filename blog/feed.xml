@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2022-01-10T16:57:33-08:00</updated><id>/blog/feed.xml</id><title type="html">A Not-So Primordial Soup</title><subtitle>A place to put down some of my thoughts. You don't want all of them - many are pretty useless. Come to think of it, some of the ones here might be too.</subtitle><entry><title type="html">Hello New Blog!</title><link href="/blog/jekyll/update/2017/04/26/hello-new-blog.html" rel="alternate" type="text/html" title="Hello New Blog!" /><published>2017-04-26T08:01:36-07:00</published><updated>2017-04-26T08:01:36-07:00</updated><id>/blog/jekyll/update/2017/04/26/hello-new-blog</id><content type="html" xml:base="/blog/jekyll/update/2017/04/26/hello-new-blog.html"><![CDATA[<script type="text/x-mathjax-config"> 
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2022-01-10T19:12:43-08:00</updated><id>/blog/feed.xml</id><title type="html">A Not-So Primordial Soup</title><subtitle>A place to put down some of my thoughts. You don't want all of them - many are pretty useless. Come to think of it, some of the ones here might be too.</subtitle><entry><title type="html">Hello New Blog!</title><link href="/blog/jekyll/update/2017/04/26/hello-new-blog.html" rel="alternate" type="text/html" title="Hello New Blog!" /><published>2017-04-26T08:01:36-07:00</published><updated>2017-04-26T08:01:36-07:00</updated><id>/blog/jekyll/update/2017/04/26/hello-new-blog</id><content type="html" xml:base="/blog/jekyll/update/2017/04/26/hello-new-blog.html"><![CDATA[<script type="text/x-mathjax-config"> 
     MathJax.Hub.Config({ 
         "HTML-CSS": { scale: 100, linebreaks: { automatic: true } }, 
         SVG: { linebreaks: { automatic:true } }, 
@@ -9,7 +9,7 @@
 
 </script>
 
-<p>Moving to a new place can often be exciting, hectic and even tiresome, all at the same time. I am moving my blog, from <a href="http://quipu-strands.blogspot.com/">here</a>, and it’s none of those.<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup></p>
+<p>Moving to a new place can be hectic and tiresome. I am moving my blog, from <a href="http://quipu-strands.blogspot.com/">here</a>, and it’s none of those.<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup></p>
 
 <p>Yeesh, a feeble attempt at a <a href="https://en.wikipedia.org/wiki/Paraprosdokian">Paraprosdokian</a>. Anyhoo.</p>
 
@@ -40,15 +40,15 @@
 <!-- _includes/image.html -->
 <div class="image-wrapper">
     
-        <img src="///blog/assets/yosemite-random.jpg" alt="Yosemite" />
+        <img src="/blog/assets/yosemite-random.jpg" alt="Yosemite" />
     
     
-        <p class="image-caption">Trip to Yosemite. Wow, captioning in Kramdown <a href="https://superdevresources.com/image-caption-jekyll/">isn't easy!</a></p>
+        <p class="image-caption">From a trip to Yosemite. Wow, captioning in Kramdown <a href="https://superdevresources.com/image-caption-jekyll/">isn't straightforward!</a></p>
     
 </div>
 
 <ul>
-  <li>Code. Obviously.</li>
+  <li>Code. You bet.</li>
 </ul>
 
 <figure class="highlight"><pre><code class="language-python" data-lang="python">  <span class="k">def</span> <span class="nf">dot_product</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
@@ -86,7 +86,7 @@
 
 <p>During my research to move, I discovered, quite to my surprise, that having a reliable comment system is something of a challenge. <em>In 2017</em>. I mean in a few years I could be sitting in my self-driving car (Update in 2022: yeah, this dated well.) and worrying about comment systems.</p>
 
-<p>More updates from 2022: When I had initially moved to GitHub pages, commenting systems left much to be desired. I did have <a href="https://www.talkyard.io/">Talkyard</a> on here for a while, which is nifty system. But now we have options like <a href="https://utteranc.es/">utterances</a> and <a href="https://giscus.app/">giscus</a>, which feel like a more natural fit for something that’s hosted on GitHub. I am going to integrate one of them soon.</p>
+<p>More updates from 2022: When I had initially moved to GitHub pages, commenting systems left much to be desired. I did have <a href="https://www.talkyard.io/">Talkyard</a> on here for a while, which is a nifty system. But now we have options like <a href="https://utteranc.es/">utterances</a> and <a href="https://giscus.app/">giscus</a>, which feel like a more natural fit for something that’s hosted on GitHub. I am going to integrate one of them soon.</p>
 
 <p>See you later then?
 <br /></p>
