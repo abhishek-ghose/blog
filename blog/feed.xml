@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/blog/" rel="alternate" type="text/html" /><updated>2022-01-11T21:29:51-08:00</updated><id>http://localhost:4000/blog/feed.xml</id><title type="html">A Not-So Primordial Soup</title><subtitle>A place to put down some of my thoughts. You don't want all of them - many are pretty useless. Come to think of it, some of the ones here might be too.</subtitle><entry><title type="html">Hello New Blog!</title><link href="http://localhost:4000/blog/jekyll/update/2017/04/26/hello-new-blog.html" rel="alternate" type="text/html" title="Hello New Blog!" /><published>2017-04-26T08:01:36-07:00</published><updated>2017-04-26T08:01:36-07:00</updated><id>http://localhost:4000/blog/jekyll/update/2017/04/26/hello-new-blog</id><content type="html" xml:base="http://localhost:4000/blog/jekyll/update/2017/04/26/hello-new-blog.html"><![CDATA[<script type="text/x-mathjax-config"> 
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/blog/" rel="alternate" type="text/html" /><updated>2022-01-12T07:58:01-08:00</updated><id>http://localhost:4000/blog/feed.xml</id><title type="html">A Not-So Primordial Soup</title><subtitle>A place to put down some of my thoughts. You don't want all of them - many are pretty useless. Come to think of it, some of the ones here might be too.</subtitle><entry><title type="html">Hello New Blog!</title><link href="http://localhost:4000/blog/jekyll/update/2017/04/26/hello-new-blog.html" rel="alternate" type="text/html" title="Hello New Blog!" /><published>2017-04-26T08:01:36-07:00</published><updated>2017-04-26T08:01:36-07:00</updated><id>http://localhost:4000/blog/jekyll/update/2017/04/26/hello-new-blog</id><content type="html" xml:base="http://localhost:4000/blog/jekyll/update/2017/04/26/hello-new-blog.html"><![CDATA[<script type="text/x-mathjax-config"> 
     MathJax.Hub.Config({ 
         "HTML-CSS": { scale: 100, linebreaks: { automatic: true } }, 
         SVG: { linebreaks: { automatic:true } }, 
@@ -21,7 +21,7 @@
 
 <p>Just for the record, “The Psionic Poodle” was on the list. Since that isn’t the title, joy to us, things could have been worse.</p>
 
-<p>I have been asked about the domain name “quipu strands”. These were a device used by the Incas to record information, and well, the blog is like my recording device. Hence the name. You can read more about them on <a href="https://en.wikipedia.org/wiki/Quipu">Wikipedia</a>. And <a href="https://www.jstor.org/stable/659935?seq=1#metadata_info_tab_contents">this</a> is probably one of the earliest articles detailing their use.</p>
+<p>I have been asked about the domain name “quipu strands”. These were a device used by the Incas to record information, and well, the blog is like my recording device. Hence the name. You can read more about them on <a href="https://en.wikipedia.org/wiki/Quipu">Wikipedia</a>. And <a href="https://www.jstor.org/stable/659935?seq=1#metadata_info_tab_contents">this</a> <a class="citation" href="#10.2307/659935">(Locke, 1912)</a> is probably one of the earliest articles detailing their use.</p>
 
 <p>Now for some quick tests to see if this platform holds up. Grouping them here, so that if I switch to a new platform/theme etc, I can use this post as a quick check to see if the various non-text entities I use are displayed correctly. My regression tests, if you will.</p>
 
@@ -100,7 +100,23 @@
 <p><br /></p>
 
 <p><strong>References</strong></p>
-<ol class="bibliography"><li><span id="compactem_software">Ghose, A. (2021). <i>compactem: build accurate small models</i> (Version 0.9.6) [Computer Software]. https://compactem.readthedocs.io</span>
+<ol class="bibliography"><li><span id="10.2307/659935">Locke, L. L. (1912). The Ancient Quipu, a Peruvian Knot Record. <i>American Anthropologist</i>, <i>14</i>(2), 325–332. http://www.jstor.org/stable/659935</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="10.2307/659935-abstract">
+    
+    </div>
+
+</li>
+<li><span id="compactem_software">Ghose, A. (2021). <i>compactem: build accurate small models</i> (Version 0.9.6) [Computer Software]. https://compactem.readthedocs.io</span>
     
 
     
