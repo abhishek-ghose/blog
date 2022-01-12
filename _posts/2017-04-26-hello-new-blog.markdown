@@ -23,13 +23,15 @@ Moving to a new place can be hectic and tiresome. I am moving my blog, from [her
 
 Yeesh, a feeble attempt at a [Paraprosdokian](https://en.wikipedia.org/wiki/Paraprosdokian). Anyhoo.
 
-I tend towards writing technical posts when I tend towards writing at all these days, and [blogger](https://www.blogger.com) doesn’t give me the presentation options I need. So, for now, its GitHub pages[^2], but with my own domain. That way, if I decide to move again, my (almost non-existent) readers won’t be sent scrambling to find my (almost non-existent) content.
+I tend towards writing technical posts when I tend towards writing at all these days, and [blogger](https://www.blogger.com) doesn’t give me the presentation options I need. So, for now, its GitHub pages, but with my own domain. That way, if I decide to move again, my (almost non-existent) readers won’t be sent scrambling to find my (almost non-existent) content.
 
 The old blog was titled “Random Thoughts”. I wanted something different and bit more original this time, so I Googled “Not So Random Thoughts”. Obviously. 
 
 So many hits it isn't even funny. So many, that you couldn't squint and ignore. And that is exactly why you are stuck with "A Not So Primordial Soup"; which, by the way, does a good job of telling you that this is going to be a mixed bag of the deep and the frivolous.
 
-Just for the record, "The Psionic Poodle" was on the list. Since that isn't the title, joy to us, things might have been worse. 
+Just for the record, "The Psionic Poodle" was on the list. Since that isn't the title, joy to us, things could have been worse. 
+
+I have been asked about the domain name "quipu strands". These were a device used by the Incas to record information, and well, the blog is like my recording device. Hence the name. You can read more about them on [Wikipedia](https://en.wikipedia.org/wiki/Quipu). And [this](https://www.jstor.org/stable/659935?seq=1#metadata_info_tab_contents) {% cite 10.2307/659935 %} is probably one of the earliest articles detailing their use.
 
 Now for some quick tests to see if this platform holds up. Grouping them here, so that if I switch to a new platform/theme etc, I can use this post as a quick check to see if the various non-text entities I use are displayed correctly. My regression tests, if you will. 
 
@@ -57,6 +59,9 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
         result = sum(map(lambda x: x[0] * x[1], zip(v1, v2)))
     return result
   {% endhighlight %}
+
+* Citations. Here's a paper I wrote {% cite compactem_software %} and a software I maintain {% cite frontiers_density_tree %}.
+
 * Tables. Basic. _Just-in-case-I-need-them-but-I-really-don't-think-I-need-them._
 
   |-----------------+------------+-----------------+----------------|
@@ -79,4 +84,7 @@ See you later then?
 <br>
 
 [^1]: If that link doesn’t work, it means I have managed to miraculously overcome my laziness and migrated all my posts. But don’t worry, that’s not bound to happen anytime soon.
-[^2]: As of writing this post. Check the "About" section for details and updates.
+
+
+**References**
+{% bibliography --cited %}

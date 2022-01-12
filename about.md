@@ -11,10 +11,8 @@ I am Abhishek Ghose. My interests are machine learning, math, puzzles and progra
 I have a bachelors degree in Mechanical Engineering, a Masters in Computer Science and Engineering, and I am currently working on a PhD in Machine Learning. The PhD is part-time and I work a day job as a Data Scientist.
 
 About this blog:
-* Uses Jekyll and is currently hosted on GitHub pages
-* My domain registrar is Namecheap
-* Theme: Minima with minor changes
-* Markdown flavor: Kramdown
-* The font is [EB-Garamond](https://fonts.google.com/specimen/EB+Garamond)
-* I'm also using [Font Awesome](http://fontawesome.io/) for some of the icons
-* For comments, I am self-hosting [Isso](https://posativ.org/isso/) on a Linode server 
+* Uses Jekyll and is currently hosted on GitHub pages. Citations use [jekyll-scholar](https://github.com/inukshuk/jekyll-scholar).
+* My domain registrar is Namecheap.
+* Theme: Minima with minor changes.
+* Markdown flavor: Kramdown.
+* I'm also using [Font Awesome](http://fontawesome.io/) for some of the icons.

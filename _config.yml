@@ -26,8 +26,13 @@ quora_username: Abhishek-Ghose
 # Build settings
 markdown: kramdown
 theme: minima
+scholar:
+  repository: /publications
+  bibliography_template: bibtemplate
+  bibliography: references.bib
 gems:
   - jekyll-feed
+  - jekyll-scholar
 exclude:
   - Gemfile
   - Gemfile.lock
