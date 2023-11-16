@@ -11,7 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>About</title>
-  <meta name="description" content="A place to put down some of my thoughts. You don&#39;t want all of them - many are pretty useless. Come to think of it, some of the ones here might be too.">
+  <meta name="description" content="My thought-recorder.">
   <link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Alegreya" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
@@ -20,12 +20,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,800;1,800&family=Raleway:wght@100&display=swap" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap" rel="stylesheet"> 
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@300&display=swap" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400&display=swap" rel="stylesheet"> 
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/blog/assets/main.css">
-  <link rel="canonical" href="/blog/about/">
+  <link rel="canonical" href="http://0.0.0.0:4000/blog/about/">
   <link rel="alternate" type="application/rss+xml" title="A Not-So Primordial Soup" href="/blog/feed.xml">
   
   
@@ -90,7 +91,7 @@
 
 <p>I am Abhishek Ghose. My interests are machine learning, math, puzzles and programming. I love to read in my spare time. While my reading is not limited to those topics, posts here probably will be :)</p>
 
-<p>I have a bachelors degree in Mechanical Engineering, a Masters in Computer Science and Engineering, and I am currently working on a PhD in Machine Learning. The PhD is part-time and I work a day job as a Data Scientist.</p>
+<p>I have a bachelors degree in Mechanical Engineering, a Masters and a Ph.D. in Computer Science and Engineering (specifically Machine Learning). My Ph.D. research looked at reducing model sizes while minimally sacrificing their accuracy. I work a day job as a Data Scientist.</p>
 
 <p>About this blog:</p>
 <ul>
@@ -107,6 +108,20 @@
 
       </div>
     </main>
+
+    <script src="https://giscus.app/client.js"
+        data-repo="[ENTER REPO HERE]"
+        data-repo-id="[ENTER REPO ID HERE]"
+        data-category="[ENTER CATEGORY NAME HERE]"
+        data-category-id="[ENTER CATEGORY ID HERE]"
+        data-mapping="pathname"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-theme="light"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+    </script>
 
     <footer class="site-footer">
 
@@ -152,7 +167,7 @@
       </div>
 
       <div class="footer-col footer-col-3">
-        <p>A place to put down some of my thoughts. You don&#39;t want all of them - many are pretty useless. Come to think of it, some of the ones here might be too.</p>
+        <p>My thought-recorder.</p>
       </div>
     </div>
 
@@ -160,7 +175,22 @@
 
 </footer>
 
+    <script>
+    
+    var elements = document.querySelectorAll('p');
+    Array.prototype.forEach.call(elements, function(el, i){
+        if(el.innerHTML=='[expand]') {
+            var parentcontent = el.parentNode.innerHTML.replace('<p>[expand]</p>','<div class="expand" style="display: none; height: 0; overflow: hidden;">').replace('<p>[/expand]</p>','</div>');
+            el.parentNode.innerHTML = parentcontent;
+        }
+    });
 
+    var elements = document.querySelectorAll('div.expand');
+    Array.prototype.forEach.call(elements, function(el, i){
+        el.previousElementSibling.innerHTML = el.previousElementSibling.innerHTML + '<span>..&nbsp; <a href="#" style="cursor: pointer;" onclick="this.parentNode.parentNode.nextElementSibling.style.display = \'block\'; this.parentNode.parentNode.nextElementSibling.style.height = \'auto\'; this.parentNode.style.display = \'none\';">read&nbsp;more&nbsp;&rarr;</a></span>';
+    });
+
+</script>
   </body>
 
 </html>
