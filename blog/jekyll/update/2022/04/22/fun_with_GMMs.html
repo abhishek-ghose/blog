@@ -655,7 +655,7 @@ E[r, g, b \vert x=x_1, y=y_1]
 <p>A list of miscellaneous points that I kept out of the main article to avoid cluttering.</p>
 <ul>
   <li>I fixed a lot of the GMM parameters to some sweet-spot between the training being not very memory intensive and the outputs being aesthetically pleasing. Of course, lots of tweaking possible here.</li>
-  <li>Can we use discriminative classifiers? Yes - as an example, for the black-and-white case, given a location \((x, y)\) you could predict a label in \(\{0, 1\}\) for white and black colored pixels. Here’s an example where I used <a href="https://lightgbm.readthedocs.io">LightGBM</a> as the classifier:</li>
+  <li>Can we use discriminative classifiers? Yes - as an example, for the black-and-white case, given a location \((x, y)\) you could predict a label in \(\{0, 1\}\) for white and black colored pixels respectively. Here’s an example where I used <a href="https://lightgbm.readthedocs.io">LightGBM</a> as the classifier:</li>
 </ul>
 
 <!-- _includes/image.html -->
@@ -683,7 +683,7 @@ E[r, g, b \vert x=x_1, y=y_1]
   <li>For various properties of the Gaussian, Bishop’s book “Pattern Recognition and Machine Learning” is a commonly cited reference (<a href="https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf">PDF</a>). Properties of Gaussians can be found in Section 2.3 and GMMs are discussed in Section 9.2.</li>
 </ul>
 
-<p>This was a fun article to write - so much fun that I kept playing around with various parameter settings and broader creative ideas (sadly, mostly unfinished) to the point that this has been languishing as a draft for more than a year now! GMMs themselves are not used as much anymore, but I think of them as a good place to start if you want to understand how to use distributions for practical problems. GMMs aside, it is good to be familiar with the properties of Gaussians since they keep cropping up in various places such as Probabilistic Circuits, Gaussian Processes (GP), Bayesian Optimization with GPs and Variational Autoencoders.</p>
+<p>This was a fun article to write - so much fun that I kept playing around with various parameter settings and broader creative ideas (sadly, mostly unfinished) to the point that this has been languishing as a draft for more than a year now! GMMs themselves are not used as much anymore, but I think of them as a good place to start if you want to understand how to use distributions for practical problems. GMMs aside, it is good to be familiar with the properties of Gaussians since they keep cropping up in various places such as <em>Probabilistic Circuits</em>, <em>Gaussian Processes (GP)</em>, <em>Bayesian Optimization</em> and <em>Variational Autoencoders</em>.</p>
 
 
   </div>
