@@ -15,9 +15,10 @@
 # in the templates via {{ site.myvariable }}.
 title: A Not-So Primordial Soup
 email: 
-description: A place to put down some of my thoughts. You don't want all of them - many are pretty useless. Come to think of it, some of the ones here might be too.
+description: My thought-recorder.
 baseurl: "/blog" # the subpath of your site, e.g. /blog
 url: # the base hostname & protocol for your site, e.g. http://example.com
+future: true
 twitter_username: 
 github_username: 
 linkedin_username: abhishek-ghose-36197624
@@ -26,6 +27,8 @@ quora_username: Abhishek-Ghose
 # Build settings
 markdown: kramdown
 theme: minima
+kramdown:
+    auto_ids: true
 scholar:
   repository: /publications
   bibliography_template: bibtemplate
