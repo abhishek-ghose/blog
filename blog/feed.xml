@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://0.0.0.0:4000/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="http://0.0.0.0:4000/blog/" rel="alternate" type="text/html" /><updated>2023-11-16T11:06:10-08:00</updated><id>http://0.0.0.0:4000/blog/feed.xml</id><title type="html">A Not-So Primordial Soup</title><subtitle>My thought-recorder.</subtitle><entry><title type="html">Fun with GMMs</title><link href="http://0.0.0.0:4000/blog/jekyll/update/2022/04/22/fun_with_GMMs.html" rel="alternate" type="text/html" title="Fun with GMMs" /><published>2022-04-22T20:00:00-07:00</published><updated>2023-11-15T16:30:00-08:00</updated><id>http://0.0.0.0:4000/blog/jekyll/update/2022/04/22/fun_with_GMMs</id><content type="html" xml:base="http://0.0.0.0:4000/blog/jekyll/update/2022/04/22/fun_with_GMMs.html"><![CDATA[<script type="text/x-mathjax-config"> 
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://0.0.0.0:4000/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="http://0.0.0.0:4000/blog/" rel="alternate" type="text/html" /><updated>2023-11-16T16:08:12-08:00</updated><id>http://0.0.0.0:4000/blog/feed.xml</id><title type="html">A Not-So Primordial Soup</title><subtitle>My thought-recorder.</subtitle><entry><title type="html">Fun with GMMs</title><link href="http://0.0.0.0:4000/blog/jekyll/update/2022/04/22/fun_with_GMMs.html" rel="alternate" type="text/html" title="Fun with GMMs" /><published>2022-04-22T20:00:00-07:00</published><updated>2023-11-15T16:30:00-08:00</updated><id>http://0.0.0.0:4000/blog/jekyll/update/2022/04/22/fun_with_GMMs</id><content type="html" xml:base="http://0.0.0.0:4000/blog/jekyll/update/2022/04/22/fun_with_GMMs.html"><![CDATA[<script type="text/x-mathjax-config"> 
     MathJax.Hub.Config({ 
         "HTML-CSS": { scale: 100, linebreaks: { automatic: true } }, 
         SVG: { linebreaks: { automatic:true } }, 
@@ -243,7 +243,7 @@ If I then draw a curve through the heights of these dashed lines - shown in blac
 
 <p>But what does this say about GMMs? Because of the above property, the conditional distribution for a GMM is also a GMM. This new GMM has different weights and components. You can find a derivation <a href="https://stats.stackexchange.com/questions/348941/general-conditional-distributions-for-multivariate-gaussian-mixtures">here</a>. This insight will be helpful when we deal with color images.</p>
 
-<p>OK, our short stop is over … off to actual problem-solving!</p>
+<p>OK, our short stop is over … on to actual problem-solving!</p>
 
 <h2 id="actual_content">Why Images?</h2>
 <p>If GMMs are about modeling data, how do images fit in? Let’s take the example of black-and-white images: you can thing of every single black pixel as a data point existing at its location. Look at the image below - the pixels that identify the shape of the dog are the data we will use to fit our GMM.</p>
@@ -314,7 +314,7 @@ If I then draw a curve through the heights of these dashed lines - shown in blac
         <img src="/blog/assets/fun_with_GMMs/pixabay_butterfly.jpg" alt="test" />
     
     
-        <p class="image-caption">Contour plot. Original image source: pixabay.com.</p>
+        <p class="image-caption">Contour plot of a very psychedelic butterfly. Original image source: pixabay.com.</p>
     
 </div>
 
@@ -502,7 +502,7 @@ If I then draw a curve through the heights of these dashed lines - shown in blac
 
 <p>Remember we were able to generate images earlier by plotting points on a grid? How do we do that here? Well, the answer is a little complicated but doable.</p>
 
-<p>Here’s the challenge: at a particular coordinate \((x_1, y_1)\), you can ask your GMM for a conditional <em>distribution</em>: \(p(r,g,b \vert x=x_1, y=y_1)\). Yes, you get a full-blown different GMM at every coordinate (because, like we discussed, the conditional of a GMM is also a GMM). How do we color a location with a distribution? - well, here I just use its mean value. Effectively, given a specific coordinate \((x_1, y_1)\), I calculate the mean values for the \((r,g,b)\) tuple:</p>
+<p>Here’s the challenge: at a particular coordinate \((x_1, y_1)\), you can ask your GMM for a conditional <em>distribution</em>: \(p(r,g,b \vert x=x_1, y=y_1)\). Yes, you get a full-blown different GMM over \(r,g,b\) values at every coordinate (because, like we discussed, the conditional of a GMM is also a GMM). How do we color a location with a distribution? - well, here I just use its mean value. Effectively, given a specific coordinate \((x_1, y_1)\), I calculate the mean values for the \((r,g,b)\) tuple:</p>
 
 \[\begin{aligned}
 E[r, g, b \vert x=x_1, y=y_1]
@@ -585,7 +585,7 @@ E[r, g, b \vert x=x_1, y=y_1]
   <li>For various properties of the Gaussian, Bishop’s book “Pattern Recognition and Machine Learning” is a commonly cited reference (<a href="https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf">PDF</a>). Properties of Gaussians can be found in Section 2.3 and GMMs are discussed in Section 9.2.</li>
 </ul>
 
-<p>This was a fun article to write - so much fun that I kept playing around with various parameter settings and broader creative ideas (sadly, mostly unfinished) to the point that this has been languishing as a draft for more than a year now! GMMs themselves are not used as much anymore, but I think of them as a good place to start if you want to understand how to use distributions for practical problems. GMMs aside, it is good to be familiar with the properties of Gaussians since they keep cropping up in various places such as <em>Probabilistic Circuits</em>, <em>Gaussian Processes (GP)</em>, <em>Bayesian Optimization</em> and <em>Variational Autoencoders</em>.</p>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Hello New Blog!</title><link href="http://0.0.0.0:4000/blog/jekyll/update/2017/04/26/hello-new-blog.html" rel="alternate" type="text/html" title="Hello New Blog!" /><published>2017-04-26T08:01:36-07:00</published><updated>2023-11-15T16:30:00-08:00</updated><id>http://0.0.0.0:4000/blog/jekyll/update/2017/04/26/hello-new-blog</id><content type="html" xml:base="http://0.0.0.0:4000/blog/jekyll/update/2017/04/26/hello-new-blog.html"><![CDATA[<script type="text/x-mathjax-config"> 
+<p>This was a fun article to write - so much fun that I kept playing around with various parameter settings and broader creative ideas (sadly, mostly unfinished) to the point that this has been languishing as a draft for more than a year now! GMMs themselves are not used as much anymore, but I think of them as a good place to start if you want to understand how to use distributions for practical problems. GMMs aside, it is good to be familiar with the properties of Gaussians since they keep cropping up in various places such as <em>Probabilistic Circuits</em>, <em>Gaussian Processes</em>, <em>Bayesian Optimization</em> and <em>Variational Autoencoders</em>.</p>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Hello New Blog!</title><link href="http://0.0.0.0:4000/blog/jekyll/update/2017/04/26/hello-new-blog.html" rel="alternate" type="text/html" title="Hello New Blog!" /><published>2017-04-26T08:01:36-07:00</published><updated>2023-11-15T16:30:00-08:00</updated><id>http://0.0.0.0:4000/blog/jekyll/update/2017/04/26/hello-new-blog</id><content type="html" xml:base="http://0.0.0.0:4000/blog/jekyll/update/2017/04/26/hello-new-blog.html"><![CDATA[<script type="text/x-mathjax-config"> 
     MathJax.Hub.Config({ 
         "HTML-CSS": { scale: 100, linebreaks: { automatic: true } }, 
         SVG: { linebreaks: { automatic:true } }, 
