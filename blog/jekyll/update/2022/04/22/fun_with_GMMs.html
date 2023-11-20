@@ -88,7 +88,7 @@
       <time datetime="2022-04-22T20:00:00-07:00" itemprop="datePublished">
         
         Created: Apr 22, 2022.    Last major update:
-        Nov 16, 2023 
+        Nov 16, 2023. 
       </time>
       </p>
   
@@ -116,7 +116,7 @@
 
 <p>A bit like an artist who witnesses a scenery and later recreates it on canvas using her memory; her memory acting as a generative model here.</p>
 
-<p>In this post, I will try to illustrate this mechanism using a specific generative model: the <strong>Gaussian Mixture Model (GMM)</strong>. We will use it to capture patterns <em>in images</em>. Pixels will be our data, and patterns as how they are “lumped” together. Of course, this lumping is what humans perceive as the image itself. Effectively then, much like our artist, we will use a generative model to “see” an image and then have it reproduce it later. <strong>Think of this as a rudimentary, mostly visual, tutorial on GMMs</strong>, where we focus on their representational capability. Or an article where I mostly ramble but touch upon GMMs, use of probabilities, all the while creating fancy art like the ones below!</p>
+<p>In this post, I will try to illustrate this mechanism using a specific generative model: the <strong>Gaussian Mixture Model (GMM)</strong>. We will use it to capture patterns <em>in images</em>. Pixels will be our data, and patterns are how they are “lumped” together. Of course, this lumping is what humans perceive as the image itself. Effectively then, much like our artist, we will use a generative model to “see” an image and then have it reproduce it later. <strong>Think of this as a rudimentary, mostly visual, tutorial on GMMs</strong>, where we focus on their representational capability. Or an article where I mostly ramble but touch upon GMMs, use of probabilities, all the while creating fancy art like the ones below!</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -161,7 +161,7 @@
 
 <h3 id="what-are-gmms">What are GMMs?</h3>
 
-<p>Think of GMMs as a way to approximate functions of special kind: <em>probability density functions (pdf)</em>. <em>pdf</em>s are a way to express probabilities over variables that take continuous values. For ex., you might want to use a <em>pdf</em> to describe the percentage \(x\) of humidity in the air tomorrow, where \(x\) can be any real number between 0 and 100, i.e., \(x \in [0, 100]\). The <em>pdf</em> value at \(x\), denoted by \(p(x)\) (often called the “density”), in some loose sense represents how likely \(x\) is, but is <strong>not</strong> a probability value in itself. However, if you sum these values for a contiguous range or an “interval” of \(x\)s, you end up with a valid probability value. In the case of continuous spaces, such sums are <em>integrals</em>; so, the probability of humidity being within 40%-60% is \(\int_{40}^{60} p(x)dx\). Some well known <em>pdf</em>s are <a href="https://en.wikipedia.org/wiki/Normal_distribution">Gaussian</a> (the star of our show, also known as the <em>Normal</em> distribution), <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson</a> and <a href="https://en.wikipedia.org/wiki/Beta_distribution">Beta</a>.</p>
+<p>Think of GMMs as a way to approximate functions of special kind: <em>probability density functions (pdf)</em>. <em>pdf</em>s are a way to express probabilities over variables that take continuous values. For ex., you might want to use a <em>pdf</em> to describe the percentage \(x\) of humidity in the air tomorrow, where \(x\) can be any real number between 0 and 100, i.e., \(x \in [0, 100]\). The <em>pdf</em> value at \(x\), denoted by \(p(x)\) (often called the “density”), in some loose sense represents how likely the value is, but is <strong>not</strong> a probability value in itself. However, if you sum these values for a contiguous range or an “interval” of \(x\)s, you end up with a valid probability value. In the case of continuous values, such sums are <em>integrals</em>; so, the probability of humidity being within 40%-60% is \(\int_{40}^{60} p(x)dx\). Some well known <em>pdf</em>s are <a href="https://en.wikipedia.org/wiki/Normal_distribution">Gaussian</a> (the star of our show, also known as the <em>Normal</em> distribution), <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson</a> and <a href="https://en.wikipedia.org/wiki/Beta_distribution">Beta</a>.</p>
 
 <p>Let’s talk about the Gaussian for a bit. For a variable \(x\), the density \(p(x)\) can be calculated using this formula:</p>
 
@@ -185,7 +185,7 @@
 <ul>
   <li><strong>Number</strong> of components, \(K\).</li>
   <li><strong>Parameters</strong> or <em>shape</em> of the components. We will denote component \(i\) by \(\mathcal{N}(\mu_i, \sigma_i^2)\), where we need to figure out the values for \(\mu_i\) and  \(\sigma_i\).</li>
-  <li><strong>Weights</strong> \(w_i\) of the components, or how much a component contributes to the overall density. We require two properties here: (a) \(0 \leq w_i \leq 1\), and (b) \(\sum_i^K w_i = 1\).</li>
+  <li><strong>Weights</strong> \(w_i\) of the components, or how much a component contributes to the overall density. We require two properties here (we’ll see why soon): (a) \(0 \leq w_i \leq 1\), and (b) \(\sum_i^K w_i = 1\).</li>
 </ul>
 
 <p>The resultant density \(p(x)\) of a point due to this mixture is given by the sum of individual Gaussian densities multiplied by their weights:</p>
@@ -194,7 +194,7 @@
 p(x) = \sum_{i=1}^{K} w_i \mathcal{N}(x;\mu_i, \sigma_i^2) 
 \end{aligned}\]
 
-<p>The physical interpretation is that \(x\) may have been generated by the \(i^{th}\) component with probability \(w_i\) (which explains the properties needed of \(w_i\) - they’re effectively probabilities), and then for this component, its density is given by \(\mathcal{N}(x;\mu_i, \sigma_i^2)\). Since \(x\) may be generated by any component, the overall \(p(x)\) is given by the sum above.</p>
+<p>The physical interpretation is that \(x\) may have been generated by the \(i^{th}\) component with probability \(w_i\) (which explains the properties needed of \(w_i\) - they’re effectively probabilities), and then for this component, its density is given by \(\mathcal{N}(x;\mu_i, \sigma_i^2)\). The net <em>pdf</em> value for a specific value for \(x\) due to component \(i\) then is \(w_i \mathcal{N}(x;\mu_i, \sigma_i^2)\). Since \(x\) may be generated by any component, the overall \(p(x)\) is given by the sum above.</p>
 
 <!---
 If you were to plot a *pdf*, with the y-axis showing the value $$p(x)$$, you might get something like the blue curve (labelled "original") in the figure below - note that here $$x \in [0, 50]$$. 
@@ -202,7 +202,7 @@ If you were to plot a *pdf*, with the y-axis showing the value $$p(x)$$, you mig
 Without knowing anything else about $$p(x)$$, what can we say about its properties? Well, the probability of *any* event happening should be `1`, so here, $$\int_0^{50} p(x) = 1$$. This is generally true - the integral over the entire space of $$x$$ is `1`. And you can't also have negative values for $$p(x)$$ - because if you did, you can narrowly define a contiguous space around such an $$x$$ such that the integral computes to a negative number, and that doesn't make sense since this is a probability!
 -->
 
-<p>This turns out to be a powerful device, since with the right number of components, shapes and weights, one may approximate arbitrary distributions. The plot below shows a <code class="language-plaintext highlighter-rouge">2</code>-component GMM, where the component shapes are fixed (red dashed lines), but different combinations of weights are explored - you can see that this alone produces various different <em>pdf</em>s (solid lines).</p>
+<p>This turns out to be a powerful device, since with the right number of components, shapes and weights, one may approximate arbitrary distributions. The plot below shows a <code class="language-plaintext highlighter-rouge">2</code>-component GMM, where the component shapes are fixed (red dashed lines), but different combinations of weights are explored (mentioned in the legend) - you can see that this alone produces various different <em>pdf</em>s (solid lines).</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -214,7 +214,7 @@ Without knowing anything else about $$p(x)$$, what can we say about its properti
     
 </div>
 
-<p>Let’s go back to the original question. In the figure below, we consider some data points on the x-axis (shown with small vertical lines, known as a <a href="https://seaborn.pydata.org/generated/seaborn.rugplot.html">rugplot</a>). The corresponding histogram is also shown. We try to approximate this <em>target</em> distribution with a GMM wth <code class="language-plaintext highlighter-rouge">3</code> components, shown with the red dashed lines. The black solid line shows the final <em>pdf</em> obtained using appropriate weights, which you’d note, is quite close to the histogram. This is a GMM in action.</p>
+<p>Let’s go back to the original question. In the figure below, we consider some data points on the x-axis (shown with small vertical lines, known as a <a href="https://seaborn.pydata.org/generated/seaborn.rugplot.html">rugplot</a>). The corresponding histogram is also shown. We try to approximate this <em>target</em> distribution with a GMM with <code class="language-plaintext highlighter-rouge">3</code> components, shown with the red dashed lines. The black solid line shows the final <em>pdf</em> obtained using appropriate weights (not shown), which you’d note, is quite close to the histogram. This is a GMM in action.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -226,14 +226,14 @@ Without knowing anything else about $$p(x)$$, what can we say about its properti
     
 </div>
 
-<p>Here we won’t discuss how we find the number of components, or their parameters, or their weights - the first one is a hyperparameter (so you need to set it and pick a good value based on the task), and the latter are typically determined using a popular algorithm known as <a href="https://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm">Expectation Maximization (EM)</a>, for which we use <a href="https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html#sklearn.mixture.GaussianMixture.fit">scikit’s implementation</a>. Here’s an interesting bit of trivia: the EM algorithm was <a href="https://www.jstor.org/stable/2984875">proposed in 1977</a>, which was much after the first use of GMMs (which, as mentioned above, was in 1894)!</p>
+<p>Here we won’t discuss how we find the number of components, or their parameters, or their weights - the first one is a hyperparameter (so you either determine it based on some task specific metric or use a heuristic such as <a href="https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html#sklearn.mixture.GaussianMixture.aic">AIC</a>), and the latter are typically determined using a popular algorithm known as <a href="https://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm">Expectation Maximization (EM)</a>, for which we use <a href="https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html#sklearn.mixture.GaussianMixture.fit">scikit’s implementation</a>. Here’s an interesting bit of trivia: the EM algorithm was <a href="https://www.jstor.org/stable/2984875">proposed in 1977</a>, which was much after the first use of GMMs (which, as mentioned above, was in 1894)!</p>
 
 <!--Of course, these approximations aren't always perfect. But we try to reduce the gap between the target density and a GMM as much as we can (typically using [Expectation Maximization](https://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm#Gaussian_mixture)).-->
 <p>Interestingly, it is also possible to use an <a href="https://groups.seas.harvard.edu/courses/cs281/papers/rasmussen-1999a.pdf"><em>infinite</em></a> number of components, but that’s again something we won’t cover here.</p>
 
 <h3 id="sampling-from-a-gmm">Sampling from a GMM</h3>
 
-<p>As a quick stopover, let’s ask ourselves the “inverse” question: how do we generate data from a GMM \(\sum_{i=1}^{K} \mathcal{N}(x;\mu_i, \sigma_i^2)\)? Think about the physical interpretation we discussed earlier; now, we “invert” the process. To generate one data instance \(x\), we follow this two-step process:</p>
+<p>As a quick stopover, let’s ask ourselves the “inverse” question: how do we generate data from a GMM \(\sum_{i=1}^{K} \mathcal{N}(x;\mu_i, \sigma_i^2)\)? Think about the physical interpretation we discussed earlier; that’s going to be helpful now. To generate one data instance \(x\), we follow this two-step process:</p>
 <ul>
   <li>Use \(w_i\) as probabilities to pick a particular component \(i\).</li>
   <li>And then generate \(x \sim \mathcal{N}(\mu_i, \sigma_i^2)\).</li>
@@ -241,7 +241,7 @@ Without knowing anything else about $$p(x)$$, what can we say about its properti
 
 <p>Repeat the above steps till you have the required number of samples.</p>
 
-<p>This ends up producing instances from the components in proportion to their weights. The following video shows this for a <code class="language-plaintext highlighter-rouge">2</code>-component GMM. For sampling a point, first a component is chosen - this choice is temporarily highlighted in red. And then an instance is sampled - shown in blue. The black line shows the <em>pdf</em> of the GMM, but if you sampled enough instances and sketched its empirical distribution (using, say, a <a href="https://seaborn.pydata.org/generated/seaborn.kdeplot.html">kdeplot</a>), you’d get something very close to this.</p>
+<p>This ends up producing instances from the components in proportion to their weights. The following video shows this for a <code class="language-plaintext highlighter-rouge">2</code>-component GMM. For sampling a point, first a component is chosen - this choice is temporarily highlighted in red. And then an instance is sampled - shown in blue. The black line shows the <em>pdf</em> of the GMM, but if you sampled enough instances and sketched its empirical distribution (using, say, a <a href="https://seaborn.pydata.org/generated/seaborn.kdeplot.html">kdeplot</a>), you’d get something very close to this <em>pdf</em>.</p>
 
 <video id="movie" preload="" controls="" width="80%" height="80%">
    <source id="srcMp4" src="/blog/assets/fun_with_GMMs/sampling_animation.mp4#t=0.2" />
@@ -262,7 +262,7 @@ p(x) = \sum_{i=1}^{K} w_i \mathcal{N}(x;\mu_i, \Sigma_i)
 <h3 id="contour-plots">Contour Plots</h3>
 
 <p>We want to be able to visualize these high-dimensional GMMs.
-In general faithful visualization of high-dimensional structures is hard, but, fortunately, there is a well known technique applicable to two-dimensions: <em>contour plots</em>. In the figure below, (a) shows some data points in 2D. I have used a <code class="language-plaintext highlighter-rouge">2</code>-component two-dimensional GMM to model this data. Instead of showing the <em>pdf</em> on a \(z\)-axis, we calculate the values \(z=p(x_1, x_2)\) values at a whole lot of points in the input space, and then <em>connect</em> the points with identical \(z\) values. We might also color the lines formed by these connections, to indicate how high or low \(z\) is. These lines are knowns as <em>contours</em> and (b) shows such a <em>contour</em> plot.</p>
+In general, faithful visualization of high-dimensional structures is hard, but, fortunately, there is a well known technique applicable to two-dimensions: <em>contour plots</em>. In the figure below, (a) shows some data points in 2D. I have used a <code class="language-plaintext highlighter-rouge">2</code>-component two-dimensional GMM to model this data. Instead of showing the <em>pdf</em> on a \(z\)-axis in a 3D plot, we calculate the values \(z=p(x_1, x_2)\) values at a whole lot of points in the input space, and then <em>connect</em> the points with identical \(z\) values. We might also color the lines formed by these connections, to indicate how high or low \(z\) is. These lines are knowns as <em>contours</em> and (b) shows such a <em>contour</em> plot.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -278,7 +278,7 @@ In general faithful visualization of high-dimensional structures is hard, but, f
 
 <h3 id="some-properties">Some Properties</h3>
 
-<p>So far the only thing we have used the GMM for is to sample data. This is useful, but sometimes we want to use the model to answer specific questions about the data, e.g., what is the mean of the data? We’ll briefly look at this aspect now.</p>
+<p>So far the only thing we have used the GMM for is to sample data. This is useful, but sometimes we want to use the model to answer specific questions about the data, e.g., what is the mean value of the data? We’ll briefly look at this aspect now.</p>
 
 <p><strong>Expectation</strong></p>
 
@@ -312,7 +312,7 @@ p(x_1, x_2,..., x_{d-3} \vert x_{d-2}=a,x_{d-1}=b,x_{d}=c)
 
 <!--Often, the specific values $$a,b,c$$ are dropped to indicate we're interested in the *form* of the conditional distribution for *some* values assigned to the variables conditioned on - what these values are, hopefully, is made clear by context.-->
 
-<p>What do such conditonal distrbutions look for the Gaussian? Consider a simple case of two variables \(x_1, x_2\), and condition on \(x_1\):</p>
+<p>What do such conditonal distrbutions look for the Gaussian? Consider a simple case of two variables \(x_1, x_2\), and conditioning on \(x_1\):</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -326,7 +326,7 @@ p(x_1, x_2,..., x_{d-3} \vert x_{d-2}=a,x_{d-1}=b,x_{d}=c)
 
 <p>Look at the various conditional distributions \(p(x_2 \vert x_1)\), for different \(x_1\). In the figure, this is equivalent to “slicing” through the Gaussian at specific values of \(x_1\), as shown by the three solid lines. Do these distributions/solid lines suspiciously look like Gaussians? They are! The conditional distributions of a Gaussian are also Gaussian. We wouldn’t go into proving this interesting property, but its important to know it is true.</p>
 
-<p><em>Note that the above animation only serves to provide a good mental model and doesn’t present the whole picture. You can delve deeper into what this visualization misses <a href="https://stats.stackexchange.com/questions/385823/variance-of-conditional-multivariate-gaussian">here</a>, but if this is your first encounter with the notion, you can skip it for now.</em></p>
+<p><em>Note that the above animation only serves to provide a good mental model and doesn’t present the whole picture. You can delve deeper into nuances this visualization misses <a href="https://stats.stackexchange.com/questions/385823/variance-of-conditional-multivariate-gaussian">here</a>, but if this is your first encounter with the notion, you can skip it for now.</em></p>
 
 <!--
 **Marginal distributions**
@@ -344,7 +344,7 @@ If I then draw a curve through the heights of these dashed lines - shown in blac
 <p>OK, our short stop is over … on to actual problem-solving!</p>
 
 <h2 id="actual_content">Why Images?</h2>
-<p>If GMMs are about modeling data, how do images fit in? Let’s take the example of black-and-white images: you can thing of every single black pixel as a data point existing at its location. Look at the image below - the pixels that identify the shape of the dog are the data we will use to fit our GMM.</p>
+<p>If GMMs are about modeling data, how do images fit in? Let’s take the example of black-and-white images: you can think of every single black pixel as a data point existing at its location. Look at the image below - the pixels that make up the shape of the dog are the data we will use to fit our GMM.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -376,7 +376,7 @@ If I then draw a curve through the heights of these dashed lines - shown in blac
 <h3 id="sampling">Sampling</h3>
 <p>We now generate our first images &lt;drum roll&gt;! The recipe is simple:</p>
 <ul>
-  <li>We create our training data as shown above, and fit a 2-dimensional GMM. We set the number of components \(K=500\). No particular reason, an arbitrary high number.</li>
+  <li>We create our training data as shown above, and fit a 2-dimensional GMM. We set the number of components \(K=500\). No particular reason, I just picked an arbitrary high number.</li>
   <li>Create a contour plot for the GMM - which gives us our first fancy image. Art!</li>
 </ul>
 
@@ -464,7 +464,7 @@ If I then draw a curve through the heights of these dashed lines - shown in blac
     
 </div>
 
-<p>The above image simplifies one detail: \(p(x, y)\) values are <em>pdf</em> values, so do not have an upper-bound. We collect all these values for our grid of points, scale them to lie in the range <code class="language-plaintext highlighter-rouge">[0,1]</code> before we plot our image.</p>
+<p>The above image simplifies one detail: \(p(x, y)\) values are <em>pdf</em> values, so do not have an upper-bound (but our grayscale ranges within <code class="language-plaintext highlighter-rouge">[0,1]</code>). We collect all these values for our grid of points, scale them to lie in the range <code class="language-plaintext highlighter-rouge">[0,1]</code> before we plot our image.</p>
 
 <p>Let’s start with the image of the dog. We see its almost perfectly recovered! We probably expect this by now given its a simple sketch.</p>
 
@@ -478,7 +478,7 @@ If I then draw a curve through the heights of these dashed lines - shown in blac
     
 </div>
 
-<p>However, notice the width of the lines. Do they seem thicker? Thats because pixels in the close neighborhood of the actual sketch lines also end up getting a black-ish color - afterall, we are using a probabilistic model. As details in an image grow, you will see more of this effect. Below, we have the butterfly image - you can actually see smudging near the borders, making it look like a charcoal sketch.</p>
+<p>However, notice the width of the lines. Do they seem thicker? That’s because pixels in the close neighborhood of the actual sketch lines also end up getting a black-ish color - afterall, we are using a probabilistic model. As details in an image grow, you will see more of this effect. Below, we have the butterfly image - you can actually see smudging near the borders, making it look like a charcoal sketch.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
