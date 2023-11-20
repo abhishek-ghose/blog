@@ -506,7 +506,7 @@ If I then draw a curve through the heights of these dashed lines - shown in blac
 
 <h3 id="custom-mapping-for-grid-plots">Custom Mapping for Grid Plots</h3>
 
-<p>How do we do better? A simple hack is to change the mapping of probabilities to color values, so that the numerous points with low probabilities are visibly <em>not</em> dark. We can replace the linear mapping with a bespoke non-linear mapping that achieves this outcome - in the figure below, (a) shows this with a piecewise linear function, where the dashed orange line is the default linear mapping (shown for reference). The x-axis shows the scaled probability values of pixels, and they y-axis shows the score they are mapped to on the gray colormap, which ranges between <code class="language-plaintext highlighter-rouge">[0, 255]</code>. Our version allows for very dark colors for only relatively high probabilities.</p>
+<p>How do we do better? A simple hack is to change the mapping of probabilities to color values, so that the numerous points with low probabilities are visibly <em>not</em> dark. We can replace the implicit linear mapping we’ve been using with a bespoke non-linear mapping that achieves this outcome - in the figure below, (a) shows this with a piecewise linear function, where the dashed orange line is the default linear mapping (shown for reference). The x-axis shows the scaled <em>pdf</em> values of pixels, and they y-axis shows the score they are mapped to on the gray colormap, which ranges between <code class="language-plaintext highlighter-rouge">[0, 255]</code>. Our version allows for very dark colors for only relatively high scaled <em>pdf</em> values.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -549,7 +549,7 @@ If I then draw a curve through the heights of these dashed lines - shown in blac
     
 </div>
 
-<p>We need to model these RGB values at each location. For this we use a <em>5-dimensional</em> GMM, where the variables are the \(x, y\) coordinates followed by the \(r, g, b\) values. The following image shows how the training data is created - a notable difference from the black-and-white case is that <em>all</em> locations are used. These GMMs are going to be larger because of both (a) a higher number of dimensions, and (b) a lot more points to model. I am also going to use a larger nunmber of components since there is more information to be learned.</p>
+<p>We need to model these RGB values at each location. For this we use a <em>5-dimensional</em> GMM, where the variables are the \(x, y\) coordinates followed by the \(r, g, b\) values present at that coordinate. The following image shows how the training data is created - a notable difference from the black-and-white case is that <em>all</em> locations are used.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -561,8 +561,10 @@ If I then draw a curve through the heights of these dashed lines - shown in blac
     
 </div>
 
+<p>These GMMs are going to be larger because of both (a) a higher number of dimensions, and (b) a lot more points to model. I am also going to use a larger nunmber of components since there is more information to be learned.</p>
+
 <h3 id="sampling-1">Sampling</h3>
-<p>So we have our 5-dimensional GMM now (trained with \(K=1000\) components this time). We can generate our first set of images by sampling as before: sample a point \((x, y, r, g, b)\), and color the pixel at location \((x,y)\) with the colors \((r,g,b)\). A minor practical detail here is that you would need to clip the r,g,b sampled values to lie in the right range - because the GMM might generate values beyond the valid range of <code class="language-plaintext highlighter-rouge">[0, 255]</code>.</p>
+<p>So we have our 5-dimensional GMM now (trained with \(K=1000\) components this time). We can generate our first set of images by sampling as before: sample a point \((x, y, r, g, b)\), and color the pixel at location \((x,y)\) with the colors \((r,g,b)\). A minor practical detail here is that you would need to clip the \(r,g,b\) sampled values to lie in the right range - because the GMM, not knowing these are colors, might generate values beyond the valid range of <code class="language-plaintext highlighter-rouge">[0, 255]</code>.</p>
 
 <p>But it works. Behold!</p>
 
@@ -654,7 +656,7 @@ E[r, g, b \vert x=x_1, y=y_1]
 
 <p>A list of miscellaneous points that I kept out of the main article to avoid cluttering.</p>
 <ul>
-  <li>I fixed a lot of the GMM parameters to some sweet-spot between the training being not very memory intensive and the outputs being aesthetically pleasing. Of course, lots of tweaking possible here.</li>
+  <li>I fixed a lot of the GMM parameters to some sweet-spot between the training being not memory intensive and the outputs being aesthetically pleasing. Of course, lots of tweaking possible here.</li>
   <li>Can we use discriminative classifiers? Yes - as an example, for the black-and-white case, given a location \((x, y)\) you could predict a label in \(\{0, 1\}\) for white and black colored pixels respectively. Here’s an example where I used <a href="https://lightgbm.readthedocs.io">LightGBM</a> as the classifier:</li>
 </ul>
 
