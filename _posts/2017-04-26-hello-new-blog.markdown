@@ -19,15 +19,20 @@ googlewebfonts: Raleway
 
 
 
-Moving to a new place can often be exciting, hectic and even tiresome, all at the same time. I am moving my blog, from [here](http://quipu-strands.blogspot.com/), and it’s none of those.[^1]
+Moving to a new place can be hectic and tiresome. I am moving my blog, from [here](http://quipu-strands.blogspot.com/), and it’s none of those.[^1] /s
 
-I tend towards writing technical posts when I tend towards writing at all these days, and [blogger](https://www.blogger.com) doesn’t give me the presentation options I need. So, for now, its GitHub pages[^2], but with my own domain. That way, if I decide to move again, my (almost non-existent) readers won’t be sent scrambling to find my (almost non-existent) content.
 
-The old blog was titled “Random Thoughts”. I wanted something different and bit more original this time, so I Googled “Not So Random Thoughts”. Obviously. Yeah, right. So many hits it isn't even funny. So many, that you couldn't squint and ignore. And that is exactly why you are stuck with "A Not So Primordial Soup"; which, by the way, does a good job of telling you that this is going to be a mixed bag of the deep and the frivolous.
+I tend towards writing technical posts when I tend towards writing at all these days, and [blogger](https://www.blogger.com) doesn’t give me the presentation options I need. So, for now, its GitHub pages, but with my own domain. That way, if I decide to move again, my (almost non-existent) readers won’t be sent scrambling to find my (almost non-existent) content.
 
-Just for the record, "The Psionic Poodle" was on the list. In case you were wondering if I can be fun. 
+The old blog was titled “Random Thoughts”. I wanted something different and bit more original this time, so I Googled “Not So Random Thoughts”. Obviously. 
 
-Now for some quick tests to see if this platform holds up. Grouping them here, so that if I switch to a new platform/theme etc, I can use this post as a quick check to see if the various non-text entities I use are displayed correctly. 
+So many hits it isn't even funny. So many, that you couldn't squint and ignore. And that is exactly why you are stuck with "A Not So Primordial Soup"; which, by the way, does a good job of telling you that this is going to be a mixed bag of the deep and the frivolous.
+
+Just for the record, "The Psionic Poodle" was on the list. Since that isn't the title, joy to us, things could have been worse. 
+
+I have been asked about the domain name "quipu strands" (by the 3 and a 1/2 readers I have) . These were a device used by the Incas to record information, and well, the blog is like my recording device. Hence the name. You can read more about them on [Wikipedia](https://en.wikipedia.org/wiki/Quipu). And [this](https://www.jstor.org/stable/659935?seq=1#metadata_info_tab_contents) {% cite 10.2307/659935 %} is probably one of the earliest articles detailing their use.
+
+Now for some quick tests to see if this platform holds up. Grouping them here, so that if I switch to a new platform/theme etc, I can use this post as a quick check to see if the various non-text entities I use are displayed correctly. My regression tests, if you will. 
 
 * Math. Trust me this is going to come up.
     
@@ -40,11 +45,11 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
     
 * Images. Of course. 
   {% include image.html
-            img="assets/yosemite-random.jpg"
+            img="/blog/assets/yosemite-random.jpg"
             title="Yosemite"
-            caption="Trip to Yosemite. Wow, captioning in Kramdown <a href='https://superdevresources.com/image-caption-jekyll/'>isn't easy!</a>" %}
+            caption="From a trip to Yosemite. Wow, captioning in Kramdown <a href='https://superdevresources.com/image-caption-jekyll/'>isn't straightforward!</a>" %}
   
-* Code. Damn right son, we're going to need 'em. 
+* Code. You bet. 
     {% highlight Python %}
   def dot_product(v1, v2):
     # v1, v2 are lists
@@ -53,6 +58,9 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
         result = sum(map(lambda x: x[0] * x[1], zip(v1, v2)))
     return result
   {% endhighlight %}
+
+* Citations. Here are some papers I co-authored {% cite frontiers_density_tree DBLP_journals_corr_abs-1906-06852 %} and a software I maintain {% cite compactem_software %}.
+
 * Tables. Basic. _Just-in-case-I-need-them-but-I-really-don't-think-I-need-them._
 
   |-----------------+------------+-----------------+----------------|
@@ -65,9 +73,7 @@ Now for some quick tests to see if this platform holds up. Grouping them here, s
 
 During my research to move, I discovered, quite to my surprise, that having a reliable comment system is something of a challenge. _In 2017_. I mean in a few years I could be sitting in my self-driving car (Update in 2022: yeah, this dated well.) and worrying about comment systems.
 
-Either platforms have their own systems tied to them (like blogger) or there are third party plug-n-play systems like [Disqus](https://disqus.com/) and [Discourse](https://www.discourse.org/). Maybe I shouldn’t bundle them together since Disqus receives a lot of hate (albeit easy to set up), while Discourse receives more of critique for their idiosyncratic system, if that: many people seem to like it. Personally, I almost like it. 
-
-There are several self-hosted solutions in this category too, and I am going to try one of those: [Isso](https://posativ.org/isso/). Will take a while to get it running I suppose. I’ve had this small-ish Linode server running forever, for which I convince myself to pay as an emergency back-up machine. You know, for times when I'd need to save the world by running a few experiments, and I really don't want to delay imminent glory by doing stupid things like looking for machines to run them on. You would be surprised to know that need has never come up. So it better get to hosting some comments if it wants me to keep paying for it. 
+More updates from 2022: When I had initially moved to GitHub pages, commenting systems left much to be desired. I did have [Talkyard](https://www.talkyard.io/) on here for a while, which is a nifty system. But now we have options like [utterances](https://utteranc.es/) and [giscus](https://giscus.app/), which feel like a more natural fit for something that's hosted on GitHub. I am going to integrate one of them soon.
 
 See you later then?
 <br>
@@ -76,5 +82,10 @@ See you later then?
  _  _  _  _
 <br>
 
+{:footnotes} 
+
 [^1]: If that link doesn’t work, it means I have managed to miraculously overcome my laziness and migrated all my posts. But don’t worry, that’s not bound to happen anytime soon.
-[^2]: As of writing this post. Check the "About" section for details and updates.
+
+
+**References**
+{% bibliography --cited %}

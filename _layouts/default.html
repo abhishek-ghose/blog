@@ -2,9 +2,9 @@
 <html lang="{{ page.lang | default: site.lang | default: "en" }}">
 
 {% if site.posts.first.googlewebfonts %}
-  <link href='http://fonts.googleapis.com/css?family={{ site.posts.first.googlewebfonts }}' rel='stylesheet'>
+  <link href='https://fonts.googleapis.com/css?family={{ site.posts.first.googlewebfonts }}' rel='stylesheet'>
 {% elsif page.googlewebfonts %}
-  <link href='http://fonts.googleapis.com/css?family={{ page.googlewebfonts }}' rel='stylesheet'>
+  <link href='https://fonts.googleapis.com/css?family={{ page.googlewebfonts }}' rel='stylesheet'>
 {% endif %}
 
   {% include head.html %}
@@ -19,8 +19,27 @@
       </div>
     </main>
 
+<<<<<<< HEAD
     {% include footer.html %}
 {% include text-expand.html %}
+=======
+    <script src="https://giscus.app/client.js"
+        data-repo="[ENTER REPO HERE]"
+        data-repo-id="[ENTER REPO ID HERE]"
+        data-category="[ENTER CATEGORY NAME HERE]"
+        data-category-id="[ENTER CATEGORY ID HERE]"
+        data-mapping="pathname"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-theme="light"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+    </script>
+
+    {% include footer.html %}
+    {% include text-expand.html %}
+>>>>>>> e923393a25746f10d652a3e21778a80b216e8b84
   </body>
 
 </html>

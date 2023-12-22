@@ -1,0 +1,3 @@
+https://blog.quipu-strands.com/blog/jekyll/update/2017/04/26/hello-new-blog.html
+https://blog.quipu-strands.com/blog/jekyll/update/2022/04/22/fun_with_GMMs.html
+https://blog.quipu-strands.com/blog/about/
