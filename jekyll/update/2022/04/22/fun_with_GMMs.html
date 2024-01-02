@@ -561,7 +561,7 @@ If I then draw a curve through the heights of these dashed lines - shown in blac
     
 </div>
 
-<p>These GMMs are going to be larger because of both (a) a higher number of dimensions, and (b) a lot more points to model. I am also going to use a larger nunmber of components since there is more information to be learned.</p>
+<p>These GMMs are going to be larger because of both (a) a higher number of dimensions, and (b) a lot more points to model. I am also going to use a larger number of components since there is more information to be learned.</p>
 
 <h3 id="sampling-1">Sampling</h3>
 <p>So we have our 5-dimensional GMM now (trained with \(K=1000\) components this time). We can generate our first set of images by sampling as before: sample a point \((x, y, r, g, b)\), and color the pixel at location \((x,y)\) with the colors \((r,g,b)\). A minor practical detail here is that you would need to clip the \(r,g,b\) sampled values to lie in the right range - because the GMM, not knowing these are colors, might generate values beyond the valid range of <code class="language-plaintext highlighter-rouge">[0, 255]</code>.</p>
