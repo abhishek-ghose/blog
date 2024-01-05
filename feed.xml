@@ -6,12 +6,12 @@
         <link>https://blog.quipu-strands.com</link>
         <atom:link href="https://blog.quipu-strands.com/feed.xml" rel="self" type="application/rss+xml" />
         <description>My thought-recorder.</description>
-        <lastBuildDate>Tue, 02 Jan 2024 16:19:27 -0800</lastBuildDate>
+        <lastBuildDate>Fri, 05 Jan 2024 11:56:17 -0800</lastBuildDate>
         
         <item>
             <title>Fun with GMMs</title>
             <link>
-                https://blog.quipu-strands.com/jekyll/update/2022/04/22/fun_with_GMMs.html
+                https://blog.quipu-strands.com/fun_with_GMMs
             </link>
             <description>
                 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; 
@@ -38,14 +38,14 @@
             </description>
             <pubDate>Fri, 22 Apr 2022 20:00:00 -0700</pubDate>
             <guid>
-                https://blog.quipu-strands.com/jekyll/update/2022/04/22/fun_with_GMMs.html
+                https://blog.quipu-strands.com/fun_with_GMMs
             </guid>
         </item>
         
         <item>
             <title>Hello New Blog!</title>
             <link>
-                https://blog.quipu-strands.com/jekyll/update/2017/04/26/hello-new-blog.html
+                https://blog.quipu-strands.com/hello-new-blog
             </link>
             <description>
                 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; 
@@ -73,7 +73,7 @@
             </description>
             <pubDate>Wed, 26 Apr 2017 08:01:36 -0700</pubDate>
             <guid>
-                https://blog.quipu-strands.com/jekyll/update/2017/04/26/hello-new-blog.html
+                https://blog.quipu-strands.com/hello-new-blog
             </guid>
         </item>
         
