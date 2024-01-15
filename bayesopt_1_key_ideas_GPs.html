@@ -317,7 +317,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 
 <h2 id="comparison-to-gradient-descent-gd">Comparison to Gradient Descent (GD)</h2>
 
-<p>Speaking of GD, let’s compare with it to better conceptually locate BayesOpt. On a minimization problem this time.</p>
+<p>Speaking of GD, let’s compare with it to better conceptually situate BayesOpt. On a minimization problem this time.</p>
 
 <p>In the plots below, the top row shows BayesOpt and vanilla GD minimizing the same function, with the same starting point \(\sim 0.3\), with a budget of \(T=100\) iterations. Points recently visited are both larger and darker. We use up all of \(T\) for BayesOpt but exit early for GD when the minima value doesn’t change appreciably.</p>
 
@@ -495,7 +495,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <p>Hopefully, it starting to look like things are coming together. A few more details should seal the deal:</p>
 <ol>
-  <li>We set \({\color{WildStrawberry}{\mu=0}}\). This is a convenient <em>assumption</em> but works well in practice because (we shall see soon) an effective conditional distribution can be calculated based on the <em>observed values</em>. Some details <a href="https://math.stackexchange.com/a/4030580">here</a>.</li>
+  <li>We set \({\color{WildStrawberry}{\mu=0}}\). This is a convenient <em>assumption</em> but works well in practice because (we shall see soon) an effective conditional distribution can still be calculated based on the <em>observed values</em>. Some details <a href="https://math.stackexchange.com/a/4030580">here</a>.</li>
   <li>Lets start referring to the covariance matrix as the <em>kernel matrix</em> \(K\) to emphasize that it consists of similarity values. \(k()\) itself is known as the <em>kernel function</em>. To rephrase something we saw earlier, \({\color{WildStrawberry}{K_{ij}}}=k(z_i, z_j)\), where \(z\) comes from one of \(X\),  \(X^*\) or \(\tilde{X}\), based on the positions \(i\) and \(j\).</li>
   <li>What is an example of a kernel function? A very common example is the <em>Radial Basis Function (RBF)</em> kernel \({\color{WildStrawberry}{k(z_i, z_j) = e^{-\vert\vert z_i-z_j \vert\vert^2/(2L^2)}}}\). If \(z_i\) and \(z_j\) are close, say, \({\color{WildStrawberry}{\vert\vert z_i-z_j \vert\vert \approx 0}}\), then we’ve \({\color{WildStrawberry}{k(z_i, z_j) \approx 1}}\) (for a fixed \(L\)). On the other hand, if \({\color{WildStrawberry}{\vert\vert z_i-z_j \vert\vert \to \infty}}\), then \({\color{WildStrawberry}{k(z_i, z_j) \to 0}}\). This is how we would expect similarities to behave. Here \({\color{WildStrawberry}{L}}\) is known as the <em>length scale</em>, and we’ll explain its role soon. Of course, there are many other kernels, but we’ll use the RBF kernel in our examples here. For others, <a href="https://www.cs.toronto.edu/~duvenaud/cookbook/">this is a good reference</a>.</li>
   <li>We’ll think of \(K\) as being partitioned into four sections based on the data among which similarities are computed. For example, the partition \(K_{XX^*}\) implies this submatrix contains similarities between instances in \(X\) and \(X^*\). This is shown below.</li>
@@ -692,8 +692,11 @@ As before, let test data be \(X^* \in \mathbb{R}^{M \times d}\), \(Y^* \in \math
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">y_star</span></code></pre></figure>
 
-<p>This is it. Really. The above code is training, prediction and prediction probabilities all rolled into one.
-Do we want to take it out for a spin? Of course we do! Let’s generate some data on a sine curve, and sample some functions.</p>
+<p>This is it. Really. The above code is training, prediction and prediction probabilities all rolled into one.</p>
+
+<p>Something to note here is that because of practical issues with numerical stability, such as those that might arise in calculating the covariance matrix, an alternative is to sample from the standard Normal and adjust the output later (for an example, see how the <a href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky decomposition</a> is used  <a href="https://youtu.be/4vGiHC35j9s?si=w4iDRlLPSsZJ1jhy&amp;t=3809">here</a>).</p>
+
+<p>Do we want to take it out for a spin? Of course we do! Let’s generate some data on a sine curve, and sample some functions.</p>
 
 <figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c1"># NOTE: please ensure previous imports and the gp_predict() function
 # are available to this code!
@@ -755,7 +758,7 @@ Do we want to take it out for a spin? Of course we do! Let’s generate some dat
 
 <hr style="height: 50px; border: 0; box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);" />
 
-<p>We looked at one critical ingredient of GPs here - the surrogate model using GPs. We’ll see the other critical component - acquisition functions - in the next post. That also contains a list of reference material at the end. See you there!</p>
+<p>We looked at one critical ingredient of BayesOpt here - the surrogate model using GPs. We’ll see the other critical component - acquisition functions - in the next post. That also contains a list of reference material at the end. See you there!</p>
 
 <h2 id="references">References</h2>
 <ol class="bibliography"><li><span id="bayesopt_is_superior">Turner, R., Eriksson, D., McCourt, M., Kiili, J., Laaksonen, E., Xu, Z., &amp; Guyon, I. (2021). Bayesian Optimization is Superior to Random Search for Machine Learning Hyperparameter Tuning: Analysis of the Black-Box Optimization Challenge 2020. In H. J. Escalante &amp; K. Hofmann (Eds.), <i>Proceedings of the NeurIPS 2020 Competition and Demonstration Track</i> (Vol. 133, pp. 3–26). PMLR. https://proceedings.mlr.press/v133/turner21a.html</span>

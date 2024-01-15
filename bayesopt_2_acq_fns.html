@@ -117,7 +117,7 @@
     
 </div>
 
-<p>This post continues our discussion on GPs. This is <strong>part-2 of a two-part series</strong>. 
+<p>This post continues our discussion on BayesOpt. This is <strong>part-2 of a two-part series</strong>. 
 Now we take a look at the other pillar BayesOpt rests on: acquisition functions. My goal is to provide a flavor by looking at a few of them. I’ll go into depth for a couple; this would help us appreciate the role of GPs in conveniently calculating acquistion values. For the rest I’ll provide an overview.</p>
 
 <ul id="markdown-toc">
@@ -225,6 +225,9 @@ Using Standard Normal: 0.0004
 </code></pre></div></div>
 
 <p>Using the standard Normal is almost <strong>1400x faster</strong>! You can verify the computed values are identical -  this is not shown above.</p>
+
+<p>Another reason is that because of numerical stability issues, working with the standard Normal, and then adusting the output post-hoc, might be easier. We had encountered this idea in the previous post wrt the GP code.</p>
+
 <hr style="height:1px;border-width:0;background-color:#EE2967" />
 <p><br /></p>
 
@@ -547,7 +550,7 @@ and the standard Normal.</p>
     <span class="n">res</span> <span class="o">=</span> <span class="o">-</span><span class="n">a</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">b</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="p">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span><span class="o">*</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="mf">2.7</span>
     <span class="k">return</span> <span class="n">res</span></code></pre></figure>
 
-<p>Finally, this is how we might visualize what our optimizer did:</p>
+<p>Finally, this is how we might visualize BayesOpt’s trajectory:</p>
 
 <figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c1"># Please ensure that this is in the namespace as the other
 # stuff in this section! In other words, copy-paste this in the same
@@ -638,16 +641,16 @@ This is the output of the above code:</p>
 
 <p>We’re finally at the end of our (somewhat long) discussion of BayesOpt. One way to think of BayesOpt is as a clever and benign middleman that effectively converts black-box optimizers like CMA-ES (for auxilliary optimization) to being sample efficient, by standing between them and the real-world, and supplying them hallucinated functions from the surrogate model. The evaluation-hungry auxilliary optimizers can run wild on these computationally cheap-to-evaluate functions. All this while BayesOpt observes them, and relays important information to and from the expensive real-world function. Torturing this metaphor, you might wonder, “Hey, this seems like a fairly general way to compute other properties of functions, not just optima!”. And you’d be right - this is exactly the kind of extension <em>InfoBAX</em> <a class="citation" href="#infobax">(Neiswanger et al., 2021)</a> proposes.</p>
 
-<p>While we looked at the cannonical versions of BayesOpt, I’d point out that because of the plug-and-play nature of the framework - you can replace one or more of the following: surrogate model, acquisition function, kernel - BayesOpt is extremely versatile. It has been adapted to combinatorial search in discrete structured spaces <a class="citation" href="#pmlr-v80-baptista18a">(Baptista &amp; Poloczek, 2018; Deshwal et al., 2020; Deshwal &amp; Doppa, 2021)</a>, parallelization <a class="citation" href="#pmlr-v84-kandasamy18a">(Kandasamy et al., 2018)</a>, sparsity <a class="citation" href="#10.5555/3020948.3021002">(McIntire et al., 2016; Liu et al., 2023)</a>. The list of applications is impressively diverse - from hyperparameter optimization to plasma control in nuclear fusion <a class="citation" href="#mehta2022an">(Mehta et al., 2022)</a>.</p>
+<p>While we looked at the cannonical versions of BayesOpt, I’d point out that because of the plug-and-play nature of the framework - you can replace one or more of the following: surrogate model, acquisition function, kernel - BayesOpt is extremely versatile. It has been adapted to combinatorial search in discrete structured spaces <a class="citation" href="#papenmeier2023bounce">(Papenmeier et al., 2023; Baptista &amp; Poloczek, 2018; Deshwal et al., 2020; Deshwal &amp; Doppa, 2021)</a>, parallelization <a class="citation" href="#RePEc:inm:oropre:v:68:y:2020:i:6:p:1850-1865">(Wang et al., 2020; Kandasamy et al., 2018)</a>, sparsity <a class="citation" href="#10.5555/3020948.3021002">(McIntire et al., 2016; Liu et al., 2023)</a> and used with Neural Networks as the surrogate model <a class="citation" href="#pmlr-v37-snoek15">(Snoek et al., 2015; Springenberg et al., 2016)</a>. The list of applications is impressively diverse - from hyperparameter optimization to plasma control in nuclear fusion <a class="citation" href="#mehta2022an">(Mehta et al., 2022)</a>. The preamble to the part 1 post lists some more.</p>
 
-<p>So what’s this about a pet peeve? Well, consider the case of hyperparameter optimization. We know BayesOpt works empirically, but BayesOpt has parameters too (these could be kernel, surrogate model or acquisition function parameters) - why is tuning them not necessary, or to put it optmistically, how do know that the underlying problem is insensitive to BayesOpt’s parameters? What’s stopping me from slapping on another BayesOpt algo on top of the first to tune <em>its</em> parameters, and then another on top of that one, and so on. I feel like there is place for some results like the <a href="https://en.wikipedia.org/wiki/No_free_lunch_theorem">No Free Lunch theorem</a> in this area as well.</p>
+<p>So what’s this about a pet peeve? Well, consider the case of hyperparameter optimization. We know BayesOpt works empirically, but BayesOpt has parameters too (these could be kernel, surrogate model or acquisition function parameters) - why is tuning them not necessary, or to put it optmistically, how do know that the underlying problem is insensitive to BayesOpt’s parameters? What’s stopping me from slapping on another BayesOpt algo on top of the first to tune <em>its</em> parameters, and then another on top of that one, and so on. It seems to me that there is place for theoretical results like the <a href="https://en.wikipedia.org/wiki/No_free_lunch_theorem">No Free Lunch theorem</a> in this area.</p>
 
 <p>Anyway, notwithstanding that, this is an exciting area!</p>
 
 <p>If you’re picking up BayesOpt, I’d recommend these resources:</p>
 <ul>
-  <li>Gaussian Processes - I like <a href="https://www.youtube.com/watch?v=92-98SYOdlY">this talk</a> by Richard Turner (the first 30 min are quite hepful). Nando De Freitas also a <a href="https://www.youtube.com/watch?v=4vGiHC35j9s">great talk</a> on GPs where he has some code examples.</li>
-  <li>Bayesian Optimization - Nando De Freitas also has a <a href="https://www.youtube.com/watch?v=vz3D36VXefI">great talk</a> on BayesOpt. I also recommend <a href="https://ieeexplore.ieee.org/document/7352306">this</a> popular tutorial <a class="citation" href="#bayesopt_tutorial">(Shahriari et al., 2016)</a>. I came across <a href="https://bayesoptbook.com/">this book</a> recently and I found it helpful <a class="citation" href="#garnett_bayesoptbook_2023">(Garnett, 2023)</a>. <a href="https://www.youtube.com/watch?v=C5nqEHpdyoE">This talk</a> by Matthew Hoffman is also quite good.</li>
+  <li>Gaussian Processes - I like <a href="https://www.youtube.com/watch?v=92-98SYOdlY">this talk</a> by Richard Turner (the first 30 min are quite helpful). Nando De Freitas also a <a href="https://www.youtube.com/watch?v=4vGiHC35j9s">great talk</a> on GPs where he has some code examples.</li>
+  <li>Bayesian Optimization - Nando De Freitas also has a <a href="https://www.youtube.com/watch?v=vz3D36VXefI">great talk</a> on BayesOpt. I also recommend <a href="https://ieeexplore.ieee.org/document/7352306">this</a> popular tutorial <a class="citation" href="#bayesopt_tutorial">(Shahriari et al., 2016)</a>. I came across <a href="https://bayesoptbook.com/">this book</a> recently and I found it helpful <a class="citation" href="#garnett_bayesoptbook_2023">(Garnett, 2023)</a>. <a href="https://www.youtube.com/watch?v=C5nqEHpdyoE">This talk</a> from UAI-2018 by Matthew Hoffman is also quite good.</li>
 </ul>
 
 <!-- _includes/image.html -->
@@ -741,6 +744,22 @@ This is the output of the above code:</p>
     </div>
 
 </li>
+<li><span id="papenmeier2023bounce">Papenmeier, L., Nardi, L., &amp; Poloczek, M. (2023). Bounce: Reliable High-Dimensional Bayesian Optimization for Combinatorial and Mixed Spaces. <i>Thirty-Seventh Conference on Neural Information Processing Systems</i>. https://openreview.net/forum?id=TVD3wNVH9A</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="papenmeier2023bounce-abstract">
+    
+    </div>
+
+</li>
 <li><span id="pmlr-v80-baptista18a">Baptista, R., &amp; Poloczek, M. (2018). Bayesian Optimization of Combinatorial Structures. In J. Dy &amp; A. Krause (Eds.), <i>Proceedings of the 35th International Conference on Machine Learning</i> (Vol. 80, pp. 462–471). PMLR. https://proceedings.mlr.press/v80/baptista18a.html</span>
     
 
@@ -789,6 +808,22 @@ This is the output of the above code:</p>
     </div>
 
 </li>
+<li><span id="RePEc:inm:oropre:v:68:y:2020:i:6:p:1850-1865">Wang, J., Clark, S. C., Liu, E., &amp; Frazier, P. I. (2020). Parallel Bayesian Global Optimization of Expensive Functions. <i>Operations Research</i>, <i>68</i>(6), 1850–1865. https://doi.org/10.1287/opre.2019.1966</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="RePEc:inm:oropre:v:68:y:2020:i:6:p:1850-1865-abstract">
+    
+    </div>
+
+</li>
 <li><span id="pmlr-v84-kandasamy18a">Kandasamy, K., Krishnamurthy, A., Schneider, J., &amp; Poczos, B. (2018). Parallelised Bayesian Optimisation via Thompson Sampling. In A. Storkey &amp; F. Perez-Cruz (Eds.), <i>Proceedings of the Twenty-First International Conference on Artificial Intelligence and Statistics</i> (Vol. 84, pp. 133–142). PMLR. https://proceedings.mlr.press/v84/kandasamy18a.html</span>
     
 
@@ -833,6 +868,38 @@ This is the output of the above code:</p>
     
         
     <div class="dropDownAbstract" id="pmlr-v206-liu23b-abstract">
+    
+    </div>
+
+</li>
+<li><span id="pmlr-v37-snoek15">Snoek, J., Rippel, O., Swersky, K., Kiros, R., Satish, N., Sundaram, N., Patwary, M., Prabhat, M., &amp; Adams, R. (2015). Scalable Bayesian Optimization Using Deep Neural Networks. In F. Bach &amp; D. Blei (Eds.), <i>Proceedings of the 32nd International Conference on Machine Learning</i> (Vol. 37, pp. 2171–2180). PMLR. https://proceedings.mlr.press/v37/snoek15.html</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="pmlr-v37-snoek15-abstract">
+    
+    </div>
+
+</li>
+<li><span id="NIPS2016_a96d3afe">Springenberg, J. T., Klein, A., Falkner, S., &amp; Hutter, F. (2016). Bayesian Optimization with Robust Bayesian Neural Networks. In D. Lee, M. Sugiyama, U. Luxburg, I. Guyon, &amp; R. Garnett (Eds.), <i>Advances in Neural Information Processing Systems</i> (Vol. 29). Curran Associates, Inc. https://proceedings.neurips.cc/paper_files/paper/2016/file/a96d3afec184766bfeca7a9f989fc7e7-Paper.pdf</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="NIPS2016_a96d3afe-abstract">
     
     </div>
 

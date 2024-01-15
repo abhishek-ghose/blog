@@ -6,7 +6,7 @@
         <link>https://blog.quipu-strands.com</link>
         <atom:link href="https://blog.quipu-strands.com/feed.xml" rel="self" type="application/rss+xml" />
         <description>My thought-recorder.</description>
-        <lastBuildDate>Mon, 15 Jan 2024 01:18:25 -0800</lastBuildDate>
+        <lastBuildDate>Mon, 15 Jan 2024 09:07:01 -0800</lastBuildDate>
         
         <item>
             <title>Bayesian Optimization, Part 2: Acquisition Functions</title>
@@ -35,7 +35,7 @@
     
 &lt;/div&gt;
 
-&lt;p&gt;This post continues our discussion on GPs. This is &lt;strong&gt;part-2 of a two-part series&lt;/strong&gt;. 
+&lt;p&gt;This post continues our discussion on BayesOpt. This is &lt;strong&gt;part-2 of a two-part series&lt;/strong&gt;. 
 Now we take a look at the other pillar BayesOpt rests on: acquisition functions. My goal is to provide a flavor by looking at a few of them. I’ll go into depth for a couple; this would help us appreciate the role of GPs in conveniently calculating acquistion values. For the rest I’ll provide an overview.&lt;/p&gt;
 
 &lt;ul id=&quot;markdown-toc&quot;&gt;
@@ -43,7 +43,7 @@ Now we take a look at the other pillar BayesOpt rests on: acquisition functions.
       &lt;li&gt;&lt;a href=&quot;#probability-of-improvement&quot; id=&quot;markdown-toc-probability-of-improvement&quot;&gt;Probability of Improvement&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#expected-improvement&quot; id=&quot;markdown-toc-expected-improvement&quot;&gt;Expected Improvement&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#predictive-entropy-search&quot; id=&quot;markdown-toc-predictive-entropy-search&quot;&gt;Predictive Entropy Search&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#max-value-entropy-search&quot; id=&quot;markdown-toc-max-value-entropy-search&quot;&gt;Max-value Entropy Search...
+      &lt;li&gt;&lt;a href=&quot;#max-value-entropy-search&quot; id=&quot;markdown-toc-max-value-entropy-search&quot;&gt;Max-value Entropy S...
             </description>
             <pubDate>Sat, 18 Nov 2023 11:00:00 -0800</pubDate>
             <guid>
