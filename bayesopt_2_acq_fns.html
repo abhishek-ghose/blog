@@ -226,7 +226,7 @@ Using Standard Normal: 0.0004
 
 <p>Using the standard Normal is almost <strong>1400x faster</strong>! You can verify the computed values are identical -  this is not shown above.</p>
 
-<p>Another reason is that because of numerical stability issues, working with the standard Normal, and then adusting the output post-hoc, might be easier. We had encountered this idea in the previous post wrt the GP code.</p>
+<p>Another reason is that because of numerical stability issues, working with the standard Normal, and then adusting the output post-hoc, might be easier. We had encountered this idea in the previous post in the context of the GP code.</p>
 
 <hr style="height:1px;border-width:0;background-color:#EE2967" />
 <p><br /></p>
@@ -235,7 +235,7 @@ Using Standard Normal: 0.0004
 
 <h3 id="expected-improvement">Expected Improvement</h3>
 
-<p>A drawback of PI is that it only looks at the probability of doing better and disregards how much better is this potential improvement. <strong>Expected Improvement (EI)</strong> takes that into account by calculating the average value of the improvement:</p>
+<p>A drawback of PI is that it only looks at the probability of improving and ignores the magnitude of this potential improvement. <strong>Expected Improvement (EI)</strong> takes that into account by calculating the expected value of the improvement:</p>
 
 \[\alpha_{EI}(x) = E_{f(x)}[max(f(x)-f(x^*), 0)]\]
 
@@ -390,14 +390,14 @@ and the standard Normal.</p>
 
 <h3 id="max-value-entropy-search">Max-value Entropy Search</h3>
 
-<p>Even with the reframing, \(\alpha_{PES}\) might be expensive to compute because of the dependence on \(p(\hat{x}^*)\) when \(\mathcal{X}\) is high-dimensional. But if we were to directly model the <em>maximum</em>, i.e., \(\hat{y}^*\), instead of the <em>maximizer</em> \(\hat{x}^*\), we only have an univariate distribution to deal with. This is exactly what <strong>Max-value Entropy Search (MES)</strong> <a class="citation" href="#mes">(Wang &amp; Jegelka, 2017)</a> does (also see related work in <a class="citation" href="#OPES">(Hoffman &amp; Ghahramani, 2016)</a>).</p>
+<p>Even with the reframing, \(\alpha_{PES}\) might be expensive to compute because of the dependence on \(p(\hat{x}^*)\) when \(\mathcal{X}\) is high-dimensional. But if we were to directly model the <em>maximum</em>, i.e., \(\hat{y}^*\), instead of the <em>maximizer</em> \(\hat{x}^*\), we only have an univariate distribution to deal with. This is exactly what <strong>Max-value Entropy Search (MES)</strong> <a class="citation" href="#mes">(Wang &amp; Jegelka, 2017)</a> does (also see related work in <a class="citation" href="#OPES">(Hoffman &amp; Ghahramani, 2016)</a>):</p>
 
 \[\begin{aligned}
     \alpha_{MES}(x) &amp;= I(\{x,y\}, \hat{y}^*;\mathcal{D}) \\
                     &amp;= H[p(y|x,\mathcal{D})] - E_{ p(\hat{y}^*|\mathcal{D})}[H[p(y|x, \hat{y}^*, \mathcal{D})]]
 \end{aligned}\]
 
-<p>The first term is the same as in \(\alpha_{PES}\). However, the expectation is wrt \(p(\hat{y}^*\vert \mathcal{D})\), which is univariate, and thus computationally cheaper to compute than \(p(\hat{x}^* \vert \mathcal{D})\).</p>
+<p>The first term is the same as in \(\alpha_{PES}\). However, in the second term, the expectation is wrt \(p(\hat{y}^*\vert \mathcal{D})\), which is univariate, and thus computationally cheaper to compute than \(p(\hat{x}^* \vert \mathcal{D})\).</p>
 
 <p>Additionally, \(\color{WildStrawberry} p(\hat{y}^*\vert\mathcal{D})\) can be approximated by the <a href="https://en.wikipedia.org/wiki/Gumbel_distribution">Gumbel distribution</a>, which describes the maxima of i.i.d. Gaussians (an assumption that’s not true here but works well in practice).</p>
 
@@ -534,7 +534,7 @@ and the standard Normal.</p>
 
 <p>If I wanted to make this code “production ready”, I would at least modify the following aspects:</p>
 <ul>
-  <li>Compute the kernel incrementally - note that we’re adding only point per iteration, and much of the kernel stays the same.</li>
+  <li>Compute the kernel incrementally - note that we’re adding only point per iteration to \(K_{XX}\).</li>
   <li>Deal with numerical stability issues. This is very common when matrix operations are involved. You see that above in how <code class="language-plaintext highlighter-rouge">variances</code> has been modified, but the right way to do this would be to fix the <code class="language-plaintext highlighter-rouge">cov</code> matrix in <code class="language-plaintext highlighter-rouge">gp_predict()</code> first, which leads to faulty variances.</li>
   <li>And of course, we would need a much better auxilliary optimizer.</li>
 </ul>
@@ -639,18 +639,18 @@ This is the output of the above code:</p>
 
 <h2 id="summary-a-pet-peeve-and-resources">Summary, a Pet Peeve and Resources</h2>
 
-<p>We’re finally at the end of our (somewhat long) discussion of BayesOpt. One way to think of BayesOpt is as a clever and benign middleman that effectively converts black-box optimizers like CMA-ES (for auxilliary optimization) to being sample efficient, by standing between them and the real-world, and supplying them hallucinated functions from the surrogate model. The evaluation-hungry auxilliary optimizers can run wild on these computationally cheap-to-evaluate functions. All this while BayesOpt observes them, and relays important information to and from the expensive real-world function. Torturing this metaphor, you might wonder, “Hey, this seems like a fairly general way to compute other properties of functions, not just optima!”. And you’d be right - this is exactly the kind of extension <em>InfoBAX</em> <a class="citation" href="#infobax">(Neiswanger et al., 2021)</a> proposes.</p>
+<p>We’re finally at the end of our (somewhat long) discussion of BayesOpt. One way to think of BayesOpt is as a clever and benign middleman that effectively converts black-box optimizers like CMA-ES (for auxilliary optimization) to being sample efficient, by standing between them and the real-world, and supplying them hallucinated functions from the surrogate model. The evaluation-hungry auxilliary optimizers can run wild on these computationally cheap-to-evaluate functions. All this while BayesOpt observes them, and relays important information to and from the expensive real-world function. Torturing this metaphor, you might wonder, “Hey, this seems like a fairly general way to compute other properties of functions, not just optima! Just replace CMA-ES with an arbitrary algorithm!”. And you’d be right - this is exactly the kind of extension <em>InfoBAX</em> <a class="citation" href="#infobax">(Neiswanger et al., 2021)</a> proposes.</p>
 
 <p>While we looked at the cannonical versions of BayesOpt, I’d point out that because of the plug-and-play nature of the framework - you can replace one or more of the following: surrogate model, acquisition function, kernel - BayesOpt is extremely versatile. It has been adapted to combinatorial search in discrete structured spaces <a class="citation" href="#papenmeier2023bounce">(Papenmeier et al., 2023; Baptista &amp; Poloczek, 2018; Deshwal et al., 2020; Deshwal &amp; Doppa, 2021)</a>, parallelization <a class="citation" href="#RePEc:inm:oropre:v:68:y:2020:i:6:p:1850-1865">(Wang et al., 2020; Kandasamy et al., 2018)</a>, sparsity <a class="citation" href="#10.5555/3020948.3021002">(McIntire et al., 2016; Liu et al., 2023)</a> and used with Neural Networks as the surrogate model <a class="citation" href="#pmlr-v37-snoek15">(Snoek et al., 2015; Springenberg et al., 2016)</a>. The list of applications is impressively diverse - from hyperparameter optimization to plasma control in nuclear fusion <a class="citation" href="#mehta2022an">(Mehta et al., 2022)</a>. The preamble to the part 1 post lists some more.</p>
 
-<p>So what’s this about a pet peeve? Well, consider the case of hyperparameter optimization. We know BayesOpt works empirically, but BayesOpt has parameters too (these could be kernel, surrogate model or acquisition function parameters) - why is tuning them not necessary, or to put it optmistically, how do know that the underlying problem is insensitive to BayesOpt’s parameters? What’s stopping me from slapping on another BayesOpt algo on top of the first to tune <em>its</em> parameters, and then another on top of that one, and so on. It seems to me that there is place for theoretical results like the <a href="https://en.wikipedia.org/wiki/No_free_lunch_theorem">No Free Lunch theorem</a> in this area.</p>
+<p>So what’s this about a pet peeve? Well, consider the case of hyperparameter optimization. We know BayesOpt works empirically, but BayesOpt has parameters too (these could be kernel, surrogate model or acquisition function parameters) - why is tuning them not necessary, or to put it optmistically, how do know that the underlying problem is insensitive to BayesOpt’s parameters? What’s stopping me from slapping on another BayesOpt algo on top of the first to tune <em>its</em> parameters, and then another on top of that one, and so on? It seems to me that there is place for theoretical results like the <a href="https://en.wikipedia.org/wiki/No_free_lunch_theorem">No Free Lunch theorem</a> in this area.</p>
 
 <p>Anyway, notwithstanding that, this is an exciting area!</p>
 
 <p>If you’re picking up BayesOpt, I’d recommend these resources:</p>
 <ul>
   <li>Gaussian Processes - I like <a href="https://www.youtube.com/watch?v=92-98SYOdlY">this talk</a> by Richard Turner (the first 30 min are quite helpful). Nando De Freitas also a <a href="https://www.youtube.com/watch?v=4vGiHC35j9s">great talk</a> on GPs where he has some code examples.</li>
-  <li>Bayesian Optimization - Nando De Freitas also has a <a href="https://www.youtube.com/watch?v=vz3D36VXefI">great talk</a> on BayesOpt. I also recommend <a href="https://ieeexplore.ieee.org/document/7352306">this</a> popular tutorial <a class="citation" href="#bayesopt_tutorial">(Shahriari et al., 2016)</a>. I came across <a href="https://bayesoptbook.com/">this book</a> recently and I found it helpful <a class="citation" href="#garnett_bayesoptbook_2023">(Garnett, 2023)</a>. <a href="https://www.youtube.com/watch?v=C5nqEHpdyoE">This talk</a> from UAI-2018 by Matthew Hoffman is also quite good.</li>
+  <li>Bayesian Optimization - Nando De Freitas has a <a href="https://www.youtube.com/watch?v=vz3D36VXefI">talk</a> on BayesOpt. I also recommend <a href="https://ieeexplore.ieee.org/document/7352306">this</a> popular tutorial <a class="citation" href="#bayesopt_tutorial">(Shahriari et al., 2016)</a>. I came across <a href="https://bayesoptbook.com/">this book</a> recently and I found it helpful <a class="citation" href="#garnett_bayesoptbook_2023">(Garnett, 2023)</a>. <a href="https://www.youtube.com/watch?v=C5nqEHpdyoE">This talk</a> from UAI-2018 by Matthew Hoffman is quite good.</li>
 </ul>
 
 <!-- _includes/image.html -->
