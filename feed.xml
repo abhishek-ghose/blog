@@ -6,7 +6,95 @@
         <link>https://blog.quipu-strands.com</link>
         <atom:link href="https://blog.quipu-strands.com/feed.xml" rel="self" type="application/rss+xml" />
         <description>My thought-recorder.</description>
-        <lastBuildDate>Fri, 05 Jan 2024 11:56:17 -0800</lastBuildDate>
+        <lastBuildDate>Mon, 15 Jan 2024 01:18:25 -0800</lastBuildDate>
+        
+        <item>
+            <title>Bayesian Optimization, Part 2: Acquisition Functions</title>
+            <link>
+                https://blog.quipu-strands.com/bayesopt_2_acq_fns
+            </link>
+            <description>
+                &lt;script type=&quot;text/x-mathjax-config&quot;&gt; 
+    MathJax.Hub.Config({ 
+        &quot;HTML-CSS&quot;: { scale: 100, linebreaks: { automatic: true } }, 
+        SVG: { linebreaks: { automatic:true } }, 
+        displayAlign: &quot;center&quot; });
+&lt;/script&gt;
+
+&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot;&gt;
+
+&lt;/script&gt;
+
+&lt;!-- _includes/image.html --&gt;
+&lt;div class=&quot;image-wrapper&quot;&gt;
+    
+        &lt;img src=&quot;/assets/bayesopt/bayesopt_cover.png&quot; alt=&quot;test&quot; /&gt;
+    
+    
+        &lt;p class=&quot;image-caption&quot;&gt;&lt;/p&gt;
+    
+&lt;/div&gt;
+
+&lt;p&gt;This post continues our discussion on GPs. This is &lt;strong&gt;part-2 of a two-part series&lt;/strong&gt;. 
+Now we take a look at the other pillar BayesOpt rests on: acquisition functions. My goal is to provide a flavor by looking at a few of them. I’ll go into depth for a couple; this would help us appreciate the role of GPs in conveniently calculating acquistion values. For the rest I’ll provide an overview.&lt;/p&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#acquisition-functions&quot; id=&quot;markdown-toc-acquisition-functions&quot;&gt;Acquisition Functions&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#probability-of-improvement&quot; id=&quot;markdown-toc-probability-of-improvement&quot;&gt;Probability of Improvement&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#expected-improvement&quot; id=&quot;markdown-toc-expected-improvement&quot;&gt;Expected Improvement&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#predictive-entropy-search&quot; id=&quot;markdown-toc-predictive-entropy-search&quot;&gt;Predictive Entropy Search&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#max-value-entropy-search&quot; id=&quot;markdown-toc-max-value-entropy-search&quot;&gt;Max-value Entropy Search...
+            </description>
+            <pubDate>Sat, 18 Nov 2023 11:00:00 -0800</pubDate>
+            <guid>
+                https://blog.quipu-strands.com/bayesopt_2_acq_fns
+            </guid>
+        </item>
+        
+        <item>
+            <title>Bayesian Optimization, Part 1: Key Ideas, Gaussian Processes</title>
+            <link>
+                https://blog.quipu-strands.com/bayesopt_1_key_ideas_GPs
+            </link>
+            <description>
+                &lt;script type=&quot;text/x-mathjax-config&quot;&gt; 
+    MathJax.Hub.Config({ 
+        &quot;HTML-CSS&quot;: { scale: 100, linebreaks: { automatic: true } }, 
+        SVG: { linebreaks: { automatic:true } }, 
+        displayAlign: &quot;center&quot; });
+&lt;/script&gt;
+
+&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot;&gt;
+
+&lt;/script&gt;
+
+&lt;!-- _includes/image.html --&gt;
+&lt;div class=&quot;image-wrapper&quot;&gt;
+    
+        &lt;img src=&quot;/assets/bayesopt/bayesopt_cover.png&quot; alt=&quot;test&quot; /&gt;
+    
+    
+        &lt;p class=&quot;image-caption&quot;&gt;The real reason I like Bayesian Optimization: lots of pretty pictures!&lt;/p&gt;
+    
+&lt;/div&gt;
+
+&lt;p&gt;If I wanted to sell you on the idea of &lt;em&gt;Bayesian Optimization (BayesOpt)&lt;/em&gt;, I’d just list some of its applications:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Hyperparameter Optimization (HPO) &lt;a class=&quot;citation&quot; href=&quot;#bayesopt_is_superior&quot;&gt;(Turner et al., 2021)&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Neural Architecture Search (NAS) &lt;a class=&quot;citation&quot; href=&quot;#white2019bananas&quot;&gt;(White et al., 2021)&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Molecule discovery &lt;a class=&quot;citation&quot; href=&quot;#LSBO_paper&quot;&gt;(Gómez-Bombarelli et al., 2018)&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Liquid chromatography &lt;a class=&quot;citation&quot; href=&quot;#BOELRIJK2023340789&quot;&gt;(Boelrijk et al., 2023)&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Creating low-carbon concrete &lt;a class=&quot;citation&quot; href=&quot;#ament2023sustainable&quot;&gt;(Ament et al., 2023)&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Plasma control in nuclear fusion &lt;a class=&quot;citation&quot; href=&quot;#mehta2022an&quot;&gt;(Mehta et al., 2022)&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;My own usage have been tamer, but also varied: I’ve used it to (a) learn distri...
+            </description>
+            <pubDate>Sat, 18 Nov 2023 11:00:00 -0800</pubDate>
+            <guid>
+                https://blog.quipu-strands.com/bayesopt_1_key_ideas_GPs
+            </guid>
+        </item>
         
         <item>
             <title>Fun with GMMs</title>

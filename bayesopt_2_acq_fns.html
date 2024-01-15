@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+  <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Bayesian Optimization, Part 2: Acquisition Functions</title>
+  <meta name="description" content="">
+  <link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Alegreya" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Raleway:300" rel="stylesheet" type='text/css'> 
+  <link href="https://fonts.googleapis.com/css?family=PT+Serif|Work+Sans:300" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,800;1,800&family=Raleway:wght@100&display=swap" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap" rel="stylesheet"> 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400&display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://blog.quipu-strands.com/bayesopt_2_acq_fns">
+  <link rel="alternate" type="application/rss+xml" title="A Not-So Primordial Soup" href="/feed.xml">
+  
+  
+</head>
+
+
+  <body>
+
+    <header class="site-header" role="banner">
+
+  <div class="wrapper">
+    
+    
+    <a class="site-title" href="/">A Not-So Primordial Soup</a>
+  
+    
+      <nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+              <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+              <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger">
+          
+            
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+            
+          
+            
+            
+          
+            
+            
+          
+        </div>
+      </nav>
+    
+  </div>
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Bayesian Optimization, Part 2: Acquisition Functions</h1>
+    <p class="post-meta">
+      <time datetime="2023-11-18T11:00:00-08:00" itemprop="datePublished">
+        
+        Created: Nov 18, 2023.    Last major update:
+        Jan 15, 2024. 
+      </time>
+      </p>
+  
+     
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <script type="text/x-mathjax-config"> 
+    MathJax.Hub.Config({ 
+        "HTML-CSS": { scale: 100, linebreaks: { automatic: true } }, 
+        SVG: { linebreaks: { automatic:true } }, 
+        displayAlign: "center" });
+</script>
+
+<script type="text/javascript" async="" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+</script>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/bayesopt_cover.png" alt="test" />
+    
+    
+        <p class="image-caption"></p>
+    
+</div>
+
+<p>This post continues our discussion on GPs. This is <strong>part-2 of a two-part series</strong>. 
+Now we take a look at the other pillar BayesOpt rests on: acquisition functions. My goal is to provide a flavor by looking at a few of them. I’ll go into depth for a couple; this would help us appreciate the role of GPs in conveniently calculating acquistion values. For the rest I’ll provide an overview.</p>
+
+<ul id="markdown-toc">
+  <li><a href="#acquisition-functions" id="markdown-toc-acquisition-functions">Acquisition Functions</a>    <ul>
+      <li><a href="#probability-of-improvement" id="markdown-toc-probability-of-improvement">Probability of Improvement</a></li>
+      <li><a href="#expected-improvement" id="markdown-toc-expected-improvement">Expected Improvement</a></li>
+      <li><a href="#predictive-entropy-search" id="markdown-toc-predictive-entropy-search">Predictive Entropy Search</a></li>
+      <li><a href="#max-value-entropy-search" id="markdown-toc-max-value-entropy-search">Max-value Entropy Search</a></li>
+    </ul>
+  </li>
+  <li><a href="#minimal-code-for-bayesopt" id="markdown-toc-minimal-code-for-bayesopt">Minimal Code for BayesOpt</a></li>
+  <li><a href="#summary-a-pet-peeve-and-resources" id="markdown-toc-summary-a-pet-peeve-and-resources">Summary, a Pet Peeve and Resources</a></li>
+  <li><a href="#references" id="markdown-toc-references">References</a></li>
+</ul>
+
+<h2 id="acquisition-functions">Acquisition Functions</h2>
+
+<p><br /></p>
+<hr style="height:1px;border-width:0;background-color:#EE2967" />
+
+<p><span style="color:#EE2967"><strong>Note</strong></span>:</p>
+<ul>
+  <li><span style="color:#EE2967">Change in notation</span>: \(x^*\) and \(y^*\) would refer to the current maxima (or minima) in this section.</li>
+  <li>For brevity, we’ll denote an acquisition function by \(\alpha\).</li>
+  <li>We’ll refer to the Gaussian parameters at an innput \(x\) as \(\mu(x)\) and \(\sigma(x)\).</li>
+  <li>We’ll refer to the Normal distribution with \(0\) mean and unit variance, \(\mathcal{N}(0, 1)\) as the <em>standard Normal</em>. Additionally, for the Standard Normal, we’ll use:
+    <ul>
+      <li>\(\varphi(z)\) to denote the <em>Probability Density Function (pdf)</em>: \(\frac{e^{-z^2/2}}{\sqrt{2\pi}}\).</li>
+      <li>\(\Phi(z)\) for  the <em>Cumulative Distribution Function (CDF)</em>: \(\frac{1}{\sqrt{2\pi}} \int_{-\infty}^z e^{-t^2/2} dt\).</li>
+    </ul>
+  </li>
+  <li>A property that we’ll end up using is if \(x\sim \mathcal{N}(\mu, \sigma)\), then \(z \sim \mathcal{N}(0, 1)\), where \(z=\frac{x-\mu}{\sigma}\).</li>
+</ul>
+<hr style="height:1px;border-width:0;background-color:#EE2967" />
+<p><br /></p>
+
+<h3 id="probability-of-improvement">Probability of Improvement</h3>
+
+<p><strong>Probability of Improvement (PI)</strong> is a good place to start because its intuitive. As the name suggests, at a location \(x\), this calculates the probability of the corresponding \(y\) being greater than the current maxima \(y^*\). Since we’ve a Gaussian distribution of possible output values at \(x\), thanks to the GP, this is calculable in closed form. The image below shows the area under the distribution we’re interested in.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/PI_conceptual.png" alt="test" />
+    
+    
+        <p class="image-caption"></p>
+    
+</div>
+
+<p>Mathematically, this is what we want to compute at a given \(x\):</p>
+
+\[\require{color} \alpha_{PI}(x) = p(f(x) &gt; f(x^*))\]
+
+<p>In a GP, since \(f(x) \sim \mathcal{N}(\mu(x), \sigma^2(x))\), this can be expressed this in closed form. We will use a change of variables, where \(z=\frac{f(x)-\mu(x)}{\sigma(x)}\) and \(z \sim \mathcal{N}(0,1)\).</p>
+
+\[\begin{aligned}
+    \alpha_{PI}(x) &amp;= p(f(x) &gt; f(x^*)) \\
+          &amp;=p(z\sigma(x) + \mu(x) &gt; f(x^*)) \\
+          &amp;=p\Big(z &gt; \frac{f(x^*) - \mu(x)}{\sigma(x)}\Big)\\
+          &amp;=p\Big(z &lt; \frac{\mu(x) - f(x^*)}{\sigma(x)}\Big)\\
+          &amp;=\Phi\Big(\frac{\mu(x) - f(x^*)}{\sigma(x)}\Big)
+\end{aligned}\]
+
+<p>This is very convenient since \(\mu(x)\) and \(\sigma(x)\) come from the GP, and \(f(x^*)\) is the current maxima. \(\Phi\) is easily available, e.g., as the <code class="language-plaintext highlighter-rouge">cdf</code> function in <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html">scipy</a>.</p>
+
+<p><br /></p>
+<hr style="height:1px;border-width:0;background-color:#EE2967" />
+
+<p><span style="color:#EE2967"><strong>Why Standard Normal?</strong></span></p>
+
+<p>Something you might wonder about is why did we bother converting to the standard Normal. Afterall, most languages, including Python/scipy, allow you to create arbitrary Normals, and coding that should have been more convenient.</p>
+
+<p>While that’s correct, there is a practical difference in terms of speed. Remember you have to find \(argmax_{x \in \mathcal{X}} \alpha_{PI}(x)\), i.e., \(\alpha_{PI}(x)\) needs to evaluated for a lot of \(x\) values. If you instantiate a Normal for each of them, this is going to be slow. Its much faster to use one Normal - the standard Normal here - to process all the data in one shot.</p>
+
+<p>Let me demonstrate. I’ll generate a bunch of random values for means and standard deviations - which we will assume correspond to different \(x\) locations  - and I’ll time \(\alpha_{PI}(x)\) in both ways.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
+<span class="kn">import</span> <span class="nn">timeit</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">current_max</span> <span class="o">=</span> <span class="mf">0.7</span>
+<span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">stdevs</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+<span class="n">different_normals</span> <span class="o">=</span> <span class="s">"""</span><span class="se">\
+</span><span class="s">for m, s in zip(means, stdevs):
+    1- norm.cdf(current_max, m, s)
+"""</span>
+
+<span class="n">standard_normal</span> <span class="o">=</span> <span class="s">"""</span><span class="se">\
+</span><span class="s">norm.cdf((means-current_max)/stdevs, 0, 1)
+"""</span>
+<span class="n">repeat</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="p">.</span><span class="n">timeit</span><span class="p">(</span><span class="n">different_normals</span><span class="p">,</span> <span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">(),</span> <span class="n">number</span><span class="o">=</span><span class="n">repeat</span><span class="p">)</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">timeit</span><span class="p">.</span><span class="n">timeit</span><span class="p">(</span><span class="n">standard_normal</span><span class="p">,</span> <span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">(),</span> <span class="n">number</span><span class="o">=</span><span class="n">repeat</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Using different Normals: </span><span class="si">{</span><span class="n">t1</span><span class="o">/</span><span class="n">repeat</span><span class="p">:.</span><span class="mi">04</span><span class="n">f</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Using Standard Normal: </span><span class="si">{</span><span class="n">t2</span><span class="o">/</span><span class="n">repeat</span><span class="p">:.</span><span class="mi">04</span><span class="n">f</span><span class="si">}</span><span class="s">"</span><span class="p">)</span></code></pre></figure>
+
+<p>Here’s the output:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Using different Normals: 0.5551
+Using Standard Normal: 0.0004
+</code></pre></div></div>
+
+<p>Using the standard Normal is almost <strong>1400x faster</strong>! You can verify the computed values are identical -  this is not shown above.</p>
+<hr style="height:1px;border-width:0;background-color:#EE2967" />
+<p><br /></p>
+
+<hr style="height: 50px; border: 0; box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);" />
+
+<h3 id="expected-improvement">Expected Improvement</h3>
+
+<p>A drawback of PI is that it only looks at the probability of doing better and disregards how much better is this potential improvement. <strong>Expected Improvement (EI)</strong> takes that into account by calculating the average value of the improvement:</p>
+
+\[\alpha_{EI}(x) = E_{f(x)}[max(f(x)-f(x^*), 0)]\]
+
+<p>Note that values lower than the current maxima are thresholded to \(0\).</p>
+
+<p>The difference between EI and PI arises in situations where we have a high chance of incremental improvement (favoured by \(\alpha_{PI}\)) vs a relatively low chance of high improvement (favoured by \(\alpha_{EI}\)). In the plot below we show two Gaussians - imagine them as occuring at different values of \(x\) - with the current max shown with a vertical black solid line. The EI and PI values for each are shown in the legend. As you might expect, when asked to pick between them, PI picks the more peaked one (\(\alpha_{PI}=\)<span style="color:#fc8c2b">0.9784</span>) over the flatter distribution (\(\alpha_{PI}=\)<span style="color:#3181b9">0.9349</span>), while EI picks the latter (\(\alpha_{EI}=\)<span style="color:#fc8c2b">0.5405</span> vs \(\alpha_{EI}=\)<span style="color:#3181b9">2.01</span>). Because of this EI may be seen to be more exploratory. EI is also probably the most popular acquisition function for BayesOpt.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/PI_vs_EI.png" alt="test" />
+    
+    
+        <p class="image-caption"></p>
+    
+</div>
+
+<p>EI can be reduced to a closed form expression too. We’ll again use a change of variables: \(z=\frac{f(x)-\mu(x)}{\sigma(x)}\) and \(z \sim \mathcal{N}(0,1)\). In the transformed space, we’ll specifically use \(z^*\) as a shorthand for \(\frac{f(x^*)-\mu(x)}{\sigma(x)}\).</p>
+
+<p>Let’s begin by changing the variables in our expectation. Note that the variable limits are the same, i.e., \(f(x) \to -\infty \implies z \to -\infty\), and \(f(x) \to \infty \implies z \to \infty\).</p>
+
+<p>Thus:</p>
+
+\[\begin{aligned}
+    \alpha_{EI}(x) &amp;= E_{f(x)}[max(f(x)-f(x^*), 0)]\\
+                    &amp; = \int_{-\infty}^{\infty} max((z\sigma(x) +\mu(x))-(z^*\sigma(x)+\mu(x)), 0) {\color{WildStrawberry}\varphi(z)} dz\\
+                    &amp; = \int_{-\infty}^{\infty} max(z\sigma(x) -z^*\sigma(x), 0) \varphi(z) dz\\
+\end{aligned}\]
+
+<p>Note above that we now can use the standard Normal’s density \({\color{WildStrawberry}{\varphi(z)}}\).
+We get rid of the \(max\) by splitting the integral into explicit ranges partitioned at \(z^*\):</p>
+
+\[\begin{aligned}
+    \alpha_{EI}(x) &amp;= \int_{-\infty}^{z^*} {\color{WildStrawberry}0}\varphi(z)dz + \int_{z^*}^{\infty} \sigma(x)(z-z^*)\varphi(z)dz\\
+    &amp;= \int_{z^*}^{\infty} \sigma(x)z \varphi(z)dz - \int_{z^*}^{\infty} \sigma(x)z^* \varphi(z)dz  
+\end{aligned}\]
+
+<p>Consider the <strong>first term</strong>:</p>
+
+\[\int_{z^*}^{\infty} \sigma(x)z \varphi(z)dz =\sigma(x) {\color{WildStrawberry}z\frac{e^{-z^2/2}}{\sqrt{2\pi}}}\]
+
+<p>This colored part is related to \(\varphi(z)\) in the following way:</p>
+
+\[\frac{d}{dz}\varphi(z)=\frac{d}{dz}\Big( \frac{e^{-z^2/2}}{\sqrt{2\pi}} \Big) = -{\color{WildStrawberry}{z \frac{e^{-z^2/2}}{\sqrt{2\pi}} }}\]
+
+<p>Hence we can simplify the first term in this manner:</p>
+
+\[\begin{aligned}
+\int_{z^*}^{\infty} \sigma(x)z \varphi(z)dz &amp;= \sigma(x) \int_{z^*}^{\infty}  z\frac{e^{-z^2/2}}{\sqrt{2\pi}}\\
+                                    &amp;=\sigma(x)[-\varphi(z)]_{z^*}^\infty\\
+                                    &amp;=\sigma(x) (\varphi(z^*) - \overbrace{\varphi(\infty)}^{\color{WildStrawberry}{\text{this is } 0}})\\
+                                    &amp;=\sigma(x)\varphi(z^*)
+\end{aligned}\]
+
+<p>Now, consider the <strong>second term</strong>:</p>
+
+\[\int_{z^*}^{\infty} \sigma(x)z^* \varphi(z)dz = \overbrace{\sigma(x)z^*}^{\text{constant at an }x} {\color{WildStrawberry}{\int_{z^*}^{\infty}  \varphi(z)dz}}\]
+
+<p>We’ll use the property that the normal is <em>symmetric</em> about its mean:</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/symmetric_normal.png" alt="test" />
+    
+    
+        <p class="image-caption">The areas to left of -1 and the right of 1 - shown shaded - are identical.</p>
+    
+</div>
+
+<p>This allows us to rewrite the limits:</p>
+
+\[{\color{WildStrawberry}{\int_{z^*}^{\infty}  \varphi(z)dz}} = \int_{-\infty}^{-z^*}  \varphi(z)dz = {\color{WildStrawberry}{\Phi(-z^*)}}\]
+
+<p>Thus the second term may be simplified as:</p>
+
+\[\sigma(x)z^* \int_{z^*}^{\infty}  \varphi(z)dz = \sigma(x)z^* {\color{WildStrawberry}{\Phi(-z^*)}}\]
+
+<p><strong>Substituting these into the original formula</strong>, we have:</p>
+
+\[\begin{aligned}
+\alpha_{EI}(x) &amp;= \sigma(x)\varphi(z^*) -  \sigma(x)z^* \Phi(-z^*)\\
+                &amp;= \sigma(x)(\varphi(z^*) - z^* \Phi(-z^*))
+\end{aligned}\]
+
+<p>Again, we have a concise closed-form expression that maybe computed using the GP (note that \(z^*\) needs \(\mu(x)\) too)
+and the standard Normal.</p>
+
+<hr style="height: 50px; border: 0; box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);" />
+
+<h3 id="predictive-entropy-search">Predictive Entropy Search</h3>
+
+<p>I won’t go deep into this and the next acquisition functions, and will only try to provide an intuition.</p>
+
+<p>First, some new notation: \(\hat{x}^*\) and \(\hat{y}^*\) represent the true <em>global</em> maximizer and maximum respectively. This is different from \(x^*\) and \(y^*\), which represent the current quantities based on what’s discovered so far.</p>
+
+<p>One way to value an \(x \in \mathcal{X}\) is in terms of the <em>information gain</em> it provides about the location of the true maximizer \(x^*\). This is <strong>Entropy Search (ES)</strong> <a class="citation" href="#es">(Hennig &amp; Schuler, 2012)</a>:</p>
+
+\[\alpha_{ES}(x) = H[p(\hat{x}^*|\mathcal{D})] - E_{p(y|\mathcal{D})}\Big[H[p(\hat{x}^*|\mathcal{D} \cup \{x,y\})]\Big]\]
+
+<p>Here, \(\mathcal{D}\) are the \((x,y)\) tuples for which we already have evaluations.</p>
+
+<p>You may have encountered this principle of reduction in entropy before, in Decision Trees such as CART, where a simpler version is used to determine node splits.</p>
+
+<p>Let’s visualize what we’re after. In the plot below, I have sampled some functions, and visualized their respective maximizers with <span style="color:#0d4fae"><strong>x</strong></span>. I also have fit a KDE plot - <code class="language-plaintext highlighter-rouge">sample max dist.</code> - on the maximizers to show their distribution.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/PES_1.png" alt="test" />
+    
+    
+        <p class="image-caption">Distribution of maximizers shown.</p>
+    
+</div>
+
+<p>If I am given more evaluated data, their distribution would obviously change. More sampled functions will begin to agree on the location of the true global maximizer. This is shown in the plot below, where I now have two more evaluations. Again, note the <code class="language-plaintext highlighter-rouge">sample max dist.</code> curve.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/PES_2.png" alt="test" />
+    
+    
+        <p class="image-caption">Distribution of maximizers after more evaluations. The maximizers are NOT near the global optima yet, but they seem to agree on a good local maxima.</p>
+    
+</div>
+
+<p>Effectively, the discrepancy between sampled maximizers has decreased. ES uses this as its guiding philosophy: the \(x\) with the greatest acquisition value is the one that leads to the largest decrease in uncertainty of the maximizer’s location.</p>
+
+<p>Direct evaluation of the ES expression is hindered by a few challenges. Let’s look at the expression again:</p>
+
+\[\alpha_{ES}(x) = H[p(\hat{x}^*|\mathcal{D})] - E_{p(y|\mathcal{D})}\Big[H[p(\hat{x}^*|\mathcal{D} \cup \{x,y\})]\Big]\]
+
+<p>Here,</p>
+<ul>
+  <li>First term: no analytic form for \({\color{WildStrawberry}{H[p(\hat{x}^* \vert \mathcal{D})]}}\), and is computable via approximations only.</li>
+  <li>Second term: even if we figure out a good way to calculate \(p(\hat{x}^*\vert .)\), it needs to be recomputed for <em>every</em> \(x\) the auxilliary optimizer visits in <em>one BayesOpt iteration</em> since the term  \(p(\hat{x}^*\vert \mathcal{D} \cup \{ {\color{WildStrawberry}{x,y}}\})\) is conditioned on \(x\).</li>
+</ul>
+
+<p><strong>Predictive Entropy Search (PES)</strong> <a class="citation" href="#pes">(Henrández-Lobato et al., 2014)</a> provides an alternate way. The above expression maybe seen as the <em>Mutual Information</em> \(I\) between a point to be acquired and the maximizer. And since \(I\) is symmetric, we may rewrite it thus:</p>
+
+\[\alpha(x) = I(\hat{x}^*,\{x, y\} ;\mathcal{D}) = I(\{x, y\}, \hat{x}^*;\mathcal{D})\]
+
+<p>Modifying the  original equation, we have:</p>
+
+\[\alpha_{PES}(x) = H[p({\color{WildStrawberry}{y}}|x,\mathcal{D})] - E_{\color{WildStrawberry}{p(\hat{x}^*|\mathcal{D})}}[H[p(y|x, \hat{x}^*, \mathcal{D})]]\]
+
+<p>Since \(y\) follows a Gaussian distribution (owing to the GP), \(H[p({\color{WildStrawberry}{y}} \vert x,\mathcal{D})]\) is easy to compute. In the second term, the expectation is wrt \(\color{WildStrawberry}{p(\hat{x}^* \vert \mathcal{D})}\) which doesn’t depend on \(x\), and the target of the expectation, although conditioned on \(x\), doesn’t need \(p(\hat{x}^* \vert .)\) - so we need to approximate it just once per BayesOpt iteration.</p>
+
+<hr style="height: 50px; border: 0; box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);" />
+
+<h3 id="max-value-entropy-search">Max-value Entropy Search</h3>
+
+<p>Even with the reframing, \(\alpha_{PES}\) might be expensive to compute because of the dependence on \(p(\hat{x}^*)\) when \(\mathcal{X}\) is high-dimensional. But if we were to directly model the <em>maximum</em>, i.e., \(\hat{y}^*\), instead of the <em>maximizer</em> \(\hat{x}^*\), we only have an univariate distribution to deal with. This is exactly what <strong>Max-value Entropy Search (MES)</strong> <a class="citation" href="#mes">(Wang &amp; Jegelka, 2017)</a> does (also see related work in <a class="citation" href="#OPES">(Hoffman &amp; Ghahramani, 2016)</a>).</p>
+
+\[\begin{aligned}
+    \alpha_{MES}(x) &amp;= I(\{x,y\}, \hat{y}^*;\mathcal{D}) \\
+                    &amp;= H[p(y|x,\mathcal{D})] - E_{ p(\hat{y}^*|\mathcal{D})}[H[p(y|x, \hat{y}^*, \mathcal{D})]]
+\end{aligned}\]
+
+<p>The first term is the same as in \(\alpha_{PES}\). However, the expectation is wrt \(p(\hat{y}^*\vert \mathcal{D})\), which is univariate, and thus computationally cheaper to compute than \(p(\hat{x}^* \vert \mathcal{D})\).</p>
+
+<p>Additionally, \(\color{WildStrawberry} p(\hat{y}^*\vert\mathcal{D})\) can be approximated by the <a href="https://en.wikipedia.org/wiki/Gumbel_distribution">Gumbel distribution</a>, which describes the maxima of i.i.d. Gaussians (an assumption that’s not true here but works well in practice).</p>
+
+<p>Intuitively, this works a lot like \(\alpha_{PES}\) except we’re looking at the current distribution of \(\hat{y}^*\). As before, the image below shows this distrbution for a given \(\mathcal{D}\).</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/MES_1.png" alt="test" />
+    
+    
+        <p class="image-caption">Distribution of the maximum.</p>
+    
+</div>
+
+<p>As we obtain more evaluations, this distribution becomes peaked. This is what \(\alpha_{MES}\) uses as its guiding principle.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/MES_2.png" alt="test" />
+    
+    
+        <p class="image-caption">Distribution of the maximum after a few more evaluations.</p>
+    
+</div>
+
+<p>Something interesting about \(p(\hat{y}^*\vert.)\) is that the density doesn’t go below the current known maximum \(y^*\); because all sampled functions contain this point (remember, function  evaluations act as “constrictions”, i.e., all sampled function pass through them, at least in the noiseless GP setting) and therefore their maximum is at least \(y^*\). You can notice these in the above plots as well.</p>
+
+<hr style="height: 50px; border: 0; box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);" />
+
+<p>This wraps up our coverage of acquisition functions. Hopefully, we now have a better appreciation of the role of GPs in BayesOpt, in addition to, of course, what the internals of BayesOpt algorithms look like.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/section_start.png" alt="test" />
+    
+    
+        <p class="image-caption"></p>
+    
+</div>
+
+<h2 id="minimal-code-for-bayesopt">Minimal Code for BayesOpt</h2>
+
+<p>Are we ready for our own minimal Bayesopt code? You bet!</p>
+
+<p>In the code below, you’ll see an implementation of \(\alpha_{EI}\) in <code class="language-plaintext highlighter-rouge">EI()</code>. Our auxilliary optimizer simply samples uniformly in the input space, evaluates \(\alpha_{EI}\) at these points and returns the maxmizer. This is not a good optimizer (if we can call it that) compared to say, <a href="https://docs.scipy.org/doc/scipy/reference/optimize.minimize-cobyla.html">scipy’s COBYLA</a>, and replacing this with something better would be a good exercise (I feel like some of my teachers who would leave the hardest problems for homework!). But it does the job. Please remember, this is <em>illustrative only</em>, and <strong>not meant for serious use</strong>! If it helps, imagine this comes with the <a href="https://matt.might.net/articles/crapl/">CRAPL</a> license!</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics.pairwise</span> <span class="kn">import</span> <span class="n">rbf_kernel</span> <span class="k">as</span> <span class="n">rbf</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">multivariate_normal</span> <span class="k">as</span> <span class="n">mvn</span><span class="p">,</span> <span class="n">norm</span>
+
+
+<span class="k">def</span> <span class="nf">maximize_by_bayesopt</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">iter_budget</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">aux_sample_size</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+
+    <span class="c1"># create the history arrays
+</span>    <span class="n">X_history</span><span class="p">,</span> <span class="n">y_history</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">iter_budget</span><span class="p">),</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">iter_budget</span><span class="p">)</span>
+    <span class="c1"># seed with some randomly chosen points - but this is not strictly needed.
+</span>    <span class="n">num_random_starts</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">X_history</span><span class="p">[:</span><span class="n">num_random_starts</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span>
+                                                      <span class="n">num_random_starts</span><span class="p">)</span>
+    <span class="n">y_history</span><span class="p">[:</span><span class="n">num_random_starts</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">X_history</span><span class="p">[:</span><span class="n">num_random_starts</span><span class="p">])</span>
+    <span class="n">current_best</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nb">max</span><span class="p">(</span><span class="n">y_history</span><span class="p">[:</span><span class="n">num_random_starts</span><span class="p">])</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Finished with </span><span class="si">{</span><span class="n">num_random_starts</span><span class="si">}</span><span class="s"> random calls."</span><span class="p">)</span>
+
+    <span class="c1"># iterate through the remaining iteration budget
+</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_random_starts</span><span class="p">,</span> <span class="n">iter_budget</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"At #iter=</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s"> of </span><span class="si">{</span><span class="n">iter_budget</span><span class="si">}</span><span class="s">."</span><span class="p">)</span>
+        <span class="n">x_next</span> <span class="o">=</span> <span class="n">aux_optimize</span><span class="p">(</span><span class="n">current_best</span><span class="o">=</span><span class="n">current_best</span><span class="p">,</span> <span class="n">x_min</span><span class="o">=</span><span class="n">x_min</span><span class="p">,</span>
+                              <span class="n">x_max</span><span class="o">=</span><span class="n">x_max</span><span class="p">,</span> <span class="n">X_history</span><span class="o">=</span><span class="n">X_history</span><span class="p">[:</span><span class="n">i</span><span class="p">],</span>
+                              <span class="n">y_history</span><span class="o">=</span><span class="n">y_history</span><span class="p">[:</span><span class="n">i</span><span class="p">],</span>
+                              <span class="n">sample_size</span><span class="o">=</span><span class="n">aux_sample_size</span><span class="p">)</span>
+
+        <span class="n">y</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span><span class="n">x_next</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">X_history</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y_history</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_next</span><span class="p">,</span> <span class="n">y</span>
+        <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Best so far: </span><span class="si">{</span><span class="n">np</span><span class="p">.</span><span class="nb">max</span><span class="p">(</span><span class="n">y_history</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+    <span class="n">idx_best</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_history</span><span class="p">)</span>
+    <span class="n">x_best</span><span class="p">,</span> <span class="n">y_best</span> <span class="o">=</span> <span class="n">X_history</span><span class="p">[</span><span class="n">idx_best</span><span class="p">],</span> <span class="n">y_history</span><span class="p">[</span><span class="n">idx_best</span><span class="p">]</span>
+
+    <span class="c1"># return the histories to for inspection
+</span>    <span class="k">return</span> <span class="n">x_best</span><span class="p">,</span> <span class="n">y_best</span><span class="p">,</span> <span class="n">X_history</span><span class="p">,</span> <span class="n">y_history</span>
+
+
+<span class="k">def</span> <span class="nf">EI</span><span class="p">(</span><span class="n">means</span><span class="p">,</span> <span class="n">stdevs</span><span class="p">,</span> <span class="n">current_best</span><span class="p">):</span>
+    <span class="c1"># the expected improvement acquisition function
+</span>    <span class="n">z_stars</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_best</span> <span class="o">-</span> <span class="n">means</span><span class="p">)</span><span class="o">/</span><span class="n">stdevs</span>
+    <span class="n">acq_vals</span> <span class="o">=</span> <span class="n">stdevs</span> <span class="o">*</span> <span class="p">(</span><span class="n">norm</span><span class="p">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">z_stars</span><span class="p">)</span> <span class="o">-</span> <span class="n">z_stars</span> <span class="o">*</span> <span class="n">norm</span><span class="p">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="n">z_stars</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">acq_vals</span>
+
+
+<span class="k">def</span> <span class="nf">aux_optimize</span><span class="p">(</span><span class="n">current_best</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">X_history</span><span class="p">,</span> <span class="n">y_history</span><span class="p">,</span>
+                 <span class="n">sample_size</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+
+    <span class="c1"># sample a bunch of points, and return the best
+</span>    <span class="c1"># this is a very basic "optimizer"
+</span>    <span class="n">X_sample</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">)</span>
+
+    <span class="c1"># note that we need to reshape to 2D arrays
+</span>    <span class="n">mean</span><span class="p">,</span> <span class="n">cov</span> <span class="o">=</span> <span class="n">gp_predict</span><span class="p">(</span><span class="n">X_train</span><span class="o">=</span><span class="n">X_history</span><span class="p">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">y_train</span><span class="o">=</span><span class="n">y_history</span><span class="p">,</span>
+                           <span class="n">X_test</span><span class="o">=</span><span class="n">X_sample</span><span class="p">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">variances</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">cov</span><span class="p">))</span>
+
+    <span class="c1"># due to numerical stability issues (of which there are many, when
+</span>    <span class="c1"># working with matrices!), variances might turn out be very small -ve
+</span>    <span class="c1"># numbers - we will "fix" it by setting them to a small +ve number.
+</span>    <span class="c1"># Or you can let them be, and let numpy handle them.
+</span>    <span class="n">min_v</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nb">min</span><span class="p">(</span><span class="n">variances</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">min_v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">variances</span><span class="p">[</span><span class="n">variances</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="o">-</span><span class="n">min_v</span> <span class="o">+</span> <span class="mf">1e-6</span>
+    <span class="n">acq_vals</span> <span class="o">=</span> <span class="n">EI</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">np</span><span class="p">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">variances</span><span class="p">),</span> <span class="n">current_best</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">X_sample</span><span class="p">[</span><span class="n">np</span><span class="p">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">acq_vals</span><span class="p">)]</span>
+
+
+<span class="k">def</span> <span class="nf">gp_predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">):</span>
+    <span class="c1"># this is a pared down version of the earlier gp_predict we saw
+</span>    <span class="c1"># we don't need sampled functions this time
+</span>
+    <span class="c1"># calculate the various partitions
+</span>    <span class="n">K_x_x</span> <span class="o">=</span> <span class="n">rbf</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_train</span><span class="p">)</span>
+    <span class="n">K_x_x_star</span> <span class="o">=</span> <span class="n">rbf</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">)</span>
+    <span class="n">K_x_star_x</span> <span class="o">=</span> <span class="n">K_x_x_star</span><span class="p">.</span><span class="n">T</span>
+    <span class="n">K_x_star_x_star</span> <span class="o">=</span> <span class="n">rbf</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">X_test</span><span class="p">)</span>
+
+    <span class="c1"># calculate the mean and cov. for the joint output distribution
+</span>    <span class="n">mean</span> <span class="o">=</span> <span class="n">K_x_star_x</span> <span class="o">@</span> <span class="n">np</span><span class="p">.</span><span class="n">linalg</span><span class="p">.</span><span class="n">inv</span><span class="p">(</span><span class="n">K_x_x</span><span class="p">)</span> <span class="o">@</span> <span class="n">y_train</span><span class="p">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">mean</span><span class="p">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">cov</span> <span class="o">=</span> <span class="n">K_x_star_x_star</span> <span class="o">-</span> <span class="n">K_x_star_x</span> <span class="o">@</span> <span class="n">np</span><span class="p">.</span><span class="n">linalg</span><span class="p">.</span><span class="n">inv</span><span class="p">(</span><span class="n">K_x_x</span><span class="p">)</span> <span class="o">@</span> <span class="n">K_x_x_star</span>
+
+    <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">cov</span></code></pre></figure>
+
+<p>If I wanted to make this code “production ready”, I would at least modify the following aspects:</p>
+<ul>
+  <li>Compute the kernel incrementally - note that we’re adding only point per iteration, and much of the kernel stays the same.</li>
+  <li>Deal with numerical stability issues. This is very common when matrix operations are involved. You see that above in how <code class="language-plaintext highlighter-rouge">variances</code> has been modified, but the right way to do this would be to fix the <code class="language-plaintext highlighter-rouge">cov</code> matrix in <code class="language-plaintext highlighter-rouge">gp_predict()</code> first, which leads to faulty variances.</li>
+  <li>And of course, we would need a much better auxilliary optimizer.</li>
+</ul>
+
+<p>Anyway, let’s throw a challenge to our barebones code: we’ll try maximizing the 1D version of the <a href="https://en.wikipedia.org/wiki/Ackley_function">Ackley function</a>:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c1"># Please ensure that this is in the namespace as the other
+# stuff in this section! In other words, copy-paste this in the same
+# file or notebook!
+</span>
+<span class="k">def</span> <span class="nf">ackley_1D</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">6.2</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="o">-</span><span class="n">a</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">b</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="p">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span><span class="o">*</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="mf">2.7</span>
+    <span class="k">return</span> <span class="n">res</span></code></pre></figure>
+
+<p>Finally, this is how we might visualize what our optimizer did:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c1"># Please ensure that this is in the namespace as the other
+# stuff in this section! In other words, copy-paste this in the same
+# file or notebook!
+</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="n">sns</span><span class="p">;</span> <span class="n">sns</span><span class="p">.</span><span class="nb">set</span><span class="p">()</span>
+
+<span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span>
+<span class="n">iter_budget</span> <span class="o">=</span> <span class="mi">50</span>
+
+<span class="c1"># play around with this value to see how the quality of the aux. optimizer
+# influences the search trajectory.
+# higher values lead to better search, but slower execution
+</span><span class="n">aux_sample_size</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="n">x_best</span><span class="p">,</span> <span class="n">y_best</span><span class="p">,</span> <span class="n">X_history</span><span class="p">,</span> \
+<span class="n">y_history</span> <span class="o">=</span> <span class="n">maximize_by_bayesopt</span><span class="p">(</span><span class="n">ackley_1D</span><span class="p">,</span> <span class="n">x_min</span><span class="o">=</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="n">x_max</span><span class="p">,</span>
+                                 <span class="n">iter_budget</span><span class="o">=</span><span class="n">iter_budget</span><span class="p">,</span>
+                                 <span class="n">aux_sample_size</span><span class="o">=</span><span class="n">aux_sample_size</span><span class="p">)</span>
+
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="p">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+
+<span class="c1"># plot the original fn
+</span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">sns</span><span class="p">.</span><span class="n">lineplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">ackley_1D</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+
+<span class="c1"># make the scatter sizes correspond to recency, i.e.,
+# points recent in the history look bigger
+</span><span class="n">g</span> <span class="o">=</span> <span class="n">sns</span><span class="p">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X_history</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_history</span><span class="p">,</span>
+                    <span class="n">size</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_history</span><span class="p">))</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">sizes</span><span class="o">=</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+
+<span class="c1"># remove the legend since it shows the dot sizes,
+# and these are not relevant
+</span><span class="n">g</span><span class="p">.</span><span class="n">legend</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">frameon</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="c1"># draw a vert. line at the discovered maxima
+</span><span class="n">ax</span><span class="p">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x_best</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">'--'</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s">'r'</span><span class="p">)</span>
+
+<span class="c1"># annotate the plot
+</span><span class="n">ax</span><span class="p">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">'x'</span><span class="p">);</span> <span class="n">ax</span><span class="p">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">'y'</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s">"aux. opt.=random sampling, # iter: </span><span class="si">{</span><span class="n">iter_budget</span><span class="si">}</span><span class="s">, "</span>
+             <span class="sa">f</span><span class="s">"aux. sample size=</span><span class="si">{</span><span class="n">aux_sample_size</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span></code></pre></figure>
+
+<p>Points visited by BayesOpt are sized wrt recency - recent points are larger.
+This is the output of the above code:</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/minimal_bayesopt_10.png" alt="test" />
+    
+    
+        <p class="image-caption">Output of the BayesOpt code, with a sample size of 10 for the aux. optimizer.</p>
+    
+</div>
+
+<p>One advantage of using the simple auxilliary optimizer here is we can analyze the effect of the quality of this optimizer on the final outcome. For ex., setting <code class="language-plaintext highlighter-rouge">aux_sample_size = 100</code> gives us a better auxiliary optimizer since it explores more of the input space. At even higher numbers, it would discover the acquisition maxima almost by  brute-force.</p>
+
+<p>The following plot shows the output for <code class="language-plaintext highlighter-rouge">aux_sample_size = 100</code>. If you compare this plot with the previous one, you’ll notice that a lot more points here are concentrated at the rightmost hump, as opposed to the rightmost two in the previous one. This indicates faster convergence to the maxima.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/minimal_bayesopt_100.png" alt="test" />
+    
+    
+        <p class="image-caption">Output of the BayesOpt code, with a sample size of 100 for the aux. optimizer.</p>
+    
+</div>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/section_start.png" alt="test" />
+    
+    
+        <p class="image-caption"></p>
+    
+</div>
+
+<h2 id="summary-a-pet-peeve-and-resources">Summary, a Pet Peeve and Resources</h2>
+
+<p>We’re finally at the end of our (somewhat long) discussion of BayesOpt. One way to think of BayesOpt is as a clever and benign middleman that effectively converts black-box optimizers like CMA-ES (for auxilliary optimization) to being sample efficient, by standing between them and the real-world, and supplying them hallucinated functions from the surrogate model. The evaluation-hungry auxilliary optimizers can run wild on these computationally cheap-to-evaluate functions. All this while BayesOpt observes them, and relays important information to and from the expensive real-world function. Torturing this metaphor, you might wonder, “Hey, this seems like a fairly general way to compute other properties of functions, not just optima!”. And you’d be right - this is exactly the kind of extension <em>InfoBAX</em> <a class="citation" href="#infobax">(Neiswanger et al., 2021)</a> proposes.</p>
+
+<p>While we looked at the cannonical versions of BayesOpt, I’d point out that because of the plug-and-play nature of the framework - you can replace one or more of the following: surrogate model, acquisition function, kernel - BayesOpt is extremely versatile. It has been adapted to combinatorial search in discrete structured spaces <a class="citation" href="#pmlr-v80-baptista18a">(Baptista &amp; Poloczek, 2018; Deshwal et al., 2020; Deshwal &amp; Doppa, 2021)</a>, parallelization <a class="citation" href="#pmlr-v84-kandasamy18a">(Kandasamy et al., 2018)</a>, sparsity <a class="citation" href="#10.5555/3020948.3021002">(McIntire et al., 2016; Liu et al., 2023)</a>. The list of applications is impressively diverse - from hyperparameter optimization to plasma control in nuclear fusion <a class="citation" href="#mehta2022an">(Mehta et al., 2022)</a>.</p>
+
+<p>So what’s this about a pet peeve? Well, consider the case of hyperparameter optimization. We know BayesOpt works empirically, but BayesOpt has parameters too (these could be kernel, surrogate model or acquisition function parameters) - why is tuning them not necessary, or to put it optmistically, how do know that the underlying problem is insensitive to BayesOpt’s parameters? What’s stopping me from slapping on another BayesOpt algo on top of the first to tune <em>its</em> parameters, and then another on top of that one, and so on. I feel like there is place for some results like the <a href="https://en.wikipedia.org/wiki/No_free_lunch_theorem">No Free Lunch theorem</a> in this area as well.</p>
+
+<p>Anyway, notwithstanding that, this is an exciting area!</p>
+
+<p>If you’re picking up BayesOpt, I’d recommend these resources:</p>
+<ul>
+  <li>Gaussian Processes - I like <a href="https://www.youtube.com/watch?v=92-98SYOdlY">this talk</a> by Richard Turner (the first 30 min are quite hepful). Nando De Freitas also a <a href="https://www.youtube.com/watch?v=4vGiHC35j9s">great talk</a> on GPs where he has some code examples.</li>
+  <li>Bayesian Optimization - Nando De Freitas also has a <a href="https://www.youtube.com/watch?v=vz3D36VXefI">great talk</a> on BayesOpt. I also recommend <a href="https://ieeexplore.ieee.org/document/7352306">this</a> popular tutorial <a class="citation" href="#bayesopt_tutorial">(Shahriari et al., 2016)</a>. I came across <a href="https://bayesoptbook.com/">this book</a> recently and I found it helpful <a class="citation" href="#garnett_bayesoptbook_2023">(Garnett, 2023)</a>. <a href="https://www.youtube.com/watch?v=C5nqEHpdyoE">This talk</a> by Matthew Hoffman is also quite good.</li>
+</ul>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/section_start.png" alt="test" />
+    
+    
+        <p class="image-caption"></p>
+    
+</div>
+
+<h2 id="references">References</h2>
+<ol class="bibliography"><li><span id="es">Hennig, P., &amp; Schuler, C. J. (2012). Entropy Search for Information-Efficient Global Optimization. <i>J. Mach. Learn. Res.</i>, <i>13</i>(null), 1809–1837.</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="es-abstract">
+    
+    </div>
+
+</li>
+<li><span id="pes">Henrández-Lobato, J. M., Hoffman, M. W., &amp; Ghahramani, Z. (2014). <i>Predictive Entropy Search for Efficient Global Optimization of Black-Box Functions</i>. 918–926.</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="pes-abstract">
+    
+    </div>
+
+</li>
+<li><span id="mes">Wang, Z., &amp; Jegelka, S. (2017). Max-value Entropy Search for Efficient Bayesian Optimization. In D. Precup &amp; Y. W. Teh (Eds.), <i>Proceedings of the 34th International Conference on Machine Learning</i> (Vol. 70, pp. 3627–3635). PMLR. https://proceedings.mlr.press/v70/wang17e.html</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="mes-abstract">
+    
+    </div>
+
+</li>
+<li><span id="OPES">Hoffman, M. W., &amp; Ghahramani, Z. (2016). <i>Output-Space Predictive Entropy Search for Flexible Global Optimization</i>.</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="OPES-abstract">
+    
+    </div>
+
+</li>
+<li><span id="infobax">Neiswanger, W., Wang, K. A., &amp; Ermon, S. (2021). Bayesian Algorithm Execution: Estimating Computable Properties of Black-box Functions Using Mutual Information. In M. Meila &amp; T. Zhang (Eds.), <i>Proceedings of the 38th International Conference on Machine Learning</i> (Vol. 139, pp. 8005–8015). PMLR. https://proceedings.mlr.press/v139/neiswanger21a.html</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="infobax-abstract">
+    
+    </div>
+
+</li>
+<li><span id="pmlr-v80-baptista18a">Baptista, R., &amp; Poloczek, M. (2018). Bayesian Optimization of Combinatorial Structures. In J. Dy &amp; A. Krause (Eds.), <i>Proceedings of the 35th International Conference on Machine Learning</i> (Vol. 80, pp. 462–471). PMLR. https://proceedings.mlr.press/v80/baptista18a.html</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="pmlr-v80-baptista18a-abstract">
+    
+    </div>
+
+</li>
+<li><span id="deshwal2020scalable">Deshwal, A., Belakaria, S., &amp; Doppa, J. R. (2020). Scalable Combinatorial Bayesian Optimization with Tractable Statistical models. <i>ArXiv Preprint ArXiv:2008.08177</i>.</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="deshwal2020scalable-abstract">
+    
+    </div>
+
+</li>
+<li><span id="deshwal2021combining">Deshwal, A., &amp; Doppa, J. (2021). Combining Latent Space and Structured Kernels for Bayesian Optimization over Combinatorial Spaces. In A. Beygelzimer, Y. Dauphin, P. Liang, &amp; J. W. Vaughan (Eds.), <i>Advances in Neural Information Processing Systems</i>. https://openreview.net/forum?id=fxHzZlo4dxe</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="deshwal2021combining-abstract">
+    
+    </div>
+
+</li>
+<li><span id="pmlr-v84-kandasamy18a">Kandasamy, K., Krishnamurthy, A., Schneider, J., &amp; Poczos, B. (2018). Parallelised Bayesian Optimisation via Thompson Sampling. In A. Storkey &amp; F. Perez-Cruz (Eds.), <i>Proceedings of the Twenty-First International Conference on Artificial Intelligence and Statistics</i> (Vol. 84, pp. 133–142). PMLR. https://proceedings.mlr.press/v84/kandasamy18a.html</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="pmlr-v84-kandasamy18a-abstract">
+    
+    </div>
+
+</li>
+<li><span id="10.5555/3020948.3021002">McIntire, M., Ratner, D., &amp; Ermon, S. (2016). Sparse Gaussian Processes for Bayesian Optimization. <i>Proceedings of the Thirty-Second Conference on Uncertainty in Artificial Intelligence</i>, 517–526.</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="10.5555/3020948.3021002-abstract">
+    
+    </div>
+
+</li>
+<li><span id="pmlr-v206-liu23b">Liu, S., Feng, Q., Eriksson, D., Letham, B., &amp; Bakshy, E. (2023). Sparse Bayesian optimization. In F. Ruiz, J. Dy, &amp; J.-W. van de Meent (Eds.), <i>Proceedings of The 26th International Conference on Artificial Intelligence and Statistics</i> (Vol. 206, pp. 3754–3774). PMLR. https://proceedings.mlr.press/v206/liu23b.html</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="pmlr-v206-liu23b-abstract">
+    
+    </div>
+
+</li>
+<li><span id="mehta2022an">Mehta, V., Paria, B., Schneider, J., Neiswanger, W., &amp; Ermon, S. (2022). An Experimental Design Perspective on Model-Based Reinforcement Learning. <i>International Conference on Learning Representations</i>. https://openreview.net/forum?id=0no8Motr-zO</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="mehta2022an-abstract">
+    
+    </div>
+
+</li>
+<li><span id="bayesopt_tutorial">Shahriari, B., Swersky, K., Wang, Z., Adams, R. P., &amp; de Freitas, N. (2016). Taking the Human Out of the Loop: A Review of Bayesian Optimization. <i>Proceedings of the IEEE</i>, <i>104</i>(1), 148–175. https://doi.org/10.1109/JPROC.2015.2494218</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="bayesopt_tutorial-abstract">
+    
+    </div>
+
+</li>
+<li><span id="garnett_bayesoptbook_2023">Garnett, R. (2023). <i>Bayesian Optimization</i>. Cambridge University Press.</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="garnett_bayesoptbook_2023-abstract">
+    
+    </div>
+
+</li></ol>
+
+  </div>
+
+  
+</article>
+
+      </div>
+    </main>
+
+
+<!--
+    <script src="https://giscus.app/client.js"
+        data-repo="[ENTER REPO HERE]"
+        data-repo-id="[ENTER REPO ID HERE]"
+        data-category="[ENTER CATEGORY NAME HERE]"
+        data-category-id="[ENTER CATEGORY ID HERE]"
+        data-mapping="pathname"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-theme="light"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+    </script>
+-->
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">A Not-So Primordial Soup</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>
+            
+              A Not-So Primordial Soup
+            
+            </li>
+            
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+
+          
+	  
+	  
+  	 <li>
+            <a href="https://linkedin.com/in/abhishek-ghose-36197624">
+            <i class="fa fa-linkedin"></i> LinkedIn
+            </a>
+         </li>
+         
+
+         
+  	 <li>
+            <a href="https://www.quora.com/profile/Abhishek-Ghose">
+            <i class="fa fa-quora" aria-hidden="true"></i> Quora
+            </a>
+         </li>
+         
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>My thought-recorder.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+    <script>
+    
+    var elements = document.querySelectorAll('p');
+    Array.prototype.forEach.call(elements, function(el, i){
+        if(el.innerHTML=='[expand]') {
+            var parentcontent = el.parentNode.innerHTML.replace('<p>[expand]</p>','<div class="expand" style="display: none; height: 0; overflow: hidden;">').replace('<p>[/expand]</p>','</div>');
+            el.parentNode.innerHTML = parentcontent;
+        }
+    });
+
+    var elements = document.querySelectorAll('div.expand');
+    Array.prototype.forEach.call(elements, function(el, i){
+        el.previousElementSibling.innerHTML = el.previousElementSibling.innerHTML + '<span>..&nbsp; <a href="#" style="cursor: pointer;" onclick="this.parentNode.parentNode.nextElementSibling.style.display = \'block\'; this.parentNode.parentNode.nextElementSibling.style.height = \'auto\'; this.parentNode.style.display = \'none\';">read&nbsp;more&nbsp;&rarr;</a></span>';
+    });
+
+</script>
+  </body>
+
+</html>
