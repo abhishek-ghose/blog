@@ -142,14 +142,14 @@ Now we take a look at the other pillar BayesOpt rests on: acquisition functions.
 <ul>
   <li><span style="color:#EE2967">Change in notation</span>: \(x^*\) and \(y^*\) would refer to the current maxima (or minima) in this section.</li>
   <li>For brevity, we’ll denote an acquisition function by \(\alpha\).</li>
-  <li>We’ll refer to the Gaussian parameters at an innput \(x\) as \(\mu(x)\) and \(\sigma(x)\).</li>
+  <li>We’ll refer to the output’s Gaussian parameters at an innput \(x\) as \(\mu(x)\) and \(\sigma(x)\).</li>
   <li>We’ll refer to the Normal distribution with \(0\) mean and unit variance, \(\mathcal{N}(0, 1)\) as the <em>standard Normal</em>. Additionally, for the Standard Normal, we’ll use:
     <ul>
       <li>\(\varphi(z)\) to denote the <em>Probability Density Function (pdf)</em>: \(\frac{e^{-z^2/2}}{\sqrt{2\pi}}\).</li>
       <li>\(\Phi(z)\) for  the <em>Cumulative Distribution Function (CDF)</em>: \(\frac{1}{\sqrt{2\pi}} \int_{-\infty}^z e^{-t^2/2} dt\).</li>
     </ul>
   </li>
-  <li>A property that we’ll end up using is if \(x\sim \mathcal{N}(\mu, \sigma)\), then \(z \sim \mathcal{N}(0, 1)\), where \(z=\frac{x-\mu}{\sigma}\).</li>
+  <li>A property that we’ll end up using is if \(x\sim \mathcal{N}(\mu, \sigma)\), then \(z \sim \mathcal{N}(0, 1)\), where \(z=\frac{x-\mu}{\sigma}\). This is known as a “change of variable”.</li>
 </ul>
 <hr style="height:1px;border-width:0;background-color:#EE2967" />
 <p><br /></p>
@@ -330,13 +330,20 @@ and the standard Normal.</p>
 
 <p>I won’t go deep into this and the next acquisition functions, and will only try to provide an intuition.</p>
 
-<p>First, some new notation: \(\hat{x}^*\) and \(\hat{y}^*\) represent the true <em>global</em> maximizer and maximum respectively. This is different from \(x^*\) and \(y^*\), which represent the current quantities based on what’s discovered so far.</p>
+<p>First, some new notation: \(\hat{x}^*\) and \(\hat{y}^*\) represent the true <em>global</em> maximizer and maximum respectively. This is different from \(x^*\) and \(y^*\), which represent the maxima and maximizer that’s been discovered so far.</p>
 
-<p>One way to value an \(x \in \mathcal{X}\) is in terms of the <em>information gain</em> it provides about the location of the true maximizer \(x^*\). This is <strong>Entropy Search (ES)</strong> <a class="citation" href="#es">(Hennig &amp; Schuler, 2012)</a>:</p>
+<p>One way to assign value to an \(x \in \mathcal{X}\) is in terms of the <em>information gain</em> it provides about the location of the true maximizer \(x^*\). This is <strong>Entropy Search (ES)</strong> <a class="citation" href="#es">(Hennig &amp; Schuler, 2012)</a>:</p>
 
 \[\alpha_{ES}(x) = H[p(\hat{x}^*|\mathcal{D})] - E_{p(y|\mathcal{D})}\Big[H[p(\hat{x}^*|\mathcal{D} \cup \{x,y\})]\Big]\]
 
-<p>Here, \(\mathcal{D}\) are the \((x,y)\) tuples for which we already have evaluations.</p>
+<p>Here:</p>
+<ul>
+  <li>\(\mathcal{D}\) are the \((x,y)\) tuples that we have observed.</li>
+  <li>\(H[p(t)]\) denotes the <em>entropy</em> of the distribution \(p(t)\). This can be interpreted as the “uncertainty” in the value of \(t\). Roughly, flatter a distribution is, higher is its entropy value. We won’t require its formula per se, but it is calculated as \(H[p(t)]=-\int \!p(t)log \, p(t) \, dt=\mathbb{E}_p[-log \, p(t)]\).</li>
+  <li>The first term represents the uncertainty around \(\hat{x}^*\) given the observed data so far \(\mathcal{D}\). Note that \(x\) - the location for which we’re calculating \(\alpha_{ES}(x)\) - doesn’t show up in this term.</li>
+  <li>The second term is similar, but this time we’re interested in the uncertainty <em>if</em> we had observed the function’s value at \(x\), hence the conditioning on \(\mathcal{D} \cup \color{WildStrawberry}{\{x,y\}}\). But we don’t know the exact value for \(y\) - we just have a distribution from the GP - so we calculate the <em>expected</em> uncertainty, which is what \(E_{p(\color{WildStrawberry}{y \vert \mathcal{D}})}\) denotes.</li>
+  <li>Putting it all together, the acquisition value for an \(x\) is the amount of <em>reduction in uncertainty</em> about the maximizer it is expected to provide. Greater this reduction, more valuable \(x\) is.</li>
+</ul>
 
 <p>You may have encountered this principle of reduction in entropy before, in Decision Trees such as CART, where a simpler version is used to determine node splits.</p>
 
@@ -401,7 +408,7 @@ and the standard Normal.</p>
 
 <p>Additionally, \(\color{WildStrawberry} p(\hat{y}^*\vert\mathcal{D})\) can be approximated by the <a href="https://en.wikipedia.org/wiki/Gumbel_distribution">Gumbel distribution</a>, which describes the maxima of i.i.d. Gaussians (an assumption that’s not true here but works well in practice).</p>
 
-<p>Intuitively, this works a lot like \(\alpha_{PES}\) except we’re looking at the current distribution of \(\hat{y}^*\). As before, the image below shows this distrbution for a given \(\mathcal{D}\).</p>
+<p>Intuitively, this works a lot like \(\alpha_{PES}\) except we’re looking at the current distribution of \(\hat{y}^*\). As before, the image below shows this distrbution for a given \(\mathcal{D}\) - this time the KDE plot is shown on the y-axis.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -651,7 +658,7 @@ This is the output of the above code:</p>
 
 <p>If you’re picking up BayesOpt, I’d recommend these resources:</p>
 <ul>
-  <li>Gaussian Processes - I like <a href="https://www.youtube.com/watch?v=92-98SYOdlY">this talk</a> by Richard Turner (the first 30 min are quite helpful). Nando De Freitas also a <a href="https://www.youtube.com/watch?v=4vGiHC35j9s">great talk</a> on GPs where he has some code examples.</li>
+  <li>Gaussian Processes - My favorite is <a href="https://www.youtube.com/watch?v=92-98SYOdlY">this talk</a> by Richard Turner (the first 30 min are quite helpful). Nando De Freitas also a <a href="https://www.youtube.com/watch?v=4vGiHC35j9s">great talk</a> on GPs where he has some code examples.</li>
   <li>Bayesian Optimization - Nando De Freitas has a <a href="https://www.youtube.com/watch?v=vz3D36VXefI">talk</a> on BayesOpt. I also recommend <a href="https://ieeexplore.ieee.org/document/7352306">this</a> popular tutorial <a class="citation" href="#bayesopt_tutorial">(Shahriari et al., 2016)</a>. I came across <a href="https://bayesoptbook.com/">this book</a> recently and I found it helpful <a class="citation" href="#garnett_bayesoptbook_2023">(Garnett, 2023)</a>. <a href="https://www.youtube.com/watch?v=C5nqEHpdyoE">This talk</a> from UAI-2018 by Matthew Hoffman is quite good.</li>
 </ul>
 
