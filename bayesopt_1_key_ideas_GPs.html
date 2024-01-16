@@ -518,13 +518,36 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 <ul>
   <li>The above expression is just the <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Conditional_distributions">standard formula</a> for the conditional distribution for a Gaussian.</li>
   <li>\(y\) is the vector of training outputs \([y_1, y_2, ..., y_N]\).</li>
-  <li>The new mean is \({\color{WildStrawberry}{K_{X^*X} K^{-1}_{XX}y}}\). This is a \(M\)-dimensional vector, where the \(i^{th}\) value is the mean value for \(Y_i\).</li>
+  <li>The new mean is \({\color{WildStrawberry}{K_{X^*X} K^{-1}_{XX}y}}\). This is a \(M\)-dimensional vector, where the \(i^{th}\) value is the mean value for \(Y_i\). The matrix sizes are visualized below.</li>
+</ul>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/gp_mean.png" alt="test" />
+    
+    
+        <p class="image-caption"></p>
+    
+</div>
+
+<ul>
   <li>The new covariance matrix is \({\color{PineGreen}{K_{X^*X^*} - K_{X^*X}  K^{-1}_{XX}  K_{XX^*} }}\).</li>
 </ul>
 
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/gp_cov.png" alt="test" />
+    
+    
+        <p class="image-caption"></p>
+    
+</div>
+
 <p>These look complicated, but the important thing here is \(p(Y)\) can be <strong>computed in closed form</strong>! With just that equation. Think of what we’re getting - an entire joint distribution over outputs \(Y_1, Y_2,..., Y_N\).</p>
 
-<p>If we now want to visualize this, werealize that the standard ways don’t work because we don’t have test outputs, but an entire joint distribution. A simple way out is to sample from the distribution \(p(Y^*_1, ..., Y^*_M \vert Y_1, ..., Y_N)\) for <em>one realization</em> of the learned function. You can sample multiple times to obtain different such realizations.</p>
+<p>If we now want to visualize this, we realize that the standard ways don’t work because we don’t have test outputs, but an entire joint distribution. A simple way out is to sample from the distribution \(p(Y^*_1, ..., Y^*_M \vert Y_1, ..., Y_N)\) for <em>one realization</em> of the learned function. You can sample multiple times to obtain different such realizations.</p>
 
 <p>The image below shows this (zooming in recommended), given some <span style="border-width:0px;background-color:#e38fa6;">training data</span> and <span style="border-width:0px;background-color:#abdff8;">test input locations</span>. It shows <span style="color:#1b3bff">three realizations</span> of \(p(Y)\). It also shows, in gory detail, what the kernel matrix looks like - note that its color coded to show interactions between \(X\) and \(X^*\).</p>
 
