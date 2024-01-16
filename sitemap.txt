@@ -1,3 +1,5 @@
 https://blog.quipu-strands.com/fun_with_GMMs
 https://blog.quipu-strands.com/hello-new-blog
 https://blog.quipu-strands.com/about/
+https://blog.quipu-strands.com/bayesopt_1_key_ideas_GPs
+https://blog.quipu-strands.com/bayesopt_2_acq_fns
