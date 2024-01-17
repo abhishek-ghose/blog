@@ -383,7 +383,7 @@ and the standard Normal.</p>
   <li>Second term: even if we figure out a good way to calculate \(p(\hat{x}^*\vert .)\), it needs to be recomputed for <em>every</em> \(x\) the auxilliary optimizer visits in <em>one BayesOpt iteration</em> since the term  \(p(\hat{x}^*\vert \mathcal{D} \cup \{ {\color{WildStrawberry}{x,y}}\})\) is conditioned on \(x\).</li>
 </ul>
 
-<p><strong>Predictive Entropy Search (PES)</strong> <a class="citation" href="#pes">(Henrández-Lobato et al., 2014)</a> provides an alternate way. The above expression maybe seen as the <em>Mutual Information</em> \(I\) between a point to be acquired and the maximizer. And since \(I\) is symmetric, we may rewrite it thus:</p>
+<p><strong>Predictive Entropy Search (PES)</strong> <a class="citation" href="#pes">(Henrández-Lobato et al., 2014)</a> provides an alternate way. The above expression maybe seen as the <em>Mutual Information</em> \(I\) between a point to be acquired and the maximizer (<a href="https://en.wikipedia.org/wiki/Mutual_information#Relation_to_conditional_and_joint_entropy">here’s</a> their relationship). And since \(I\) is symmetric, we may rewrite it thus:</p>
 
 \[\alpha(x) = I(\hat{x}^*,\{x, y\} ;\mathcal{D}) = I(\{x, y\}, \hat{x}^*;\mathcal{D})\]
 
