@@ -650,7 +650,7 @@ This is the output of the above code:</p>
 
 <p>Torturing this metaphor further, you might wonder, “Hey, this seems like a fairly general way to compute other properties of functions, not just optima! Just replace CMA-ES with an arbitrary algorithm!”. And you’d be right - this is exactly the kind of extension <em>InfoBAX</em> <a class="citation" href="#infobax">(Neiswanger et al., 2021)</a> proposes.</p>
 
-<p>While we looked at the cannonical versions of BayesOpt, I’d point out that because of the plug-and-play nature of the framework - you can replace one or more of the following: surrogate model, acquisition function, kernel - BayesOpt is extremely versatile. It has been adapted for combinatorial search in discrete structured spaces <a class="citation" href="#papenmeier2023bounce">(Papenmeier et al., 2023; Baptista &amp; Poloczek, 2018; Deshwal et al., 2020; Deshwal &amp; Doppa, 2021)</a>, parallelization <a class="citation" href="#RePEc:inm:oropre:v:68:y:2020:i:6:p:1850-1865">(Wang et al., 2020; Kandasamy et al., 2018)</a>, sparsity <a class="citation" href="#10.5555/3020948.3021002">(McIntire et al., 2016; Liu et al., 2023)</a>, has been used with Neural Networks as the surrogate model <a class="citation" href="#pmlr-v37-snoek15">(Snoek et al., 2015; Springenberg et al., 2016)</a> and has gained some new acquisition functions <a class="citation" href="#ament2023unexpected">(Ament et al., 2023; Moss et al., 2021; Wilson et al., 2017)</a> along the way. The list of applications is impressively diverse - from hyperparameter optimization to plasma control in nuclear fusion <a class="citation" href="#mehta2022an">(Mehta et al., 2022)</a> and Molecular Property Optimization <a class="citation" href="#sorourifar2023accelerating">(Sorourifar et al., 2023)</a>. The preamble to the part 1 post lists some more.</p>
+<p>While we looked at the cannonical versions of BayesOpt, I’d point out that because of the plug-and-play nature of the framework - you can replace one or more of the following: surrogate model, acquisition function, kernel - BayesOpt is extremely versatile. It has been adapted for combinatorial search in discrete structured spaces <a class="citation" href="#papenmeier2023bounce">(Papenmeier et al., 2023; Baptista &amp; Poloczek, 2018; Deshwal et al., 2020; Deshwal &amp; Doppa, 2021)</a>, parallelization <a class="citation" href="#RePEc:inm:oropre:v:68:y:2020:i:6:p:1850-1865">(Wang et al., 2020; Kandasamy et al., 2018)</a>, sparsity <a class="citation" href="#10.5555/3020948.3021002">(McIntire et al., 2016; Liu et al., 2023)</a>, has been used with Neural Networks as the surrogate model <a class="citation" href="#pmlr-v37-snoek15">(Snoek et al., 2015; Springenberg et al., 2016)</a>, has been paired with other optimizers such as Gradient Descent <a class="citation" href="#NIPS2017_64a08e5f">(Wu et al., 2017)</a> and Hyperband <a class="citation" href="#pmlr-v80-falkner18a">(Falkner et al., 2018)</a>, and has gained some new acquisition functions <a class="citation" href="#ament2023unexpected">(Ament et al., 2023; Moss et al., 2021; Wilson et al., 2017)</a> along the way. The list of applications is impressively diverse - from hyperparameter optimization to plasma control in nuclear fusion <a class="citation" href="#mehta2022an">(Mehta et al., 2022)</a> and Molecular Property Optimization <a class="citation" href="#sorourifar2023accelerating">(Sorourifar et al., 2023)</a>. The preamble to the part 1 post lists some more.</p>
 
 <p>So what’s this about a pet peeve? Well, consider the case of hyperparameter optimization. We know BayesOpt works empirically, but BayesOpt has parameters too (these could be kernel, surrogate model or acquisition function parameters) - why is tuning them not necessary, or to put it optmistically, how do know that the underlying problem is insensitive to BayesOpt’s parameters? What’s stopping me from slapping on another BayesOpt algo on top of the first to tune <em>its</em> parameters, and then another on top of that one, and so on? It seems to me that there is place for theoretical results like the <a href="https://en.wikipedia.org/wiki/No_free_lunch_theorem">No Free Lunch theorem</a> in this area.</p>
 
@@ -909,6 +909,38 @@ This is the output of the above code:</p>
     
         
     <div class="dropDownAbstract" id="NIPS2016_a96d3afe-abstract">
+    
+    </div>
+
+</li>
+<li><span id="NIPS2017_64a08e5f">Wu, J., Poloczek, M., Wilson, A. G., &amp; Frazier, P. (2017). Bayesian Optimization with Gradients. In I. Guyon, U. V. Luxburg, S. Bengio, H. Wallach, R. Fergus, S. Vishwanathan, &amp; R. Garnett (Eds.), <i>Advances in Neural Information Processing Systems</i> (Vol. 30). Curran Associates, Inc. https://proceedings.neurips.cc/paper_files/paper/2017/file/64a08e5f1e6c39faeb90108c430eb120-Paper.pdf</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="NIPS2017_64a08e5f-abstract">
+    
+    </div>
+
+</li>
+<li><span id="pmlr-v80-falkner18a">Falkner, S., Klein, A., &amp; Hutter, F. (2018). BOHB: Robust and Efficient Hyperparameter Optimization at Scale. In J. Dy &amp; A. Krause (Eds.), <i>Proceedings of the 35th International Conference on Machine Learning</i> (Vol. 80, pp. 1437–1446). PMLR.</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="pmlr-v80-falkner18a-abstract">
     
     </div>
 
