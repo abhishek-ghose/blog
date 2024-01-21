@@ -71,6 +71,11 @@
             
             
           
+            
+            
+            <a class="page-link" href="/Terms/">Terms</a>
+            
+          
         </div>
       </nav>
     
@@ -129,7 +134,7 @@
 
 <p>My own usage have been tamer, but also varied: I’ve used it to (a) learn distributions <a class="citation" href="#frontiers_density_tree_nopdf">(Ghose &amp; Ravindran, 2020; Ghose &amp; Ravindran, 2019)</a>, and (b) tune SHAP model explanations to identify informative training instances <a class="citation" href="#XAI_human_in_the_loop">(Nguyen &amp; Ghose, 2023)</a>.</p>
 
-<p>Why is BayesOpt everyhwere? Because the problems it solves are everywhere. It provides tools to optimize an <em>expensive black-box</em> function: given an input, you can only query your function for an output, and you don’t have any other information such as its gradients. Sometimes you mightn’t even have a mathematical form for it. Since its expensive, you can’t query it a lot. Plus, function evaluations might be <em>noisy</em>. The lack of function information is in contrast to the plethora of Gradient Descent variants that seem to be fuelling the Deep Learning revolution. But if you think about it, this is a very practical problem. For example, you want to optimize various small and large processes in a factory to increase throughput - what does a gradient even mean here?</p>
+<p>Why is BayesOpt everywhere? Because the problems it solves are everywhere. It provides tools to optimize an <em>expensive black-box</em> function: given an input, you can only query your function for an output, and you don’t have any other information such as its gradients. Sometimes you mightn’t even have a mathematical form for it. Since its expensive, you can’t query it a lot. Plus, function evaluations might be <em>noisy</em>. The lack of function information is in contrast to the plethora of Gradient Descent variants that seem to be fueling the Deep Learning revolution. But if you think about it, this is a very practical problem. For example, you want to optimize various small and large processes in a factory to increase throughput - what does a gradient even mean here?</p>
 
 <p>I encountered the area in 2018, when, as part of my Ph.D.,  I’d run out of ways to maximize a certain function. And the area has only grown since then. If you’re interested, I’ve an introductory write-up of BayesOpt in my <a href="https://drive.google.com/file/d/1zf_MIWyLY7nxEr5UioUQ7KhOQ1_clYYl/view?usp=drive_link">dissertation</a> (Section 2.1) too, and Section 2.3 there talks about the general problem I wanted to solve. Much of the material here though comes from a talk I gave a while ago (<a href="https://drive.google.com/file/d/1AFs1IqJT6qUi50yZ5XO_uHfgUVEBn2pz/view?usp=drive_link">slides</a>).</p>
 
@@ -164,7 +169,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 <p>Here, we are maximizing (or minimizing) wrt \(x\) whose values range over a domain \(\mathcal{X}\). The key utility comes from the fact that \(f(x)\) may have one or more of these properties:</p>
 <ol>
   <li>Its mathematical expression is unavailable to us or it is not differentiable.</li>
-  <li>Evaluations are noisy, i.e., for the same input \(x\) you might obtai slighty different values of \(f(x)\).</li>
+  <li>Evaluations are noisy, i.e., for the same input \(x\) you might obtain slightly different values of \(f(x)\).</li>
   <li>It is expensive to evaluate.</li>
 </ol>
 
@@ -180,7 +185,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
     
 </div>
 
-<p>The problem is: <em>find a recipe, i.e., amount of flour, sugar, baking temperature and time, etc., for baking cookies that is optimal wrt taste. Taste assessment is made by multiple human raters</em>. The objective function \(f\) is the assessment (averaged, if there’re multiple human raters) given the input vector \(x\) of various cookie ingredients and cooking conditions, i.e., \(x\) encodes the recipe.</p>
+<p>The problem is: <em>find a recipe, i.e., amount of flour, sugar, baking temperature and time, etc., for baking cookies that is optimal wrt taste. Taste assessment is made by multiple human raters</em>. The objective function \(f\) is the assessment (averaged, if there are multiple human raters) given the input vector \(x\) of various cookie ingredients and cooking conditions, i.e., \(x\) encodes the recipe.</p>
 
 <p>Why is this a good use case for BayesOpt?</p>
 <ol>
@@ -189,11 +194,11 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
   <li>To evaluate \(f(x)\), you need cookies baked according to the recipe \(x\). Baking a batch of cookies and distributing them for assessment consumes time (order of hours or days) and effort, making it expensive to evaluate \(f(x)\).</li>
 </ol>
 
-<p>The only way to optimize \(f(x)\) is to create the most promising recipe based on a thorough examination of the history of recipes and assessments. In handwavy-speak, you look at what parts of the recipe worked or didn’t, and then take your best shot. If you can afford more evaluations, add the current recipe and assessment to your history and repeat. BayesOpt formalizes this idea.</p>
+<p>The only way to optimize \(f(x)\) is to create the most promising recipe based on a thorough examination of the history of recipes and assessments. In hand-wavy-speak, you look at what parts of the recipe worked or didn’t, and then take your best shot. If you can afford more evaluations, add the current recipe and assessment to your history and repeat. BayesOpt formalizes this idea.</p>
 
 <p>Of course, as you might suspect, baking cookies is not all this is good for ;-).</p>
 
-<p><strong>Hyperparameter Optimization (HPO)</strong> is probably the flagship usecase of BayesOpt <a class="citation" href="#bayesopt_is_superior">(Turner et al., 2021)</a>. We want to increase the predictive accuracy of a model \(f\), by tuning its hyperparams.  <!-- *Cross-validation* is common but it sacrifices coverage of the hyperparam space by looking at a predetermined grid of settings. If we want to be relatively thorough, BayesOpt is a good fit. --> Note the apt prerequisites:</p>
+<p><strong>Hyperparameter Optimization (HPO)</strong> is probably the flagship use-case of BayesOpt <a class="citation" href="#bayesopt_is_superior">(Turner et al., 2021)</a>. We want to increase the predictive accuracy of a model \(f\), by tuning its hyperparams.  <!-- *Cross-validation* is common but it sacrifices coverage of the hyperparam space by looking at a predetermined grid of settings. If we want to be relatively thorough, BayesOpt is a good fit. --> Note the apt prerequisites:</p>
 <ol>
   <li>\(f\) is effectively black-box if we want our solution to be generic, i.e., it should be usable as much for Decision Trees as for Neural Networks.</li>
   <li>It is computationally expensive to evaluate (since evaluating \(f\) for a hyperparam setting would require us to retrain the model).</li>
@@ -226,7 +231,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 <p>This is a simplified picture, and there are at least two <strong>important</strong> nuances:</p>
 <ul>
   <li>First, the surrogate model needs to have the property that for \(x\in \mathcal{X}\) where the exact value is not known, i.e., \(f(x)\) is not available in history \(\mathcal{H}\), we need to be aware of <em>how uncertain</em> is our guess \(\hat{f}(x)\).</li>
-  <li>And second, in Step 2 above, we don’t always guess the minima based on the current \(\hat{f}\). Sometimes, we might choose to propose an \(x_t\) in the interest of exploration, i.e., in a region of \(\mathcal{X}\) where we haven’t evaluated \(f\) enough. This is the famous <strong>explore-exploit</strong> tradeoff you might’ve heard in the context of <em>Reinforcement Learning</em>; it applies to BayesOpt too. Given the current surrogate model \(\hat{f}\), that was fit on history \(\mathcal{H}\), the next point \(x_t\) on which we wish to <em>acquire</em> \(f(x_t)\) is provided by an <strong>acquisition function</strong>. <br /> In fact, its the acquisition function that needs to know how uncertain \(\hat{f}\) is at various inputs, so it can accurately make the explore-exploit tradeoff.</li>
+  <li>And second, in Step 2 above, we don’t always guess the minima based on the current \(\hat{f}\). Sometimes, we might choose to propose an \(x_t\) in the interest of exploration, i.e., in a region of \(\mathcal{X}\) where we haven’t evaluated \(f\) enough. This is the famous <strong>explore-exploit</strong> tradeoff you might’ve heard in the context of <em>Reinforcement Learning</em>; it applies to BayesOpt too. Given the current surrogate model \(\hat{f}\), that was fit on history \(\mathcal{H}\), the next point \(x_t\) on which we wish to <em>acquire</em> \(f(x_t)\) is provided by an <strong>acquisition function</strong>. <br /> In fact, its the acquisition function that needs to know how uncertain \(\hat{f}\) is at various inputs, so it can accurately make the explore-exploit trade-off.</li>
 </ul>
 
 <p>Let’s visualize these ideas for maximization of an univariate function, i.e., \(\mathcal{X}\) is a line.</p>
@@ -241,7 +246,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
     
 </div>
 
-<p>The image above show two plots stacked vertically. Start with the top plot, and note the legend there. This shows what things look like with BayesOpt at its \(4^{th}\) iteration. \(f\) is shown with a black solid line and red dots mark the \(3\) prior evaluations of \(f\). A surrogate model \(\hat{f}\) fitted to these dots is shown as a blue dashed line. Outside of the red dots, we’re uncertain of the precise values, and this is shown as an envelope of somewhat likely values, i.e., those that fall within <em>one standard deviation</em> (denoted as \(1\sigma\)) of our <em>mean</em> guess (the dashed blue line). We’ll discuss how to obtain these estimates in the next section, using <em>Gaussian Processes</em>. At the red dots, the envlopes disappear because there is no guesswork involved. The envelope balloons up as we move into regions away from any red dot. The current max. is shown by the horizontal red line.</p>
+<p>The image above show two plots stacked vertically. Start with the top plot, and note the legend there. This shows what things look like with BayesOpt at its \(4^{th}\) iteration. \(f\) is shown with a black solid line and red dots mark the \(3\) prior evaluations of \(f\). A surrogate model \(\hat{f}\) fitted to these dots is shown as a blue dashed line. Outside of the red dots, we’re uncertain of the precise values, and this is shown as an envelope of somewhat likely values, i.e., those that fall within <em>one standard deviation</em> (denoted as \(1\sigma\)) of our <em>mean</em> guess (the dashed blue line). We’ll discuss how to obtain these estimates in the next section, using <em>Gaussian Processes</em>. At the red dots, the envelopes disappear because there is no guesswork involved. The envelope balloons up as we move into regions away from any red dot. The current max. is shown by the horizontal red line.</p>
 
 <p>The lower plot shows what the acquisition function looks like over \(\mathcal{X}\). We’ll see how its exactly calculated later (spoiler: there are many ways), but the red dot in this plot denotes the greatest acquisition value.</p>
 
@@ -265,15 +270,15 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
         <img src="/assets/bayesopt/BO_iters_EI_4_iters.jpg" alt="test" />
     
     
-        <p class="image-caption">Multilple iterations. Note the multiple high-density regions in the final acquisition value plot.</p>
+        <p class="image-caption">Multiple iterations. Note the multiple high-density regions in the final acquisition value plot.</p>
     
 </div>
 
-<p>Notice something interesting? In the last iteration the acquistion function has grown <em>less</em> sure about where valuable points are located. This “jumping around” is characterestic of BayesOpt: as newer evaluations become available, the acquisition function revises its notion of valuable locations. In fact, the amount of “fat” envelopes might increase as well, when regions of surprising behavior are discovered. Uncertainty decreases asymptotically but occassional fluctuations are to be expected.</p>
+<p>Notice something interesting? In the last iteration the acquisition function has grown <em>less</em> sure about where valuable points are located. This “jumping around” is characteristic of BayesOpt: as newer evaluations become available, the acquisition function revises its notion of valuable locations. In fact, the amount of “fat” envelopes might increase as well, when regions of surprising behavior are discovered. Uncertainty decreases asymptotically but occasional fluctuations are to be expected.</p>
 
 <p>For this example, I’d argue this is a good thing because we still haven’t discovered the actual global maxima. More exploration is great if we have the budget for it.</p>
 
-<p>Unfortunately, this also makes it challenging to have a simple <em>stopping criteria</em> for BayesOpt (there’re some, e.g., <a class="citation" href="#makarova2022automatic">(Makarova et al., 2022)</a>), relative to, say, Gradient Descent (GD), where you might stop when the changes in the extrema become vanishingly small. Typically, you decide on an <em>optimization budget</em>, e.g., number of iterations \(T\), run it all the way through, and pick the best value (again, this is different from GD, where we might pick the last value).</p>
+<p>Unfortunately, this also makes it challenging to have a simple <em>stopping criteria</em> for BayesOpt (there are some, e.g., <a class="citation" href="#makarova2022automatic">(Makarova et al., 2022)</a>), relative to, say, Gradient Descent (GD), where you might stop when the changes in the extrema become vanishingly small. Typically, you decide on an <em>optimization budget</em>, e.g., number of iterations \(T\), run it all the way through, and pick the best value (again, this is different from GD, where we might pick the last value).</p>
 
 <p>Here’s the high-level BayesOpt algo summarized:</p>
 
@@ -291,7 +296,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 
 <p>Look at Line 7 - we need to maximize for the acquisition value, and that also would require an optimizer. Here’s a question you might ask: did we just translate one optimization problem into another? What did we gain?</p>
 
-<p>The answer is yes, there is another optimzation problem we need to solve <em>per iteration</em> of BayesOpt, using what we refer to as the <strong>auxiliary optimizer</strong>. What we gain is this optimizer works with a tractable function - the surrogate model - instead of the original real-life function, which may or may not have a known form (like in the cookie example). The auxiliary optimization can be performed way quicker, relatively speaking, because the surrogate model exists on your computer, and you’re free to make as many calls to it as you like. It still needs to be fast, since this optimization needs to occur per iteration of BayesOpt.</p>
+<p>The answer is yes, there is another optimization problem we need to solve <em>per iteration</em> of BayesOpt, using what we refer to as the <strong>auxiliary optimizer</strong>. What we gain is this optimizer works with a tractable function - the surrogate model - instead of the original real-life function, which may or may not have a known form (like in the cookie example). The auxiliary optimization can be performed way quicker, relatively speaking, because the surrogate model exists on your computer, and you’re free to make as many calls to it as you like. It still needs to be fast, since this optimization needs to occur per iteration of BayesOpt.</p>
 
 <p>Common choices for this optimizer are <a href="https://websites.umich.edu/~mdolaboratory/pdf/Jones2020a.pdf"><em>DIRECT</em></a> and <a href="https://en.wikipedia.org/wiki/CMA-ES"><em>CMA-ES</em></a>. We won’t go into details here, but this <a href="https://stats.stackexchange.com/a/199268">StackOverflow answer</a> provides some information. There has been work to get rid of the auxiliary optimization <a class="citation" href="#pmlr-v33-wang14d">(Wang et al., 2014)</a>.</p>
 
@@ -337,7 +342,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 <ul>
   <li>GD (right column) spends most of its time getting to the closest local minima. The KDE plot shows this focus. The minima found is \(f(-0.04)=-0.1\). All recent points visited are concentrated around this minima, and the “shape” of the path is like a comet’s tail.</li>
   <li>BayesOpt (left column) is more “global” because of its exploration, and manages to find the global minima \(f(-2)=-9.81\). It doesn’t always find the global minima - just that here it does. The KDE plot shows that while BayesOpt also focuses on the global minima, its attention is fairly diffuse (look at the y-axes of both KDE plots). You can also see this from the scattered placement of the large red circles.</li>
-  <li>As a follow-up to the previous point, the fact that BayesOpt spends much of its function evaluation budget closer to the minima, is a characteristic of these methods. That’s to say, while it tries to model the whole input space, it allocates a larger budget to regions closer to the minima. This is the region thats important to us. This is what you would expect from a smart search algorithm.</li>
+  <li>As a follow-up to the previous point, the fact that BayesOpt spends much of its function evaluation budget closer to the minima, is a characteristic of these methods. That’s to say, while it tries to model the whole input space, it allocates a larger budget to regions closer to the minima. This is the region that’s important to us. This is what you would expect from a smart search algorithm.</li>
 </ul>
 
 <p>To be fair, you wouldn’t typically employ GD in this naive fashion - you would probably use momentum, use some kind of adaptive learning rate (this was fixed here) and perform multiple starts, but this example is more illustrative than practical.</p>
@@ -402,7 +407,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     
 </div>
 
-<p>Csonider the first plot. The “forward slant” of the Gaussian exists because \(\Sigma_{12}=\Sigma_{21}=2\), and thus \(Y_1\) and \(Y_2\) are positively correlated. As possible values for \(Y_1\) increase (going from left to right), possible values \(y_2\) also increase (goes from bottom to top).</p>
+<p>Consider the first plot. The “forward slant” of the Gaussian exists because \(\Sigma_{12}=\Sigma_{21}=2\), and thus \(Y_1\) and \(Y_2\) are positively correlated. As possible values for \(Y_1\) increase (going from left to right), possible values \(y_2\) also increase (goes from bottom to top).</p>
 
 <p>Now, here’s an outlandish idea: what if we let the Gaussian random variable \(Y_i\) represent all possible outputs for \(x_i\)? And the covariance matrix is defined by input similarities? Specifically, if \(k(x_i, x_j)\) denotes the similarity between \(x_i\) and \(x_j\), we let \(\Sigma_{ij} = k(x_i, x_j)\). This gets us at least the following benefits:</p>
 <ul>
@@ -421,7 +426,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <p>Here, \(Y\) is a random variable that takes on all possible output values, i.e.,  \(Y \in \{y_i\}\). Note that instead of a covariance matrix \(\Sigma\), I am using the standard notation for variance \(\sigma^2\), since this is a 1D Gaussian.</p>
 
-<p>So, what’re we saying? The Gaussian distribution we’re interested in is multivariate and has <em>one random variable dedicated to one output</em>. The <em>distribution</em> of one output is related to the <em>distribution</em> of another output - and the extent of this coupling is determined by the similarity in their inputs. The following is what we <strong>ARE</strong> saying:</p>
+<p>So, what are we saying? The Gaussian distribution we’re interested in is multivariate and has <em>one random variable dedicated to one output</em>. The <em>distribution</em> of one output is related to the <em>distribution</em> of another output - and the extent of this coupling is determined by the similarity in their inputs. The following is what we <strong>ARE</strong> saying:</p>
 
 \[p(Y_1, Y_2, Y_3, ...) \sim \mathcal{N}(\mu, \Sigma)\]
 
@@ -484,7 +489,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     <p><strong>Me</strong>: We can talk only about the train and test data as coming from a Gaussian. Yes, there is a “larger” Gaussian that conceptually exists and deals with the infinite points in the input space, but we can talk only about our marginalization of interest without breaking this conceptual model. So, what we’ll really focus on this distribution:
 \(p(Y_1, ..., Y_N, Y_1^*, ..., Y_M^*) \sim \mathcal{N}(\mu, \Sigma)\). You don’t see the inputs in this expression, but remember they’re hiding within the \(\Sigma\).</p>
   </li>
-  <li><strong>You</strong>: I see. So we worry only about the train and test data. But how do derive the test outcomes given the training data? This regression problem is why we’re here afterall.</li>
+  <li><strong>You</strong>: I see. So we worry only about the train and test data. But how do derive the test outcomes given the training data? This regression problem is why we’re here after all.</li>
   <li><strong>Me</strong>: If you look at the expression above, we’re asking for the <em>conditional</em> distribution given training outcomes, i.e., \(p(Y_1^*, ..., Y_M^* \vert {\color{WildStrawberry}{Y_1=y_1}}, {\color{WildStrawberry}{Y_2=y_2}}, ..., {\color{WildStrawberry}{Y_N=y_N}})\). Guess what this conditional distribution is … yes, <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Conditional_distributions">also a Gaussian</a>. And its parameters are expressible in terms of \({\color{WildStrawberry}{X}}\), \({\color{WildStrawberry}{Y}}\), \({\color{WildStrawberry}{X^*}}\), \({\color{WildStrawberry}{\mu}}\) and \({\color{WildStrawberry}{\Sigma}}\) . This is it - <strong>this is the big reveal</strong>. The random variables corresponding to our test outputs are  jointly Gaussian, whose parameters are calculable in closed form. You can also calculate the distribution of just one \(Y_i^*\) (which would be a univariate Gaussian), and then can do the following:
     <ul>
       <li>Calculate the <em>mean value</em> for \(Y_i\) - this serves as the regression value for input \(x_i\).</li>
@@ -507,7 +512,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
         <img src="/assets/bayesopt/kernel_partition.png" alt="test" />
     
     
-        <p class="image-caption">Paritioning of the kernel matrix.</p>
+        <p class="image-caption">Partitioning of the kernel matrix.</p>
     
 </div>
 
@@ -717,7 +722,7 @@ As before, let test data be \(X^* \in \mathbb{R}^{M \times d}\), \(Y^* \in \math
 
 <p>This is it. Really. The above code is training, prediction and prediction probabilities all rolled into one.</p>
 
-<p>Something to note here is that because of practical issues with numerical stability, such as those that might arise in calculating the covariance matrix, an alternative is to sample from the standard Normal and adjust the output later (for an example, see how the <a href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky decomposition</a> is used  <a href="https://youtu.be/4vGiHC35j9s?si=w4iDRlLPSsZJ1jhy&amp;t=3809">here</a>).</p>
+<p>Something to note here is that because of practical issues with numerical stability, such as those that might arise in calculating the covariance matrix, an alternative is to sample from the standard Normal (one with zero mean and unit variance) and adjust the output later (for an example, see how the <a href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky decomposition</a> is used  <a href="https://youtu.be/4vGiHC35j9s?si=w4iDRlLPSsZJ1jhy&amp;t=3809">here</a>).</p>
 
 <p>Do we want to take it out for a spin? Of course we do! Let’s generate some data on a sine curve, and sample some functions.</p>
 
