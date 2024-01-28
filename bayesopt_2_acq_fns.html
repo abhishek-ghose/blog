@@ -337,7 +337,7 @@ and the standard Normal.</p>
 
 <p>I won’t go deep into this and the next acquisition functions, and will only try to provide an intuition.</p>
 
-<p>First, some new notation: \(\hat{x}^*\) and \(\hat{y}^*\) represent the true <em>global</em> maximizer and maximum respectively. This is different from \(x^*\) and \(y^*\), which represent the maxima and maximizer that’s been discovered so far.</p>
+<p>First, some new notation: let \(\hat{x}^*\) and \(\hat{y}^*\) represent the true <em>global</em> maximizer and maximum respectively. This is different from \(x^*\) and \(y^*\), which represent the maxima and maximizer that’s been discovered so far.</p>
 
 <p>One way to assign value to an \(x \in \mathcal{X}\) is in terms of the <em>information gain</em> it provides about the location of the true maximizer \(x^*\). This is <strong>Entropy Search (ES)</strong> <a class="citation" href="#es">(Hennig &amp; Schuler, 2012)</a>:</p>
 
@@ -345,9 +345,9 @@ and the standard Normal.</p>
 
 <p>Here:</p>
 <ul>
-  <li>\(\mathcal{D}\) are the \((x,y)\) tuples that we have observed.</li>
+  <li>\(\mathcal{D}\) are the function evaluations we have so far.</li>
   <li>\(H[p(t)]\) denotes the <em>entropy</em> of the distribution \(p(t)\). This can be interpreted as the “uncertainty” in the value of \(t\). Roughly, flatter a distribution is, higher is its entropy value. We won’t require its formula per se, but it is calculated as \(H[p(t)]=-\int \!p(t)log \, p(t) \, dt=\mathbb{E}_p[-log \, p(t)]\).</li>
-  <li>The first term represents the uncertainty around \(\hat{x}^*\) given the observed data so far \(\mathcal{D}\). Note that \(x\) - the location for which we’re calculating \(\alpha_{ES}(x)\) - doesn’t show up in this term.</li>
+  <li>The first term represents the uncertainty around \(\hat{x}^*\) given observations so far \(\mathcal{D}\). Note that \(x\) - the location for which we’re calculating \(\alpha_{ES}(x)\) - doesn’t show up in this term.</li>
   <li>The second term is similar, but this time we’re interested in the uncertainty <em>if</em> we had observed the function’s value at \(x\), hence the conditioning on \(\mathcal{D} \cup \color{WildStrawberry}{\{x,y\}}\). But we don’t know the exact value for \(y\) - we just have a distribution from the GP - so we calculate the <em>expected</em> uncertainty, which is what \(E_{p\color{WildStrawberry}{(y \vert \mathcal{D}})}\) denotes.</li>
   <li>Putting it all together, the acquisition value for an \(x\) is the amount of <em>reduction in uncertainty</em> about the maximizer it is expected to provide. Greater this reduction, more valuable \(x\) is.</li>
 </ul>
@@ -378,7 +378,7 @@ and the standard Normal.</p>
     
 </div>
 
-<p>Effectively, the discrepancy between sampled maximizers has decreased. ES uses this as its guiding philosophy: the \(x\) with the greatest acquisition value is the one that leads to the largest decrease in uncertainty of the maximizer’s location.</p>
+<p>Effectively, the discrepancy between sampled maximizers has decreased, and this is indicated by the “peakiness” of the KDE plot (the global maxima is still undiscovered, which is a different matter, and further evaluations will redress that). ES uses this as its guiding philosophy: the \(x\) with the greatest acquisition value is the one that leads to the largest decrease in uncertainty of the maximizer’s location.</p>
 
 <p>Direct evaluation of the ES expression is hindered by a few challenges. Let’s look at the expression again:</p>
 
@@ -386,7 +386,7 @@ and the standard Normal.</p>
 
 <p>Here,</p>
 <ul>
-  <li>First term: no analytic form for \({\color{WildStrawberry}{H[p(\hat{x}^* \vert \mathcal{D})]}}\), and is computable via approximations only.</li>
+  <li>First term: there is no analytic form for \({\color{WildStrawberry}{H[p(\hat{x}^* \vert \mathcal{D})]}}\), and is computable via approximations only.</li>
   <li>Second term: even if we figure out a good way to calculate \(p(\hat{x}^*\vert .)\), it needs to be recomputed for <em>every</em> \(x\) the auxilliary optimizer visits in <em>one BayesOpt iteration</em> since the term  \(p(\hat{x}^*\vert \mathcal{D} \cup \{ {\color{WildStrawberry}{x,y}}\})\) is conditioned on \(x\).</li>
 </ul>
 
@@ -398,7 +398,7 @@ and the standard Normal.</p>
 
 \[\alpha_{PES}(x) = H[p({\color{WildStrawberry}{y}}|x,\mathcal{D})] - E_{\color{WildStrawberry}{p(\hat{x}^*|\mathcal{D})}}[H[p(y|x, \hat{x}^*, \mathcal{D})]]\]
 
-<p>Since \(y\) follows a Gaussian distribution (owing to the GP), \(H[p({\color{WildStrawberry}{y}} \vert x,\mathcal{D})]\) is easy to compute. In the second term, the expectation is wrt \(\color{WildStrawberry}{p(\hat{x}^* \vert \mathcal{D})}\) which doesn’t depend on \(x\), and the target of the expectation, although conditioned on \(x\), doesn’t need \(p(\hat{x}^* \vert .)\) - so we need to approximate it just once per BayesOpt iteration.</p>
+<p>Since \(y\) follows a Gaussian distribution (owing to the GP), \(H[p({\color{WildStrawberry}{y}} \vert x,\mathcal{D})]\) is easy to compute. In the second term, the expectation is wrt \(\color{WildStrawberry}{p(\hat{x}^* \vert \mathcal{D})}\) which doesn’t depend on \(x\), and the target of the expectation, although conditioned on \(x\), doesn’t need \(p(\hat{x}^* \vert .)\) - so we need to approximate \(p(\hat{x}^* \vert \mathcal{D})\) it just once per BayesOpt iteration.</p>
 
 <hr style="height: 50px; border: 0; box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);" />
 
@@ -653,7 +653,7 @@ This is the output of the above code:</p>
 
 <h2 id="summary-a-pet-peeve-and-resources">Summary, a Pet Peeve and Resources</h2>
 
-<p>We’re finally at the end of our (somewhat long) discussion of BayesOpt. One way to think of BayesOpt is as a clever and benign middleman that effectively converts black-box optimizers like CMA-ES (for auxiliary optimization) to being sample efficient, by standing between them and the real-world, and supplying them with hallucinated functions from the surrogate model. The evaluation-hungry auxiliary optimizers can run wild on these computationally cheap-to-evaluate functions. All this while BayesOpt observes them, inferring value of different input regions, and relays strategic information to and from the expensive real-world function.</p>
+<p>We’re finally at the end of our (somewhat long) discussion of BayesOpt. One way to think of BayesOpt is as a middleman between a real-world function and black-box optimizers such as CMA-ES (the auxiliary optimizers), that aren’t sample-efficient. BayesOpt coaxes these into working by supplying them with hallucinated functions from the surrogate model. And by observing what they find, it estimates the informativeness of various input regions. Accordingly, it requests the real-world function for a specific evaluation. The response is used to adjust the surrogate model, and then the whole process of enlisting the auxiliary optimizers to operate over simulated functions begins anew.</p>
 
 <p>Torturing this metaphor further, you might wonder, “Hey, this seems like a fairly general way to compute other properties of functions, not just optima! Just replace CMA-ES with an arbitrary algorithm!”. And you’d be right - this is exactly the kind of extension <em>InfoBAX</em> <a class="citation" href="#infobax">(Neiswanger et al., 2021)</a> proposes.</p>
 

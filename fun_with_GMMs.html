@@ -135,7 +135,7 @@
 
 <p>My reason for picking GMMs is that they are an intuitive gateway to the world of generative modeling. They are also well-studied: the first paper that talks about GMMs was <a href="https://royalsocietypublishing.org/doi/10.1098/rsta.1894.0003">published in 1894</a>! GMMs also make some of the math convenient; we’ll see examples of this soon. Library-wise <a href="https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html#sklearn.mixture.GaussianMixture">scikit</a> has a nice implementation of GMMs, which I have used for this post. <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html">scipy</a> has convenient functions to work with the Gaussian distribution - which is also used here.</p>
 
-<p>I know I said this is going to be “mostly visual”. But I won’t be abnegating <em>all</em> math here - afterall my goal is to talk about how GMMs operate. We will discuss <em>some</em> necessary math, but just about enough so that we understand how to model images. Here’s the layout of the rest of this post.</p>
+<p>I know I said this is going to be “mostly” visual. I won’t be abnegating <em>all</em> math here : we will discuss <em>some</em> necessary math, that is just about enough to understand how to model images. Here’s the layout of the rest of this post.</p>
 
 <ul id="markdown-toc">
   <li><a href="#crash-course-in-g-and-mm" id="markdown-toc-crash-course-in-g-and-mm">Crash Course in G and MM</a>    <ul>
@@ -186,7 +186,7 @@
   <li>To say \(x\) was <em>sampled</em> from such a distribution, we write \(x \sim \mathcal{N}(\mu, \sigma^2)\). This is also equivalent to saying that the density of such \(x\)s are given by \(\mathcal{N}(x;\mu, \sigma^2)\) (the expression in the previous point). What is used depends on the context: do we want to highlight sampling or density?</li>
 </ul>
 
-<p>Now, consider a practical scenario: you have some data, that doesn’t look anything like a standard <em>pdf</em>. How would you mathematically express its density? In a time-honoured tradition, we will use something that we know to approximate what we don’t know. We’ll use a bunch or a <strong>mixture</strong> of superposed Gaussians (hence the name). To specify such a mixture, we need:</p>
+<p>Now, consider a practical scenario: you have some data, that doesn’t look anything like one of  the commonly known <em>pdfs</em>. How would you mathematically express its density? In a time-honoured tradition, we will use something that we know to <em>approximate</em> what we don’t know. We’ll use a bunch or a <strong>mixture</strong> of superposed Gaussians (hence the name). To specify such a mixture, we need:</p>
 <ul>
   <li><strong>Number</strong> of components, \(K\).</li>
   <li><strong>Parameters</strong> or <em>shape</em> of the components. We will denote component \(i\) by \(\mathcal{N}(\mu_i, \sigma_i^2)\), where we need to figure out the values for \(\mu_i\) and  \(\sigma_i\).</li>
@@ -325,7 +325,7 @@ p(x_1, x_2,..., x_{d-3} \vert x_{d-2}=a,x_{d-1}=b,x_{d}=c)
         <img src="/assets/fun_with_GMMs/gmm_conditionals.gif" alt="test" />
     
     
-        <p class="image-caption">Conditional distribution for a Gaussian</p>
+        <p class="image-caption">Conditional distribution for a Gaussian.</p>
     
 </div>
 
