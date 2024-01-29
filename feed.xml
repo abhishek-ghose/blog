@@ -6,7 +6,7 @@
         <link>https://blog.quipu-strands.com</link>
         <atom:link href="https://blog.quipu-strands.com/feed.xml" rel="self" type="application/rss+xml" />
         <description>My thought-recorder.</description>
-        <lastBuildDate>Sun, 28 Jan 2024 23:50:02 -0800</lastBuildDate>
+        <lastBuildDate>Mon, 29 Jan 2024 00:05:59 -0800</lastBuildDate>
         
         <item>
             <title>Bayesian Optimization, Part 2: Acquisition Functions</title>
