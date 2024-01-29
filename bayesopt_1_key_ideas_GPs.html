@@ -166,7 +166,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 \arg \max_{x \in \mathcal{X}} f(x)
 \end{aligned}\]
 
-<p>Here, we are maximizing (or minimizing) wrt \(x\) whose values range over a domain \(\mathcal{X}\). The key utility comes from the fact that \(f(x)\) may have one or more of these properties:</p>
+<p>Here, we are maximizing (or minimizing) wrt \(x\) whose values range over a domain \(\mathcal{X}\). BayesOpt’s is useful when \(f(x)\) has one or more of these properties:</p>
 <ol>
   <li>Its mathematical expression is unavailable to us or it is not differentiable.</li>
   <li>Evaluations are noisy, i.e., for the same input \(x\) you might obtain slightly different values of \(f(x)\).</li>
@@ -191,10 +191,10 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 <ol>
   <li>\(f(x)\) is not available for us to inspect (forget differentiability) - it exists in the heads of the human raters. But it can be invoked: ask people to rate cookies.</li>
   <li>Does a person rate the same cookie in the same way in a blind test? Mostly yes, but sometimes, may be not. Also, external factors such as humidity might affect the taste for the same \(x\). Safe to assume \(f(x)\) is noisy.</li>
-  <li>To evaluate \(f(x)\), you need cookies baked according to the recipe \(x\). Baking a batch of cookies and distributing them for assessment consumes time (order of hours or days) and effort, making it expensive to evaluate \(f(x)\).</li>
+  <li>To evaluate \(f(x)\), you need cookies baked according to the recipe \(x\). Baking a batch of cookies and distributing them for assessment consumes time (order of hours or days) and effort, making it expensive to evaluate \(f(x)\). The only upside is an unending supply of cookies would probably make your raters happy!</li>
 </ol>
 
-<p>The only way to optimize \(f(x)\) is to create the most promising recipe based on a thorough examination of the history of recipes and assessments. In hand-wavy-speak, you look at what parts of the recipe worked or didn’t, and then take your best shot. If you can afford more evaluations, add the current recipe and assessment to your history and repeat. BayesOpt formalizes this idea.</p>
+<p>One way to optimize \(f(x)\) is to create the most promising recipe based on a thorough examination of the history of recipes and assessments. Loosely speaking, you tease out parts of past recipes that worked or didn’t, and use that knowledge to assemble a new recipe. Bake a batch of cookies  based on it and have it evaluated by the human raters. Add the current recipe and assessment to your history, and repeat. BayesOpt formalizes this idea.</p>
 
 <p>Of course, as you might suspect, baking cookies is not all this is good for ;-).</p>
 
@@ -205,7 +205,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
   <li>It can also be noisy, e.g., randomly initialized learning like with gradient descent.</li>
 </ol>
 
-<p><a href="http://hyperopt.github.io/hyperopt/">Hyperopt</a> is a popular library that implements this approach, using a specific form of BayesOpt known as the <em>Tree-structured Parzen Estimator (TPE)</em> <a class="citation" href="#Bergstra:2011:AHO:2986459.2986743">(Bergstra et al., 2011)</a>.</p>
+<p><a href="http://hyperopt.github.io/hyperopt/">Hyperopt</a> is a popular library that implements this approach, using a specific form of BayesOpt known as the <em>Tree-structured Parzen Estimator (TPE)</em> <a class="citation" href="#Bergstra:2011:AHO:2986459.2986743">(Bergstra et al., 2011)</a>. There are others such as <a href="https://botorch.org/">BoTorch</a>, <a href="https://docs.ray.io/en/latest/tune/examples/bayesopt_example.html">Ray Tune</a> and <a href="https://github.com/bayesian-optimization/BayesianOptimization">BayesianOptimization</a>.</p>
 
 <p>These kinds of problems are ubiquitous - and the preamble to this article listed such diverse settings where BayesOpt crops up. Applications aside, BayesOpt itself is evolving, e.g., <em>InfoBAX</em> <a class="citation" href="#infobax">(Neiswanger et al., 2021)</a>  uses BayesOpt-like ideas to compute arbitrary function properties (as opposed to just extrema) in a sample-efficient manner, <em>grey-box optimization</em> <a class="citation" href="#astudillo2022thinking">(Astudillo &amp; Frazier, 2022)</a> relaxes the black-box setting to use additional information like gradients.</p>
 
