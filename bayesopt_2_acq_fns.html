@@ -134,7 +134,7 @@ Now we take a look at the other pillar BayesOpt rests on: acquisition functions.
     </ul>
   </li>
   <li><a href="#minimal-code-for-bayesopt" id="markdown-toc-minimal-code-for-bayesopt">Minimal Code for BayesOpt</a></li>
-  <li><a href="#summary-a-pet-peeve-and-resources" id="markdown-toc-summary-a-pet-peeve-and-resources">Summary, a Pet Peeve and Resources</a></li>
+  <li><a href="#summary-a-pet-peeve-and-learning-resources" id="markdown-toc-summary-a-pet-peeve-and-learning-resources">Summary, a Pet Peeve and Learning Resources</a></li>
   <li><a href="#references" id="markdown-toc-references">References</a></li>
 </ul>
 
@@ -651,9 +651,9 @@ This is the output of the above code:</p>
     
 </div>
 
-<h2 id="summary-a-pet-peeve-and-resources">Summary, a Pet Peeve and Resources</h2>
+<h2 id="summary-a-pet-peeve-and-learning-resources">Summary, a Pet Peeve and Learning Resources</h2>
 
-<p>We’re finally at the end of our (somewhat long) discussion of BayesOpt. One way to think of BayesOpt is as a middleman between a real-world function and black-box optimizers such as CMA-ES (the auxiliary optimizers), that aren’t sample-efficient. BayesOpt coaxes these into working by supplying them with hallucinated functions from the surrogate model. And by observing what they find, it estimates the informativeness of various input regions. Accordingly, it requests the real-world function for a specific evaluation. The response is used to adjust the surrogate model, and then the whole process of enlisting the auxiliary optimizers to operate over simulated functions begins anew.</p>
+<p>We’re finally at the end of our (somewhat long) discussion of BayesOpt. One way to think of BayesOpt is as a middleman between a real-world function and black-box optimizers such as CMA-ES (the auxiliary optimizers), that aren’t sample-efficient. BayesOpt coaxes these into working by supplying them with hallucinated functions from the surrogate model. And by observing what they find, e.g., where does the extrema (of these simulated functions) typically lie? How large/small is this extrema?, it estimates the informativeness of various input regions. Accordingly, it requests the real-world function for a specific evaluation. The response is used to adjust the surrogate model, and then the whole process of enlisting the auxiliary optimizers to operate over simulated functions begins anew.</p>
 
 <p>Torturing this metaphor further, you might wonder, “Hey, this seems like a fairly general way to compute other properties of functions, not just optima! Just replace CMA-ES with an arbitrary algorithm!”. And you’d be right - this is exactly the kind of extension <em>InfoBAX</em> <a class="citation" href="#infobax">(Neiswanger et al., 2021)</a> proposes.</p>
 

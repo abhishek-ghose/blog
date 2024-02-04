@@ -130,15 +130,16 @@
   <li>Liquid chromatography <a class="citation" href="#BOELRIJK2023340789">(Boelrijk et al., 2023)</a>.</li>
   <li>Creating low-carbon concrete <a class="citation" href="#ament2023sustainable">(Ament et al., 2023)</a>.</li>
   <li>Plasma control in nuclear fusion <a class="citation" href="#mehta2022an">(Mehta et al., 2022)</a>.</li>
+  <li>Parameter tuning for lasers <a class="citation" href="#20.500.11850/385955">(Kirschner et al., 2019-11)</a></li>
 </ul>
 
-<p>My own usage have been tamer, but also varied: I’ve used it to (a) learn distributions <a class="citation" href="#frontiers_density_tree_nopdf">(Ghose &amp; Ravindran, 2020; Ghose &amp; Ravindran, 2019)</a>, and (b) tune SHAP model explanations to identify informative training instances <a class="citation" href="#XAI_human_in_the_loop">(Nguyen &amp; Ghose, 2023)</a>.</p>
+<p>My own usage has been tamer, but also varied: I’ve used it to (a) learn distributions <a class="citation" href="#frontiers_density_tree_nopdf">(Ghose &amp; Ravindran, 2020; Ghose &amp; Ravindran, 2019)</a>, and (b) tune SHAP model explanations to identify informative training instances <a class="citation" href="#XAI_human_in_the_loop">(Nguyen &amp; Ghose, 2023)</a>.</p>
 
-<p>Why is BayesOpt everywhere? Because the problems it solves are everywhere. It provides tools to optimize an <em>expensive black-box</em> function: given an input, you can only query your function for an output, and you don’t have any other information such as its gradients. Sometimes you mightn’t even have a mathematical form for it. Since its expensive, you can’t query it a lot. Plus, function evaluations might be <em>noisy</em>. The lack of function information is in contrast to the plethora of Gradient Descent variants that seem to be fueling the Deep Learning revolution. But if you think about it, this is a very practical problem. For example, you want to optimize various small and large processes in a factory to increase throughput - what does a gradient even mean here?</p>
+<p>Why is BayesOpt everywhere? Because the problems it solves are everywhere. It provides tools to optimize an <em>noisy and expensive black-box</em> function: given an input, you can only query your function for an output, and you don’t have any other information such as its gradients. Sometimes you mightn’t even have a mathematical form for it. Since its expensive, you can’t query it a lot. Plus, function evaluations might be noisy, i.e., the same input might produce slightly different outputs. The lack of function information is in contrast to the plethora of Gradient Descent variants that seem to be fueling the Deep Learning revolution. But if you think about it, this is a very practical problem. For example, you want to optimize various small and large processes in a factory to increase throughput - what does a gradient even mean here?</p>
 
 <p>I encountered the area in 2018, when, as part of my Ph.D.,  I’d run out of ways to maximize a certain function. And the area has only grown since then. If you’re interested, I’ve an introductory write-up of BayesOpt in my <a href="https://drive.google.com/file/d/1zf_MIWyLY7nxEr5UioUQ7KhOQ1_clYYl/view?usp=drive_link">dissertation</a> (Section 2.1) too, and Section 2.3 there talks about the general problem I wanted to solve. Much of the material here though comes from a talk I gave a while ago (<a href="https://drive.google.com/file/d/1AFs1IqJT6qUi50yZ5XO_uHfgUVEBn2pz/view?usp=drive_link">slides</a>).</p>
 
-<p>OK, let’s get started. This is <strong>part-1 of a two-part series</strong>, where I intend to provide a detailed introduction to BayesOpt. I also introduce <em>Gaussian Processes</em>, and if you’re here just for that you can jump straight to <a href="#gaussian_processes">this section</a>. Here’s an layout for this part:</p>
+<p>OK, let’s get started. This is <strong>part-1 of a two-part series</strong>, where I intend to provide a detailed introduction to BayesOpt. I also introduce <em>Gaussian Processes</em>, and if you’re here just for that you can jump straight to <a href="#gaussian_processes">this section</a>. Here’s a layout for this part:</p>
 
 <ul id="markdown-toc">
   <li><a href="#the-problem" id="markdown-toc-the-problem">The Problem</a></li>
@@ -155,7 +156,7 @@
   <li><a href="#references" id="markdown-toc-references">References</a></li>
 </ul>
 
-<p>In part-2, I’ll talk about <em>acquisition functions</em>, resources, etc.
+<p>In part-2, I’ll talk about <em>acquisition functions</em>, learning resources, etc.
 As you can probably tell, this is going to be a long-ish series; settle in with ample amounts of coffee!</p>
 
 <h2 id="the-problem">The Problem</h2>
@@ -166,7 +167,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 \arg \max_{x \in \mathcal{X}} f(x)
 \end{aligned}\]
 
-<p>Here, we are maximizing (or minimizing) wrt \(x\) whose values range over a domain \(\mathcal{X}\). BayesOpt is useful when \(f(x)\) possesses one or more of these properties:</p>
+<p>Here, we are maximizing (or minimizing) wrt \(x\) whose values range over a domain \(\mathcal{X}\). Reiterating what we said before, BayesOpt is useful when \(f(x)\) possesses one or more of these properties:</p>
 <ol>
   <li>Its mathematical expression is unavailable to us or it is not differentiable.</li>
   <li>Evaluations are noisy, i.e., for the same input \(x\) you might obtain slightly different values of \(f(x)\).</li>
@@ -185,7 +186,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
     
 </div>
 
-<p>The problem is: <em>find a recipe, i.e., amount of flour, sugar, baking temperature and time, etc., for baking cookies that is optimal wrt taste. Taste assessment is made by multiple human raters</em>. The objective function \(f\) is the assessment (averaged, if there are multiple human raters) given the input vector \(x\) of various cookie ingredients and cooking conditions, i.e., \(x\) encodes the recipe.</p>
+<p>The problem is: <em>find a recipe, i.e., amount of flour, sugar, baking temperature and time, etc.,</em> for baking cookies that is <em>optimal wrt taste</em>. Taste assessment is made by multiple human raters. The objective function \(f\) is the assessment (averaged, if there are multiple human raters) given the input vector \(x\) of various cookie ingredients, e.g., quantity of flour, amount of chocolate chips, and cooking conditions, e.g., oven temperature, time to bake. In other words, \(x\) encodes the recipe.</p>
 
 <p>Why is this a good use case for BayesOpt?</p>
 <ol>
@@ -207,7 +208,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 
 <p><a href="http://hyperopt.github.io/hyperopt/">Hyperopt</a> is a popular library that implements this approach, using a specific form of BayesOpt known as the <em>Tree-structured Parzen Estimator (TPE)</em> <a class="citation" href="#Bergstra:2011:AHO:2986459.2986743">(Bergstra et al., 2011)</a>. There are others such as <a href="https://botorch.org/">BoTorch</a>, <a href="https://docs.ray.io/en/latest/tune/examples/bayesopt_example.html">Ray Tune</a> and <a href="https://github.com/bayesian-optimization/BayesianOptimization">BayesianOptimization</a>.</p>
 
-<p>These kinds of problems are ubiquitous - and the preamble to this article listed such diverse settings where BayesOpt crops up. Applications aside, BayesOpt itself is evolving, e.g., <em>InfoBAX</em> <a class="citation" href="#infobax">(Neiswanger et al., 2021)</a>  uses BayesOpt-like ideas to compute arbitrary function properties (as opposed to just extrema) in a sample-efficient manner, <em>grey-box optimization</em> <a class="citation" href="#astudillo2022thinking">(Astudillo &amp; Frazier, 2022)</a> relaxes the black-box setting to use additional information like gradients.</p>
+<p>These kinds of problems are ubiquitous - and the preamble to this article listed diverse settings where BayesOpt crops up. Applications aside, BayesOpt itself is evolving, e.g., <em>InfoBAX</em> <a class="citation" href="#infobax">(Neiswanger et al., 2021)</a>  uses BayesOpt-like ideas to compute arbitrary function properties (as opposed to just extrema) in a sample-efficient manner, <em>grey-box optimization</em> <a class="citation" href="#astudillo2022thinking">(Astudillo &amp; Frazier, 2022)</a> relaxes the black-box setting to utilize additional information like gradients.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -221,9 +222,9 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 
 <h2 id="key-ideas">Key Ideas</h2>
 
-<p>So what makes BayesOpt tick? Recall that BayesOpt is an iterative process, i.e., at each iteration a specific \(x\) is proposed and \(f(x)\) is evaluated. Given that, BayesOpt primarily performs these two steps:</p>
+<p>So what makes BayesOpt tick? Recall that BayesOpt is an iterative process, i.e., at each iteration a specific \(x\) is proposed and \(f(x)\) is evaluated. Essentially, BayesOpt primarily performs these two steps:</p>
 <ol>
-  <li>At a given iteration \(t\), you’ve the function evaluations \(f(x_1), f(x_2), ..., f(x_{t-1})\). You can fit a regression model to this history \(\mathcal{H}=\{(x_i, f(x_i))\}_{i=1}^{i=t-1}\) of \(t-1\) evaluated pairs to approximate the actual objective function over the entire input space \(x\in \mathcal{X}\). We will refer to this approximation as our <strong>surrogate model</strong> \(\hat{f}\).
+  <li>At a given iteration \(t\), you’ve the function evaluations \(f(x_1), f(x_2), ..., f(x_{t-1})\). You can fit a regression model to this <em>history</em> \(\mathcal{H}=\{(x_i, f(x_i))\}_{i=1}^{i=t-1}\) of \(t-1\) evaluated pairs \((x_i, f(x_i))\), to approximate the actual objective function over the entire input space \(x\in \mathcal{X}\). We will refer to this approximation as our <strong>surrogate model</strong> \(\hat{f}\).
 <br />Would any regression model do, e.g., Decision Trees, Neural Networks? Almost - but there is an additional property we require of our regressor, as we’ll shortly see.</li>
   <li>Use \(\hat{f}\) as the function to optimize (instead of \(f\)) and propose a minima \(x_t\). Evaluate \(f(x_t)\), and if it isn’t satisfactory or you haven’t exhausted your optimization budget, you can add \(f(x_t)\) to the history \(\mathcal{H}\), refit \(\hat{f}\) on these \(t\) evaluations, and repeat these steps.</li>
 </ol>
@@ -231,10 +232,10 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 <p>This is a simplified picture, and there are at least two <strong>important</strong> nuances:</p>
 <ul>
   <li>First, the surrogate model needs to have the property that for \(x\in \mathcal{X}\) where the exact value is not known, i.e., \(f(x)\) is not available in history \(\mathcal{H}\), we need to be aware of <em>how uncertain</em> is our guess \(\hat{f}(x)\).</li>
-  <li>And second, in Step 2 above, we don’t always guess the minima based on the current \(\hat{f}\). Sometimes, we might choose to propose an \(x_t\) in the interest of exploration, i.e., in a region of \(\mathcal{X}\) where we haven’t evaluated \(f\) enough. This is the famous <strong>explore-exploit</strong> tradeoff you might’ve heard in the context of <em>Reinforcement Learning</em>; it applies to BayesOpt too. Given the current surrogate model \(\hat{f}\), that was fit on history \(\mathcal{H}\), the next point \(x_t\) on which we wish to <em>acquire</em> \(f(x_t)\) is provided by an <strong>acquisition function</strong>. <br /> In fact, its the acquisition function that needs to know how uncertain \(\hat{f}\) is at various inputs, so it can accurately make the explore-exploit trade-off.</li>
+  <li>And second, in Step 2 above, we don’t always guess the minima based on the current \(\hat{f}\). Sometimes, we might choose to propose an \(x_t\) in the interest of exploration, i.e., in a region of \(\mathcal{X}\) where we haven’t evaluated \(f\) enough. This is the famous <strong>explore-exploit</strong> tradeoff you might’ve heard in the context of <em>Reinforcement Learning</em>; it applies to BayesOpt too. Given the current surrogate model \(\hat{f}\), that was fit on history \(\mathcal{H}\), the next point \(x_t\) on which we wish to <em>acquire</em> \(f(x_t)\) is provided by an <strong>acquisition function</strong>. <br /> In fact, its the acquisition function that needs to know how uncertain \(\hat{f}\) is at various inputs, so it can judiciously make the explore-exploit trade-off.</li>
 </ul>
 
-<p>Let’s visualize these ideas for maximization of an univariate function, i.e., \(\mathcal{X}\) is a line.</p>
+<p>Let’s visualize these ideas for maximization of a univariate function, i.e., \(\mathcal{X}\) is a line.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -242,15 +243,15 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
         <img src="/assets/bayesopt/BO_iters_EI_1_iters.png" alt="test" />
     
     
-        <p class="image-caption">At an iteration of BayesOpt. The bottom plot shows the acquisition function on the input space.</p>
+        <p class="image-caption">At an iteration of BayesOpt. The bottom plot shows the acquisition function values over the input space.</p>
     
 </div>
 
-<p>The image above show two plots stacked vertically. Start with the top plot, and note the legend there. This shows what things look like with BayesOpt at its \(4^{th}\) iteration. \(f\) is shown with a black solid line and red dots mark the \(3\) prior evaluations of \(f\). A surrogate model \(\hat{f}\) fitted to these dots is shown as a blue dashed line. Outside of the red dots, we’re uncertain of the precise values, and this is shown as an envelope of somewhat likely values, i.e., those that fall within <em>one standard deviation</em> (denoted as \(1\sigma\)) of our <em>mean</em> guess (the dashed blue line). We’ll discuss how to obtain these estimates in the next section, using <em>Gaussian Processes</em>. At the red dots, the envelopes disappear because there is no guesswork involved. The envelope balloons up as we move into regions away from any red dot. The current max. is shown by the horizontal red line.</p>
+<p>The image above show two plots stacked vertically. Start with the top plot, and note the legend there. This shows what things look like with BayesOpt at its \(4^{th}\) iteration. \(f\) is shown with a black solid line and red dots mark the \(3\) prior evaluations of \(f\). A surrogate model \(\hat{f}\) fitted to these dots is shown as a blue dashed line. Outside of the red dots, we’re uncertain of the precise values, and this is shown as an envelope of somewhat likely values, i.e., those that fall within <em>one standard deviation</em> (denoted as \(1\sigma\)) of our <em>mean</em> guess (the dashed blue line). We’ll discuss how to obtain these estimates in the next section, using <em>Gaussian Processes</em>. At the red dots, the envelopes disappear because there is no guesswork involved. The envelope balloons up as we move into regions away from the red dots. The current discovered max. is shown by the horizontal red line.</p>
 
-<p>The lower plot shows what the acquisition function looks like over \(\mathcal{X}\). We’ll see how its exactly calculated later (spoiler: there are many ways), but the red dot in this plot denotes the greatest acquisition value.</p>
+<p>The bottom plot shows what the acquisition function looks like over \(\mathcal{X}\). We’ll see how its exactly calculated later (spoiler: there are many ways), but the red dot in this plot denotes the greatest acquisition value.</p>
 
-<p>Lets move onto the \(5^{th}\) iteration, as shown below. Now we have evaluated \(f\) on \(x\) the acquisition function had suggested, and this recent evaluation is shown with a square box. This leads to a higher estimated maxima - horizontal red line. The other steps are repeated: \(\hat{f}\) is refit on this data with 4 points, which means its uncertainty envelopes are recomputed as well. Note how the envelope nearly disappears in the interval \(\sim [11.5, 12.25]\) because of two evaluations in close proximity. We also re-calculate the acquisition values over \(\mathcal{X}\). Note that this time though, the acquisition function has a single hump - it seems reasonably sure about where the maxima lies.</p>
+<p>Lets move onto the \(5^{th}\) iteration, as shown below. Now we have evaluated \(f\) on \(x\) the acquisition function had suggested, and this recent evaluation is shown with a square box. This leads to a higher estimated maxima - horizontal red line. The other steps are repeated: \(\hat{f}\) is refit on this data with 4 points, which means its uncertainty envelopes are recomputed as well. Note how the envelope nearly disappears in the interval \(\sim [11.5, 12.25]\) because of two evaluations, i.e., red dots, in close proximity. We also re-calculate the acquisition values over \(\mathcal{X}\). Note that this time though, the acquisition function has a single hump - it seems reasonably sure about where the maxima lies.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -292,7 +293,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
     
 </div>
 
-<p>The first point, i.e., at \(t=1\), is picked via random sampling here: \(\mathcal{U}(\mathcal{X})\) denotes <em>uniform</em> distribution over the domain \(\mathcal{X}\). You can begin with known prior evaluations too - this is helpful if you already know something about the function, e.g., where the maxima is likely to occur.</p>
+<p>The first point, i.e., at \(t=1\), is picked via random sampling here: \(\mathcal{U}(\mathcal{X})\) denotes <em>uniform</em> distribution over the domain \(\mathcal{X}\). You can begin with known prior evaluations too - this is helpful if you already know something about the function, e.g., where the maxima is likely to occur. Even prior known evaluations at arbitrary points help, as they save some exploration.</p>
 
 <p>Look at Line 7 - we need to maximize for the acquisition value, and that also would require an optimizer. Here’s a question you might ask: did we just translate one optimization problem into another? What did we gain?</p>
 
@@ -305,7 +306,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 
 <p><span style="color:#EE2967"><strong>NOTE</strong></span>:</p>
 
-<p>This gives us another perspective on BayesOpt. There already exist black-box optimizers like DIRECT and CMA-ES. This aspect is not new. What’s different here is evaluating the objective function is expensive, and hence, inputs must be strategically picked so as to discover the optima in the smallest number of evaluations. In this view, BayesOpt provides a way to make other black-box optimizers <em>sample efficient</em>.</p>
+<p>This gives us another perspective on BayesOpt. There already exist black-box optimizers like DIRECT and CMA-ES. This aspect is not new. What’s different here is evaluating the objective function is expensive, and hence, inputs must be strategically picked so as to discover the optima in the minimum number of evaluations. In this view, BayesOpt provides a way to make other black-box optimizers <em>sample efficient</em>.</p>
 
 <hr style="height:1px;border-width:0;background-color:#EE2967" />
 <p><br /></p>
@@ -324,7 +325,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 
 <p>Speaking of GD, let’s compare with it to better conceptually situate BayesOpt. On a minimization problem this time.</p>
 
-<p>In the plots below, the top row shows BayesOpt and vanilla GD minimizing the same function, with the same starting point \(\sim 0.3\), with a budget of \(T=100\) iterations. Points recently visited are both larger and darker. We use up all of \(T\) for BayesOpt but exit early for GD when the minima value doesn’t change appreciably.</p>
+<p>In the plots below, the top row shows BayesOpt and vanilla GD minimizing the same function, with the same starting point of \(0.3\), with a budget of \(T=100\) iterations. Points recently visited are both larger and darker. We use up all of \(T\) for BayesOpt but exit early for GD when the minima value doesn’t change appreciably.</p>
 
 <p>The lower row shows <em>Kernel Density Plots (KDE)</em> visualizing where each optimizer (in the same column) spent its time.</p>
 
@@ -342,7 +343,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 <ul>
   <li>GD (right column) spends most of its time getting to the closest local minima. The KDE plot shows this focus. The minima found is \(f(-0.04)=-0.1\). All recent points visited are concentrated around this minima, and the “shape” of the path is like a comet’s tail.</li>
   <li>BayesOpt (left column) is more “global” because of its exploration, and manages to find the global minima \(f(-2)=-9.81\). It doesn’t always find the global minima - just that here it does. The KDE plot shows that while BayesOpt also focuses on the global minima, its attention is fairly diffuse (look at the y-axes of both KDE plots). You can also see this from the scattered placement of the large red circles.</li>
-  <li>As a follow-up to the previous point, the fact that BayesOpt spends much of its function evaluation budget closer to the minima, is a characteristic of these methods. That’s to say, while it tries to model the whole input space, it allocates a larger budget to regions closer to the minima. This is the region that’s important to us. This is what you would expect from a smart search algorithm.</li>
+  <li>As a follow-up to the previous point, the fact that BayesOpt spends much of its function evaluation budget closer to the minima, is a characteristic behavior of these methods. That’s to say, while it tries to model the whole input space, it allocates a larger budget to regions closer to the minima. This is the region that’s important to us. This is what you would expect from a smart search algorithm.</li>
 </ul>
 
 <p>To be fair, you wouldn’t typically employ GD in this naive fashion - you would probably use momentum, use some kind of adaptive learning rate (this was fixed here) and perform multiple starts, but this example is more illustrative than practical.</p>
@@ -407,12 +408,12 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     
 </div>
 
-<p>Consider the first plot. The “forward slant” of the Gaussian exists because \(\Sigma_{12}=\Sigma_{21}=2\), and thus \(Y_1\) and \(Y_2\) are positively correlated. As possible values for \(Y_1\) increase (going from left to right), possible values \(y_2\) also increase (goes from bottom to top).</p>
+<p>Consider the first plot. The “forward slant” of the Gaussian exists because \(\Sigma_{12}=\Sigma_{21}=2\), and thus \(Y_1\) and \(Y_2\) are positively correlated. As possible values for \(Y_1\) increase (going from left to right), possible values \(Y_2\) also increase (goes from bottom to top).</p>
 
 <p>Now, here’s an outlandish idea: what if we let the Gaussian random variable \(Y_i\) represent all possible outputs for \(x_i\)? And the covariance matrix is defined by input similarities? Specifically, if \(k(x_i, x_j)\) denotes the similarity between \(x_i\) and \(x_j\), we let \(\Sigma_{ij} = k(x_i, x_j)\). This gets us at least the following benefits:</p>
 <ul>
   <li>The values \(Y_i\) can take for a given \(Y_j\) are constrained by \(\Sigma_{ij}\), which here is the similarity in the inputs \(x_i\) and \(x_j\). This is a good way to enforce smoothness.</li>
-  <li>Since \(Y_i\) is a random variable, we can infer some sort of a distribution over the values it can take. This can be translated into uncertainty; informally, flatter distributions indicate greater uncertainty. This is also something we want.</li>
+  <li>Since \(Y_i\) is a random variable, we can infer some sort of a distribution over the values it can take, based on our assumption that the joint distribution is Normal. Which is to say, we may think of our current knowledge of the true outputs corresponding to a given \(x_i\) as following some distribution, i.e., we believe some values are very likely (the mean of the distribution), some not so much, etc. This can be translated into uncertainty; informally, flatter distributions indicate greater uncertainty. This is also something we wanted.</li>
 </ul>
 
 <p>Effectively, we are saying that the function \(f\) we want to fit has its outputs jointly distributed as a Gaussian, where the inputs decide their similarity via the covariance matrix. Yes, this is unusual … and awesome. Let’s tie all these pieces together in the next sections.</p>
@@ -426,11 +427,12 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <p>Here, \(Y\) is a random variable that takes on all possible output values, i.e.,  \(Y \in \{y_i\}\). Note that instead of a covariance matrix \(\Sigma\), I am using the standard notation for variance \(\sigma^2\), since this is a 1D Gaussian.</p>
 
-<p>So, what are we saying? The Gaussian distribution we’re interested in is multivariate and has <em>one random variable dedicated to one output</em>. The <em>distribution</em> of one output is related to the <em>distribution</em> of another output - and the extent of this coupling is determined by the similarity in their inputs. The following is what we <strong>ARE</strong> saying:</p>
+<p>So, what are we saying? The Gaussian distribution we’re interested in is multivariate and has <em>one random variable dedicated to one output</em>. The distribution of the output describes our current knowledge of what the output is. The <em>distribution</em> of one output is related to the <em>distribution</em> of another output - and the extent of this coupling is determined by the similarity in their inputs. Mathematically, this is what we <strong>ARE</strong> saying:</p>
 
 \[p(Y_1, Y_2, Y_3, ...) \sim \mathcal{N}(\mu, \Sigma)\]
 
-<p>Here, \(Y_i\) is a random variable that represents possible outputs <em>just for</em> \(x_i\). A specific observed \(y_i\) is understood to be the value of the corresponding random variable \(Y_i\) given our data. In other words, \(Y_i\) can take other values too, according to some univariate distribution (spoiler: as we shall soon see, this is <em>also</em> a Gaussian) - its just that, as per our data, \(Y_i=y_i\). Also, now we’ve a covariance matrix \(\Sigma\), which is defined as described earlier: based on input similarities.</p>
+<p>Here the precise coupling between \(Y_i\) and \(Y_j\) is enforced by the similarity in the respective inputs, \(\Sigma_{ij}=k(x_i, x_j)\).
+<!--Here, $$Y_i$$ is a random variable that represents possible outputs *just for* $$x_i$$. A specific observed $$y_i$$ is understood to be the value of the corresponding random variable $$Y_i$$ given our data. In other words, $$Y_i$$ can take other values too, according to some univariate distribution (spoiler: as we shall soon see, this is *also* a Gaussian) - its just that, as per our data, $$Y_i=y_i$$. Also, now we've a covariance matrix $$\Sigma$$, which is defined as described earlier: based on input similarities.--></p>
 <hr style="height:1px;border-width:0;background-color:#EE2967" />
 <p><br /></p>
 
@@ -440,14 +442,14 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <p>Let’s formalize all of this stuff. But fear not - there will be pictures!</p>
 
-<p>We’ll talk about the following sets points:</p>
+<p>We’ll talk about the following sets of points:</p>
 <ol>
   <li>Training data \((x_i, y_i)_{i=1}^N\).</li>
   <li>Test data or inputs where we want to evaluate the learned function: \(x_i^*, i=1 ... M\).</li>
   <li>All other points in the input space \(\tilde{x}_k\).</li>
 </ol>
 
-<p>The corresponding uppercase letters would indicate a set of points, e.g., \(X\), \(X^*\), \(\tilde{X}\). This notation would be overloaded to imply matrices at times, e.g., \(X\in \mathbb{R}^{N\times d}\) where \(d\) is the number of dimensions. The number of elements in \(\tilde{X}\) is <em>potentially infinite</em>. Also, as suggested earlier, the random variables corresponding to the outcomes \(y_i\), \(y_i^*\) and \(\tilde{y}_i\) would be denoted by \(Y_i\), \(Y_i^*\) and \(\tilde{Y}_i\) respectively.</p>
+<p>The corresponding uppercase letters would indicate a set of points, e.g., \(X\), \(X^*\), \(\tilde{X}\). This notation would be overloaded to imply matrices at times, e.g., \(X\in \mathbb{R}^{N\times d}\) where \(d\) is the number of dimensions of the data. The number of elements in \(\tilde{X}\) is <em>potentially infinite</em>. Also, as mentioned earlier, we want to talk about a range of outcomes for a particular input, and hence the outcomes would be denoted by random variables \(Y_i\), \(Y_i^*\) and \(\tilde{Y}_i\). We can obviously talk about specific values these random variables can take, e.g., \(Y_i=y_i\).</p>
 
 <p>The model we’re proposing above is:</p>
 
@@ -473,7 +475,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     <p><strong>Me</strong>: We are only going to be dealing with \(X\) (training data) and \(X^*\) (test data) which are finite. I mentioned \(\tilde{X}\) to write down the overall model.</p>
   </li>
   <li><strong>You</strong>: Hmm, and what distribution do the finite parts follow?</li>
-  <li><strong>Me</strong>: Gaussian. Here’s why. Gaussian distributions have this interesting property that if you were to focus on only a subset of the random variables from the original Gaussian, then you’d see they also follow a Gaussian distribution (known as <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Marginal_distributions">marginalization</a>). The parameters for this Gaussian is easily obtained by retaining parts of the original parameters that involve the current subset. For example, if the random variables \(t_1, t_2, t_3, t_4\) follow a Gaussian distribution, then \([t_1, t_3]\) is a Gaussian with the parameters in <span style="color:#EE2967">this</span> color.</li>
+  <li><strong>Me</strong>: Gaussian. Here’s why. Gaussian distributions have this interesting property that if you were to focus on only a subset of the random variables from the original Gaussian, then you’d see they also follow a Gaussian distribution (known as <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Marginal_distributions">marginalization</a>). The parameters for this Gaussian is easily obtained by only retaining parts of the original parameters that involve the current subset. For example, if the random variables \(t_1, t_2, t_3, t_4\) follow a Gaussian distribution, then \([t_1, t_3]\) is a Gaussian with the parameters in <span style="color:#EE2967">this</span> color.</li>
 </ul>
 
 \[[{\color{WildStrawberry}{t_1}}, t_2, {\color{WildStrawberry}{t_3}}, t_4] \sim \mathcal{N}([{\color{WildStrawberry}{\mu_1}}, \mu_2, {\color{WildStrawberry}{\mu_3}}, \mu_4], 
@@ -486,14 +488,14 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 <ul>
   <li><strong>You</strong>: This helps us how?</li>
   <li>
-    <p><strong>Me</strong>: We can talk only about the train and test data as coming from a Gaussian. Yes, there is a “larger” Gaussian that conceptually exists and deals with the infinite points in the input space, but we can talk only about our marginalization of interest without breaking this conceptual model. So, what we’ll really focus on this distribution:
+    <p><strong>Me</strong>: We can talk only about the train and test data as coming from a Gaussian. Yes, there is a “larger” Gaussian that conceptually exists and deals with the infinite points in the input space, but we can talk only about our marginalization of interest without breaking this conceptual model. So, what we’ll really focus on is this distribution:
 \(p(Y_1, ..., Y_N, Y_1^*, ..., Y_M^*) \sim \mathcal{N}(\mu, \Sigma)\). You don’t see the inputs in this expression, but remember they’re hiding within the \(\Sigma\).</p>
   </li>
   <li><strong>You</strong>: I see. So we worry only about the train and test data. But how do derive the test outcomes given the training data? This regression problem is why we’re here after all.</li>
   <li>
-    <p><strong>Me</strong>: If you look at the expression above, we’re asking for the <em>conditional</em> distribution given training outcomes, i.e., \(p(Y_1^*, ..., Y_M^* \vert {\color{WildStrawberry}{Y_1=y_1}}, {\color{WildStrawberry}{Y_2=y_2}}, ..., {\color{WildStrawberry}{Y_N=y_N}})\). Guess what this conditional distribution is … yes, <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Conditional_distributions">also a Gaussian</a>. And its parameters are expressible in terms of \({\color{WildStrawberry}{X}}\), \({\color{WildStrawberry}{Y}}\), \({\color{WildStrawberry}{X^*}}\), \({\color{WildStrawberry}{\mu}}\) and \({\color{WildStrawberry}{\Sigma}}\) . This is it - <strong>this is the big reveal</strong>. The random variables corresponding to our test outputs are  jointly Gaussian, whose parameters are calculable in closed form.</p>
+    <p><strong>Me</strong>: If you look at the expression above, we’re asking for the <em>conditional</em> distribution given training outcomes, i.e., \(p(Y_1^*, ..., Y_M^* \vert {\color{WildStrawberry}{Y_1=y_1}}, {\color{WildStrawberry}{Y_2=y_2}}, ..., {\color{WildStrawberry}{Y_N=y_N}})\). Guess what this conditional distribution is … yes, also a Gaussian. This has nothing to do with GPs; its a property of the Gaussian distribution that its <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Conditional_distributions">conditionals are Gaussian</a> as well. And its parameters are expressible in terms of \({\color{WildStrawberry}{X}}\), \({\color{WildStrawberry}{Y}}\), \({\color{WildStrawberry}{X^*}}\), \({\color{WildStrawberry}{\mu}}\) and \({\color{WildStrawberry}{\Sigma}}\) . This is it - <strong>this is the big reveal</strong>. The random variables corresponding to our test outputs are  jointly Gaussian, whose parameters are calculable in closed form.</p>
 
-    <p>You can also calculate the distribution of just one \(Y_i^*\). No points for guessing what this distribution is: by the marginalization property this is a (univariate) Gaussian since \(p(Y_1^*,...)\) is a Gaussian. With a distribution for \(Y_i^*\) we can now do the following:</p>
+    <p>You can also calculate the distribution of just one \(Y_i^*\). No points for guessing what this distribution is: by the marginalization property this is a (univariate) Gaussian since \(p(Y_1^*,..., Y_M^*)\) is a Gaussian. With a distribution for \(Y_i^*\) we can now do the following:</p>
     <ul>
       <li>Calculate the <em>mean value</em> for \(Y_i\) - this serves as the regression value for input \(x_i\).</li>
       <li>Assign an <em>uncertainty</em> score to \(Y_i\), based on the flatness of its Gaussian.</li>
@@ -503,9 +505,13 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <p>Hopefully, it starting to look like things are coming together. A few more details should seal the deal:</p>
 <ol>
-  <li>We set \({\color{WildStrawberry}{\mu=0}}\). This is a convenient <em>assumption</em> but works well in practice because (we shall see soon) the conditional distribution we want is calculated based on the <em>observed values</em>. If you’re interested, <a href="https://math.stackexchange.com/questions/1193772/why-the-mean-value-of-a-gaussian-process-is-usually-set-to-zero">this</a> discussion on StackExchange discusses the validity of such an assumption.</li>
+  <li>We set \({\color{WildStrawberry}{\mu=0}}\). This is a convenient <em>assumption</em> but works well in practice because (we shall see soon) the conditional distribution we want is strongly influenced by the actual training data. If you’re interested, <a href="https://math.stackexchange.com/questions/1193772/why-the-mean-value-of-a-gaussian-process-is-usually-set-to-zero">this</a> discussion on StackExchange discusses the validity of such an assumption.</li>
   <li>Lets start referring to the covariance matrix as the <em>kernel matrix</em> \(K\) to emphasize that it consists of similarity values. \(k()\) itself is known as the <em>kernel function</em>. To rephrase something we saw earlier, \({\color{WildStrawberry}{K_{ij}}}=k(z_i, z_j)\), where \(z\) comes from one of \(X\),  \(X^*\) or \(\tilde{X}\), based on the positions \(i\) and \(j\).</li>
-  <li>What is an example of a kernel function? A very common example is the <em>Radial Basis Function (RBF)</em> kernel \({\color{WildStrawberry}{k(z_i, z_j) = e^{-\vert\vert z_i-z_j \vert\vert^2/(2L^2)}}}\). If \(z_i\) and \(z_j\) are close, say, \({\color{WildStrawberry}{\vert\vert z_i-z_j \vert\vert \approx 0}}\), then we’ve \({\color{WildStrawberry}{k(z_i, z_j) \approx 1}}\) (for a given \(L\)). On the other hand, if \({\color{WildStrawberry}{\vert\vert z_i-z_j \vert\vert \to \infty}}\), then \({\color{WildStrawberry}{k(z_i, z_j) \to 0}}\). This is how we would expect similarities to behave. Here \({\color{WildStrawberry}{L}}\) is known as the <em>length scale</em>, and we’ll explain its role soon. Of course, there are many other kernels, but we’ll use the RBF kernel in our examples here. For others, <a href="https://www.cs.toronto.edu/~duvenaud/cookbook/">this is a good reference</a>.</li>
+  <li>
+    <p>What is an example of a kernel function? A very common example is the <em>Radial Basis Function (RBF)</em> kernel \({\color{WildStrawberry}{k(z_i, z_j) = e^{-\vert\vert z_i-z_j \vert\vert^2/(2L^2)}}}\). If \(z_i\) and \(z_j\) are close, say, \({\color{WildStrawberry}{\vert\vert z_i-z_j \vert\vert \approx 0}}\), then we’ve \({\color{WildStrawberry}{k(z_i, z_j) \approx 1}}\) (for a given \(L\)). On the other hand, if \({\color{WildStrawberry}{\vert\vert z_i-z_j \vert\vert \to \infty}}\), then \({\color{WildStrawberry}{k(z_i, z_j) \to 0}}\). This is how we would expect similarities to behave. Here \({\color{WildStrawberry}{L}}\) is known as the <em>length scale</em>, and we’ll explain its role soon. Of course, there are many other kernels, but we’ll use the RBF kernel in our examples here. For others, <a href="https://www.cs.toronto.edu/~duvenaud/cookbook/">this is a good reference</a>.</p>
+
+    <p>Can any notion of similarity be written up as a kernel function? Unfortunately not - the matrix \(K\) needs to be <a href="https://en.wikipedia.org/wiki/Definite_matrix">positive-definite</a>. This is a property we won’t delve into here. This is not particularly restrictive for these reasons: (a) there are many useful similarity functions that follow this property, and (b) you can use such valid kernel functions to compose new ones in <a href="https://mlweb.loria.fr/book/en/constructingkernels.html">certain ways</a> that guarantee that the new kernel also possesses this property.</p>
+  </li>
   <li>We’ll think of \(K\) as being partitioned into four sections based on the data among which similarities are computed. For example, the partition \(K_{XX^*}\) implies this submatrix contains similarities between instances in \(X\) and \(X^*\). This is shown below.</li>
 </ol>
 
@@ -604,7 +610,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     
 </div>
 
-<p>We had briefly mentioned that the distribution for a single output random variable \(Y^*_i\) is also a Gaussian. Now that we can plot multiple values for a \(y_i\) we can see that for ourselves - by constructing a KDE plot sideways on its values. We show this KDE plot for a couple of locations below.</p>
+<p>We had briefly mentioned that the distribution for a single output random variable \(Y^*_i\) is also a Gaussian. Now that we can plot multiple values for an input \(x_i\) we can see that for ourselves - by constructing a KDE plot sideways on its values. We show this KDE plot for a couple of locations below.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -649,7 +655,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 <p>In the previous section we motivated GPs by tying in our requirements with properties of the multivariate Gaussian. That might’ve seemed a bit out of the left field. But there is another way to look at GPs that is closer to familiar territory.</p>
 
 <p>Consider  <em>Linear Regression</em> for the case that we want to learn model parameters in a Bayesian fashion.<br />
-As before, let test data be \(X^* \in \mathbb{R}^{M \times d}\), \(Y^* \in \mathbb{R}^{M \times 1}\). Let train data be denoted by \(D\). We assume a linear model where \(y^*_i \sim \mathcal{N}(W_{[1...d]}x^*_i+W_0, \sigma^2)\). This denotes that \(y^*_i\) is almost linear in \(x_i\), i.e.,  \(y^*_i=W_{[1...d]}x^*_i\), but exhibits some perturbation or noise in the real data. This noisy linear relationship is concisely represented using a Normal distribution with a mean that linearly depends on \(x^*\) with variance \(\sigma^2\). Effectively, every \(y^*\) gets its own distribution, but the level of noise - captured by \(\sigma\) - is assumed fixed for the data. We also assume the prior over weights \(p(W)\) is Gaussian. Here \(W\) is all weights, i.e., \(W=[W_0, W_1, ..., W_{d}]\).</p>
+As before, let test data be \(X^* \in \mathbb{R}^{M \times d}\), \(Y^* \in \mathbb{R}^{M \times 1}\). Let train data be denoted by \(D\). We assume a linear model where \(y^*_i \sim \mathcal{N}(W_{[1...d]}x^*_i+W_0, \sigma^2)\). This denotes that \(y^*_i\) is almost linear in \(x_i\), i.e.,  \(y^*_i=W_{[1...d]}x^*_i\), but exhibits some perturbation or noise in the real world. This noisy linear relationship is concisely represented using a Normal distribution with a mean that linearly depends on \(x^*\) with variance \(\sigma^2\). Effectively, every \(y^*\) gets its own distribution, but the level of noise - captured by \(\sigma\) - is assumed fixed for the data. We also assume the prior over weights \(p(W)\) is Gaussian. Here \(W\) is all weights, i.e., \(W=[W_0, W_1, ..., W_{d}]\).</p>
 
 <p>If we write down the expression for \(p(Y^* \vert X^*, D)\), we’ll notice that it involves a bunch of Gaussians that combine together to finally simplify into a Gaussian. This is shown below.</p>
 
@@ -683,7 +689,7 @@ As before, let test data be \(X^* \in \mathbb{R}^{M \times d}\), \(Y^* \in \math
 <p>So, really, this output joint being a Gaussian is not new. We just mightn’t have thought of Linear Regression (of all things!) in this manner. I think all of this nicely segues into GPs if you consider the following arguments:</p>
 <ul>
   <li>The output joint is a Gaussian - why not a directly model it?</li>
-  <li>The effect of \(W\) is to constrain the covariance of this distribution in certain ways. But if we’re directly modeling the output joint, we don’t need these restrictions - let just use any valid covariance matrix!</li>
+  <li>The effect of \(W\) here is to constrain the covariance of this distribution in certain ways, so that the model is linear. But if we’re directly modeling the output joint distribution, we don’t need these restrictions - lets just use a covariance/kernel matrix that faithfully expresses the similarity in inputs we want!</li>
 </ul>
 
 <p>In a way, GPs “cut out the middleman” from the linear model, by replacing its covariances with an arbitrarily expressive kernel matrix.</p>
@@ -725,7 +731,7 @@ As before, let test data be \(X^* \in \mathbb{R}^{M \times d}\), \(Y^* \in \math
 
 <p>This is it. Really. The above code is training, prediction and prediction probabilities all rolled into one.</p>
 
-<p>Something to note here is that because of practical issues with numerical stability, such as those that might arise in calculating the covariance matrix, an alternative is to sample from the standard Normal (one with zero mean and unit variance) and adjust the output later (for an example, see how the <a href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky decomposition</a> is used  <a href="https://youtu.be/4vGiHC35j9s?si=w4iDRlLPSsZJ1jhy&amp;t=3809">here</a>).</p>
+<p>Something to note here is that because of practical issues with numerical stability, such as those that might arise in calculating the covariance matrix, an alternative is to sample from the <em>standard Normal</em> (one with zero mean and unit variance) and adjust the output later (for an example, see how the <a href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky decomposition</a> is used  <a href="https://youtu.be/4vGiHC35j9s?si=w4iDRlLPSsZJ1jhy&amp;t=3809">here</a>).</p>
 
 <p>Do we want to take it out for a spin? Of course we do! Let’s generate some data on a sine curve, and sample some functions.</p>
 
@@ -777,7 +783,7 @@ As before, let test data be \(X^* \in \mathbb{R}^{M \times d}\), \(Y^* \in \math
 
 <h3 id="summary-and-challenges">Summary and Challenges</h3>
 
-<p>We are finally at the end of our whirlwind tour of GPs. I think of them as a neat way to fit complex models and obtain uncertainty quantification. And they’re concise. So, why haven’t they taken over the world? A big problem is their runtime.</p>
+<p>We are finally at the end of our whirlwind tour of GPs. I think of them as a neat way to fit complex models and obtain uncertainty quantification. They can also model noise in the observed data - something we haven’t covered here. And they’re concise. So, why haven’t they taken over the world? A big problem is their runtime.</p>
 
 <p>Note that GPs don’t really have a training phase (at least that’s we’ll assume here, but in practice, we do need to learn parameters such as the length scale) and keep around all the training data for test-time predictions. Unfortunately the volume of this data comes into play as expensive matrix operations at test-time. Recall these final parameters:</p>
 <ul>
@@ -890,6 +896,22 @@ As before, let test data be \(X^* \in \mathbb{R}^{M \times d}\), \(Y^* \in \math
     
         
     <div class="dropDownAbstract" id="mehta2022an-abstract">
+    
+    </div>
+
+</li>
+<li><span id="20.500.11850/385955">Kirschner, J., Nonnenmacher, M., Mutný, M., Krause, A., Hiller, N., Ischebeck, R., &amp; Adelmann, A. (2019-11). Bayesian Optimisation for Fast and Safe Parameter Tuning of SwissFEL [Conference Paper]. In W. Decking, H. Sinn, G. Geloni, S. Schreiber, M. Marx, &amp; V. R. W. Schaa (Eds.), <i>FEL2019, Proceedings of the 39th International Free-Electron Laser Conference</i> (pp. 707–710). JACoW Publishing. https://doi.org/10.3929/ethz-b-000385955</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="20.500.11850/385955-abstract">
     
     </div>
 
