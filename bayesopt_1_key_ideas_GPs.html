@@ -431,7 +431,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 \[p(Y_1, Y_2, Y_3, ...) \sim \mathcal{N}(\mu, \Sigma)\]
 
-<p>Here the precise coupling between \(Y_i\) and \(Y_j\) is enforced by the similarity in the respective inputs, \(\Sigma_{ij}=k(x_i, x_j)\).
+<p>The precise coupling between \(Y_i\) and \(Y_j\) is enforced by the similarity in the respective inputs, \(\Sigma_{ij}=k(x_i, x_j)\).
 <!--Here, $$Y_i$$ is a random variable that represents possible outputs *just for* $$x_i$$. A specific observed $$y_i$$ is understood to be the value of the corresponding random variable $$Y_i$$ given our data. In other words, $$Y_i$$ can take other values too, according to some univariate distribution (spoiler: as we shall soon see, this is *also* a Gaussian) - its just that, as per our data, $$Y_i=y_i$$. Also, now we've a covariance matrix $$\Sigma$$, which is defined as described earlier: based on input similarities.--></p>
 <hr style="height:1px;border-width:0;background-color:#EE2967" />
 <p><br /></p>
@@ -510,7 +510,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
   <li>
     <p>What is an example of a kernel function? A very common example is the <em>Radial Basis Function (RBF)</em> kernel \({\color{WildStrawberry}{k(z_i, z_j) = e^{-\vert\vert z_i-z_j \vert\vert^2/(2L^2)}}}\). If \(z_i\) and \(z_j\) are close, say, \({\color{WildStrawberry}{\vert\vert z_i-z_j \vert\vert \approx 0}}\), then we’ve \({\color{WildStrawberry}{k(z_i, z_j) \approx 1}}\) (for a given \(L\)). On the other hand, if \({\color{WildStrawberry}{\vert\vert z_i-z_j \vert\vert \to \infty}}\), then \({\color{WildStrawberry}{k(z_i, z_j) \to 0}}\). This is how we would expect similarities to behave. Here \({\color{WildStrawberry}{L}}\) is known as the <em>length scale</em>, and we’ll explain its role soon. Of course, there are many other kernels, but we’ll use the RBF kernel in our examples here. For others, <a href="https://www.cs.toronto.edu/~duvenaud/cookbook/">this is a good reference</a>.</p>
 
-    <p>Can any notion of similarity be written up as a kernel function? Unfortunately not - the matrix \(K\) needs to be <a href="https://en.wikipedia.org/wiki/Definite_matrix">positive-definite</a>. This is a property we won’t delve into here. This is not particularly restrictive for these reasons: (a) there are many useful similarity functions that follow this property, and (b) you can use such valid kernel functions to compose new ones in <a href="https://mlweb.loria.fr/book/en/constructingkernels.html">certain ways</a> that guarantee that the new kernel also possesses this property.</p>
+    <p>Can any notion of similarity be written up as a kernel function? Unfortunately not - the matrix \(K\) needs to be <a href="https://en.wikipedia.org/wiki/Definite_matrix">positive semi-definite</a>. This is a property we won’t delve into here. This is not particularly restrictive for these reasons: (a) there are many useful similarity functions that follow this property, and (b) you can use such valid kernel functions to compose new ones in <a href="https://mlweb.loria.fr/book/en/constructingkernels.html">certain ways</a> that guarantee that the new kernel also possesses this property.</p>
   </li>
   <li>We’ll think of \(K\) as being partitioned into four sections based on the data among which similarities are computed. For example, the partition \(K_{XX^*}\) implies this submatrix contains similarities between instances in \(X\) and \(X^*\). This is shown below.</li>
 </ol>
