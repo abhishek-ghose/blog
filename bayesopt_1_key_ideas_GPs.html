@@ -425,9 +425,9 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 \[Y \sim \mathcal{N}(\mu, \sigma^2)\]
 
-<p>Here, \(Y\) is a random variable that takes on all possible output values, i.e.,  \(Y \in \{y_i\}\). Note that instead of a covariance matrix \(\Sigma\), I am using the standard notation for variance \(\sigma^2\), since this is a 1D Gaussian.</p>
+<p>Here, \(Y\) is a random variable that takes on all possible output values across inputs, where we assume exactly one “best-guess” output for an input, i.e.,  \(Y \in \{y_i\}\). Note that here I am assigning one specific \(y_i\), however we may arrive at it, for an \(x_i\). This is known as a <a href="https://en.wikipedia.org/wiki/Point_estimation">point estimate</a>. This is how regression models are commonly used: you plug in an input and receive an output. Instead of a covariance matrix \(\Sigma\), I am using the standard notation for variance \(\sigma^2\), since this is a 1D Gaussian.</p>
 
-<p>So, what are we saying? The Gaussian distribution we’re interested in is multivariate and has <em>one random variable dedicated to one output</em>. The distribution of the output describes our current knowledge of what the output is. The <em>distribution</em> of one output is related to the <em>distribution</em> of another output - and the extent of this coupling is determined by the similarity in their inputs. Mathematically, this is what we <strong>ARE</strong> saying:</p>
+<p>So, what are we saying? The Gaussian distribution we’re interested in is multivariate and has <em>one random variable dedicated to possible outputs for one given input</em>. The distribution of the output describes our current knowledge of what the output is. This is a bit like saying “I think the output is likely \(90\), but there is also a fair chance it is \(91\). It is highly unlikely it would be greater than \(92\) though.” - but only that we’re saying it mathematically, by condensing the verbal description into an appropriate distribution. The <em>distribution</em> of one output is related to the <em>distribution</em> of another output - and the extent of this coupling is determined by the similarity in their inputs. Mathematically, this is what we <strong>ARE</strong> saying:</p>
 
 \[p(Y_1, Y_2, Y_3, ...) \sim \mathcal{N}(\mu, \Sigma)\]
 
