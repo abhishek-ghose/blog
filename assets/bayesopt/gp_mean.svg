@@ -11,9 +11,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="238.73503mm"
-   height="84.217773mm"
-   viewBox="0 0 238.73503 84.217773"
+   width="239.34506mm"
+   height="85.957207mm"
+   viewBox="0 0 239.34506 85.957206"
    version="1.1"
    id="svg3757"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
@@ -29,8 +29,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="800.73445"
-     inkscape:cy="-133.93785"
+     inkscape:cx="576.44874"
+     inkscape:cy="-127.36363"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -46,8 +46,8 @@
     <inkscape:grid
        type="xygrid"
        id="grid4302"
-       originx="0.61002634"
-       originy="-195.47161" />
+       originx="0.61002633"
+       originy="-193.73218" />
   </sodipodi:namedview>
   <defs
      id="defs3751">
@@ -166,6 +166,11 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0.61002633,-17.310607)">
+    <path
+       d="M 0,19.050009 V 103.26781 M 13.996459,19.050009 V 103.26781 M 27.992918,19.050009 V 103.26781 M 41.989377,19.050009 V 103.26781 M 55.985836,19.050009 V 103.26781 M 69.982295,19.050009 V 103.26781 M 83.978754,19.050009 V 103.26781 M 97.975214,19.050009 V 103.26781 M 111.97167,19.050009 V 103.26781 M 125.96813,19.050009 V 103.26781 M 139.96459,19.050009 V 103.26781 M 153.96105,19.050009 V 103.26781 M 167.95751,19.050009 V 103.26781 M 181.95397,19.050009 V 103.26781 M 195.95043,19.050009 V 103.26781 M 209.94689,19.050009 V 103.26781 M 223.94335,19.050009 V 103.26781 M 237.9398,19.050009 V 103.26781 M 0,19.050009 H 238.73504 M 0,33.046471 H 238.73504 M 0,47.042933 H 238.73504 M 0,61.039392 H 238.73504 M 0,75.035844 H 238.73504 M 0,89.032303 H 238.73504 M 0,103.02878 h 238.73504"
+       style="fill:none;stroke:#b4b4b4;stroke-width:0.26458299px;stroke-opacity:0.78431373"
+       id="path1954"
+       inkscape:connector-curvature="0" />
     <rect
        style="opacity:1;fill:url(#meshgradient6992);fill-opacity:1;stroke:#ee2967;stroke-width:0.28999999;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0;paint-order:fill markers stroke"
        id="rect4304"

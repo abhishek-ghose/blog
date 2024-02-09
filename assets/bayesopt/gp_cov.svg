@@ -11,9 +11,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="327.10599mm"
-   height="60.987148mm"
-   viewBox="0 0 327.10599 60.987148"
+   width="327.71591mm"
+   height="62.040974mm"
+   viewBox="0 0 327.71591 62.040973"
    version="1.1"
    id="svg3757"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
@@ -29,11 +29,11 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="654.5916"
-     inkscape:cy="33.42396"
+     inkscape:cx="687.64805"
+     inkscape:cy="37.406923"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
-     showgrid="true"
+     showgrid="false"
      inkscape:window-width="1853"
      inkscape:window-height="1025"
      inkscape:window-x="67"
@@ -44,7 +44,7 @@
      fit-margin-right="0"
      fit-margin-bottom="0">
     <inkscape:grid
-       originy="-211.66665"
+       originy="-210.61283"
        originx="12.78086"
        id="grid4302"
        type="xygrid" />
@@ -197,6 +197,11 @@
      id="layer1"
      inkscape:groupmode="layer"
      inkscape:label="Layer 1">
+    <path
+       d="M -12.170835,25.40001 V 86.387162 M -0.07937686,25.40001 V 86.387162 M 12.012075,25.40001 V 86.387162 M 24.103533,25.40001 V 86.387162 M 36.194991,25.40001 V 86.387162 M 48.286449,25.40001 V 86.387162 M 60.377907,25.40001 V 86.387162 M 72.469365,25.40001 V 86.387162 M 84.560823,25.40001 V 86.387162 M 96.652231,25.40001 V 86.387162 M 108.74367,25.40001 V 86.387162 M 120.83513,25.40001 V 86.387162 M 132.92659,25.40001 V 86.387162 M 145.01804,25.40001 V 86.387162 M 157.1095,25.40001 V 86.387162 M 169.20096,25.40001 V 86.387162 M 181.29242,25.40001 V 86.387162 M 193.38388,25.40001 V 86.387162 M 205.47534,25.40001 V 86.387162 M 217.56679,25.40001 V 86.387162 M 229.65825,25.40001 V 86.387162 M 241.74971,25.40001 V 86.387162 M 253.84117,25.40001 V 86.387162 M 265.93263,25.40001 V 86.387162 M 278.02408,25.40001 V 86.387162 M 290.11554,25.40001 V 86.387162 M 302.207,25.40001 V 86.387162 M 314.29846,25.40001 V 86.387162 M -12.170835,25.40001 H 314.93506 M -12.170835,37.570849 H 314.93506 M -12.170835,49.741682 H 314.93506 M -12.170835,61.912515 H 314.93506 M -12.170835,74.083347 H 314.93506 M -12.170835,86.25418 H 314.93506"
+       style="fill:none;stroke:#b4b4b4;stroke-width:0.26458299px;stroke-opacity:0.78431373"
+       id="path3234"
+       inkscape:connector-curvature="0" />
     <rect
        ry="2.5267754e-08"
        y="42.957802"
