@@ -399,7 +399,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <p>If I now wonder about the value at \(3.1\), wouldn’t it make sense to guess that \(f(3.1) \approx 90\)? This is our natural sense of smoothness at work. In a way, GPs assemble the overall function from smaller function pieces where each piece honors some notion of local similarity that we define.</p>
 
-<p>How do we operationalize this? Let’s step back for a bit, recall that we also want good uncertainties, and see if we can get both these properties in one shot. This might seem out of the left field but consider the Gaussian distribution \(\mathcal{N}(\mu, \Sigma)\) for a while. As a refresher, for a distribution over two variables, for the following covariance matrix:</p>
+<p>How do we operationalize this? Let’s step back for a bit, recall that we also want good uncertainties, and see if we can get both these properties in one shot. This might seem out of the left field but consider the Gaussian distribution \(\mathcal{N}(\mu, \Sigma)\) for a while (it’ll make sense in a while, promise). As a refresher, for a distribution over two variables, for the following covariance matrix:</p>
 
 \[\Sigma=\begin{bmatrix}
 \Sigma_{11} &amp; \Sigma_{12}\\
@@ -426,24 +426,60 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <p>Consider the first plot. The “forward slant” of the Gaussian exists because \(\Sigma_{12}=\Sigma_{21}=2\), and thus \(Y_1\) and \(Y_2\) are positively correlated. As possible values for \(Y_1\) increase (going from left to right), possible values \(Y_2\) also increase (goes from bottom to top).</p>
 
-<p>Now, here’s an outlandish idea: what if we let the Gaussian random variable \(Y_i\) represent all possible outputs for \(x_i\)? And the covariance matrix is defined by input similarities? Specifically, if \(k(x_i, x_j)\) denotes the similarity between \(x_i\) and \(x_j\), we let \(\Sigma_{ij} = k(x_i, x_j)\). This gets us at least the following benefits:</p>
-<ul>
-  <li>The values \(Y_i\) can take for a given \(Y_j\) are constrained by \(\Sigma_{ij}\), which here is the similarity in the inputs \(x_i\) and \(x_j\). This is a good way to enforce smoothness.</li>
-  <li>Since \(Y_i\) is a random variable, we can infer some sort of a distribution over the values it can take, based on our assumption that the joint distribution is Normal. Which is to say, we may think of our current knowledge of the true outputs corresponding to a given \(x_i\) as following some distribution, i.e., we believe some values are very likely (the mean of the distribution), some not so much, etc. This can be translated into uncertainty; informally, flatter distributions indicate greater uncertainty. This is also something we wanted.</li>
-</ul>
+<p>Now, here’s an outlandish idea: what if we let the <em>Gaussian random variable</em> \(Y_i\) represent all possible outputs for \(x_i\)? Wait, why is there more than one output? Because we are explicitly modeling uncertainty in our knowledge of the function; which is to say, \(Y_i\) can take on a range of different values given our current state of knowledge. But the situation is not direly hopeless: we have some idea about the relative likelihood of these values of \(Y_i\). So we might be able to say things like “Given input \(x_i\), \(Y_i=2\) is more likely than \(Y_i=3\), but not as likely as \(Y_i=1\).”. This may be expressed as a distribution. Here’s what that might look like for \(Y_1\) (the rugplot, i.e., vertical bars shows the values, and the blue line shows their density):</p>
 
-<p>Effectively, we are saying that the function \(f\) we want to fit has its outputs jointly distributed as a Gaussian, where the inputs decide their similarity via the covariance matrix. Yes, this is unusual … and awesome. Let’s tie all these pieces together in the next sections.</p>
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/var_coupling_1D_1var.png" alt="test" />
+    
+    
+        <p class="image-caption">Two possible distributions of output for the same input.</p>
+    
+</div>
+
+<p>We will <em>assume</em> that our uncertainty distribution may be expressed as a Gaussian - like in the second plot above. This is not unreasonable - you probably have a certain value (or a set of them in a small neighborhood) that you think are likely - this is the region close to the mean of the Gaussian. The values for any \(i\) maybe expressed similarly (of course, with different Gaussians).</p>
+
+<p>OK, now consider two outputs \(Y_1\) and \(Y_2\). They each have their Gaussians, right? But if \(x_1\) and \(x_2\) are close together, the output values cannot differ that much (remember: smoothness), even accounting for their uncertainties. What might these, somewhat <em>coupled</em>, values look like? I am going to place the values of \(Y_1\) and \(Y_2\) on the two axes of a 2D plot. And we get something like this:</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/var_coupling_2D_2var_no_contour.png" alt="test" />
+    
+    
+        <p class="image-caption">Two possible distributions of output for the same input.</p>
+    
+</div>
+
+<p>You might now think of the two outputs \(Y_1\) and \(Y_2\) as <em>jointly</em> following a <em>bivariate</em>, i.e., two-dimensional, distribution. Do you see where this is headed? No? Let me add some contours.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/var_coupling_2D_2var_contour.png" alt="test" />
+    
+    
+        <p class="image-caption">Two possible distributions of output for the same input.</p>
+    
+</div>
+
+<p>A 2D Gaussian! In a hand-wavy way, this is the essence of a GP. We express uncertainties in outputs for a given input as a 1D Gaussian, and the joint distribution across outputs as a high-dimensional Gaussian.</p>
+
+<p>Since the coupling in the joint Gaussian distribution is controlled by the covariance matrix (like we saw earlier), we allow similarities in inputs decide its entries. Specifically, if \(k(x_i, x_j)\) denotes the similarity between \(x_i\) and \(x_j\), we let \(\Sigma_{ij} = k(x_i, x_j)\). This is a good way to precisely enforce smoothness.</p>
+
+<p>The benefit to all this that when are predicting the output for an input, we end up predicting a <em>1D Gaussian distribution</em> instead of a single value. We can then use the variance of the Gaussian as a measure of uncertainty. Or any of its other properties - which is important for BayesOpt. Yes, this is unusual … and awesome. Let’s tie all these pieces together in the next sections.</p>
 
 <p><br /></p>
 <hr style="height:1px;border-width:0;background-color:#EE2967" />
 
-<p><span style="color:#EE2967"><strong>IMPORTANT</strong></span>: we aren’t saying the outputs form an univariate Gaussian. Mathematically, this is what we <strong>ARE NOT</strong> saying:</p>
+<p><span style="color:#EE2967"><strong>IMPORTANT</strong></span>: we aren’t saying the outputs <em>across inputs</em> form an univariate Gaussian. Mathematically, this is what we <strong>ARE NOT</strong> saying:</p>
 
 \[Y \sim \mathcal{N}(\mu, \sigma^2)\]
 
-<p>Here, \(Y\) is a random variable that takes on all possible output values across inputs, where we assume exactly one “best-guess” output for an input, i.e.,  \(Y \in \{y_i\}\). Note that here I am assigning one specific \(y_i\), however we may arrive at it, for an \(x_i\). This is known as a <a href="https://en.wikipedia.org/wiki/Point_estimation">point estimate</a>. This is how regression models are commonly used: you plug in an input and receive an output. Instead of a covariance matrix \(\Sigma\), I am using the standard notation for variance \(\sigma^2\), since this is a 1D Gaussian.</p>
+<p>Here, \(Y\) is a random variable that takes on output values across <em>different</em> inputs, where we assume exactly one “best-guess” output for an input, i.e.,  for an \(x_i\), we just have one specific \(y_i\), and \(Y \in \{y_i\}_{i=1}^N\). Such a \(y_i\) is known as a <a href="https://en.wikipedia.org/wiki/Point_estimation">point estimate</a>. This is also why the \(y_i\)s are in lower case - they are not random variables. This is how regression models are commonly used: you plug in an input and receive an output. Instead of a covariance matrix \(\Sigma\), I am using the standard notation for variance \(\sigma^2\), since this is a 1D Gaussian.</p>
 
-<p>So, what are we saying? The Gaussian distribution we’re interested in is multivariate and has <em>one random variable dedicated to possible outputs for one given input</em>. The distribution of the output describes our current knowledge of what the output is. This is a bit like saying “I think the output is likely \(90\), but there is also a fair chance it is \(91\). It is highly unlikely it would be greater than \(92\) though.” - but only that we’re saying it mathematically, by condensing the verbal description into an appropriate distribution. The <em>distribution</em> of one output is related to the <em>distribution</em> of another output - and the extent of this coupling is determined by the similarity in their inputs. Mathematically, this is what we <strong>ARE</strong> saying:</p>
+<p>So, what <em>are</em> we saying? We have one Gausian random variable dedicated to possible outputs for one given input. The <em>distributions</em> of the outputs together is a multivariate Gaussian, and it describes our current knowledge (or uncertainty) of the function. The extent of coupling between individual distributions is decided by the similarity in their inputs. Mathematically, this is what we <strong>ARE</strong> saying:</p>
 
 \[p(Y_1, Y_2, Y_3, ...) \sim \mathcal{N}(\mu, \Sigma)\]
 
@@ -491,7 +527,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     <p><strong>Me</strong>: We are only going to be dealing with \(X\) (training data) and \(X^*\) (test data) which are finite. I mentioned \(\tilde{X}\) to write down the overall model.</p>
   </li>
   <li><strong>You</strong>: Hmm, and what distribution do the finite parts follow?</li>
-  <li><strong>Me</strong>: Gaussian. Here’s why. Gaussian distributions have this interesting property that if you were to focus on only a subset of the random variables from the original Gaussian, then you’d see they also follow a Gaussian distribution (known as <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Marginal_distributions">marginalization</a>). The parameters for this Gaussian is easily obtained by only retaining parts of the original parameters that involve the current subset. For example, if the random variables \(t_1, t_2, t_3, t_4\) follow a Gaussian distribution, then \([t_1, t_3]\) is a Gaussian with the parameters in <span style="color:#EE2967">this</span> color.</li>
+  <li><strong>Me</strong>: Gaussian. Here’s why. Gaussian distributions have this interesting property that if you were to look at the variations in only a subset of the variables, then you’d see they also follow a Gaussian distribution (known as <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Marginal_distributions">marginalization</a>). The parameters for this Gaussian is easily obtained by only retaining parts of the original parameters that involve the current subset. For example, if the random variables \(t_1, t_2, t_3, t_4\) follow a Gaussian distribution, then \([t_1, t_3]\) is a Gaussian with the parameters in <span style="color:#EE2967">this</span> color.</li>
 </ul>
 
 \[[{\color{WildStrawberry}{t_1}}, t_2, {\color{WildStrawberry}{t_3}}, t_4] \sim \mathcal{N}([{\color{WildStrawberry}{\mu_1}}, \mu_2, {\color{WildStrawberry}{\mu_3}}, \mu_4], 
