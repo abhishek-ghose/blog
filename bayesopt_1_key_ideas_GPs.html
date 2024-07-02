@@ -448,7 +448,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
         <img src="/assets/bayesopt/var_coupling_2D_2var_no_contour.png" alt="test" />
     
     
-        <p class="image-caption">Two possible distributions of output for the same input.</p>
+        <p class="image-caption">Visualization of two output distributions.</p>
     
 </div>
 
@@ -460,7 +460,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
         <img src="/assets/bayesopt/var_coupling_2D_2var_contour.png" alt="test" />
     
     
-        <p class="image-caption">Two possible distributions of output for the same input.</p>
+        <p class="image-caption">Visualization of two output distributions, with contours.</p>
     
 </div>
 
@@ -468,7 +468,35 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <p>Since the coupling in the joint Gaussian distribution is controlled by the covariance matrix (like we saw earlier), we allow similarities in inputs decide its entries. Specifically, if \(k(x_i, x_j)\) denotes the similarity between \(x_i\) and \(x_j\), we let \(\Sigma_{ij} = k(x_i, x_j)\). This is a good way to precisely enforce smoothness.</p>
 
-<p>The benefit to all this that when are predicting the output for an input, we end up predicting a <em>1D Gaussian distribution</em> instead of a single value. We can then use the variance of the Gaussian as a measure of uncertainty. Or any of its other properties - which is important for BayesOpt. Yes, this is unusual … and awesome. Let’s tie all these pieces together in the next sections.</p>
+<p>Can we visualize more than two output distributions - just to get a feel of what that might look like? This is doable with a different visualization: we’ll stack the various \(Y_i\)s next to each other, with the gap between them decided by the corresponding \(x_i\)s, and for every set of values for these \(Y_i\)s, we’ll draw a line through them. This will give us an idea of how they vary relative to each other. This is shown below for three \(Y_i\)s.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/multiple_y_anim_3.gif" alt="test" />
+    
+    
+        <p class="image-caption">Visualization of three output distributions.</p>
+    
+</div>
+
+<p>Note how \(Y_1\) and \(Y_2\) seem to take on similar values, while \(Y_1\) (or \(Y_2\)) and \(Y_3\) can end up with very different values. This is because of the large distance of \(x_3\) from \(x_1\) or \(x_2\).</p>
+
+<p>Just because now we can, lets go ahead and look at <em>ten</em> ouput distributions.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/multiple_y_anim_10.gif" alt="test" />
+    
+    
+        <p class="image-caption">Visualization of ten output distributions.</p>
+    
+</div>
+
+<p>Again, note how \(x_i\) that are close together, take on similar values. This makes the function - the blue line - look smooth. What you are seeing here is a <em>distribution  of functions</em> as modeled by a GP. Sounds complex, but what we are really saying is that each line through \(Y_1-Y_{10}\) is a function,  and since we are seeing multiple functions above - because of the uncertainty of \(Y_i\)s - we are effectively looking at a distribution of functions.</p>
+
+<p>The benefit to all this that when are predicting the output for an input, we end up predicting a <em>1D Gaussian distribution</em> instead of a single value (this is not as scary as it sounds - we just predict the mean and variance). We can then use the variance of the Gaussian as a measure of uncertainty. Or any of its other properties - which is important for BayesOpt. Yes, this is unusual … and awesome. Let’s tie all these pieces together in the next sections.</p>
 
 <p><br /></p>
 <hr style="height:1px;border-width:0;background-color:#EE2967" />
