@@ -109,7 +109,7 @@
       <time datetime="2023-11-18T11:00:00-08:00" itemprop="datePublished">
         
         Created: Nov 18, 2023.    Last major update:
-        Jan 15, 2024. 
+        Jul 1, 2024. 
       </time>
       </p>
   
@@ -527,7 +527,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     <p><strong>Me</strong>: We are only going to be dealing with \(X\) (training data) and \(X^*\) (test data) which are finite. I mentioned \(\tilde{X}\) to write down the overall model.</p>
   </li>
   <li><strong>You</strong>: Hmm, and what distribution do the finite parts follow?</li>
-  <li><strong>Me</strong>: Gaussian. Here’s why. Gaussian distributions have this interesting property that if you were to look at the variations in only a subset of the variables, then you’d see they also follow a Gaussian distribution (known as <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Marginal_distributions">marginalization</a>). The parameters for this Gaussian is easily obtained by only retaining parts of the original parameters that involve the current subset. For example, if the random variables \(t_1, t_2, t_3, t_4\) follow a Gaussian distribution, then \([t_1, t_3]\) is a Gaussian with the parameters in <span style="color:#EE2967">this</span> color.</li>
+  <li><strong>Me</strong>: Gaussian. Here’s why. Gaussian distributions have this interesting property that if you were to look at the variations in only a subset of the variables, then you’d see they also follow a Gaussian distribution (known as <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Marginal_distributions">marginalization</a>). By this property the finite parts of the original infinite-dimensional Gaussian are also a Gaussian, The parameters for this <em>marginalized</em> Gaussian are easy to obtain: only retain the subset of the original parameters that involve the current subset of variables. For example, if the random variables \(t_1, t_2, t_3, t_4\) follow a Gaussian distribution, then \([t_1, t_3]\) is a Gaussian with the parameters in <span style="color:#EE2967">this</span> color.</li>
 </ul>
 
 \[[{\color{WildStrawberry}{t_1}}, t_2, {\color{WildStrawberry}{t_3}}, t_4] \sim \mathcal{N}([{\color{WildStrawberry}{\mu_1}}, \mu_2, {\color{WildStrawberry}{\mu_3}}, \mu_4], 
@@ -540,7 +540,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 <ul>
   <li><strong>You</strong>: This helps us how?</li>
   <li>
-    <p><strong>Me</strong>: We can talk only about the train and test data as coming from a Gaussian. Yes, there is a “larger” Gaussian that conceptually exists and deals with the infinite points in the input space, but we can talk only about our marginalization of interest without breaking this conceptual model. So, what we’ll really focus on is this distribution:
+    <p><strong>Me</strong>: We can talk only about the train and test data as coming from a Gaussian. Yes, this can be seen as a marginalization of the “larger” infinite-dimensional Gaussian that conceptually exists. So, what we’ll really focus on is this distribution:
 \(p(Y_1, ..., Y_N, Y_1^*, ..., Y_M^*) \sim \mathcal{N}(\mu, \Sigma)\). You don’t see the inputs in this expression, but remember they’re hiding within the \(\Sigma\).</p>
   </li>
   <li><strong>You</strong>: I see. So we worry only about the train and test data. But how do derive the test outcomes given the training data? This regression problem is why we’re here after all.</li>
