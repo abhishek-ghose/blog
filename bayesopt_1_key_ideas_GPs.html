@@ -496,7 +496,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <p>This almost looks like a full-fledged function (the blue line)! Again, note how \(x_i\) that are close together, take on similar values. This makes the function appear smooth. What you are seeing here is a <em>distribution  of functions</em> as modeled by a GP. Sounds complex, but what we are really saying is that each line through \(Y_1-Y_{10}\) is a function,  and since we are seeing multiple functions above - because of the uncertainty of \(Y_i\)s - we are effectively looking at a distribution of functions.</p>
 
-<p>Sticking with this visual metaphor, what does regression mean here? A training instance \((x_i, y_i)\) implies the corresponding variable \(Y_i\) is now fixed at the value of \(y_i\). Training data effectively <em>clamps</em> down the function at observations, leaving the function to vary elsewhere. How much does the function “sway” depends on the kind of smoothness we have enforced. In the next plot, the clamped down points are shown in red.</p>
+<p>Sticking with this visual metaphor, what does regression mean here? A training instance \((x_i, y_i)\) implies the corresponding variable \(Y_i\) is now fixed at the value of \(y_i\). Training data effectively <em>clamps</em> down the function at observations, leaving it to vary elsewhere. How much does the function “sway” depends on the kind of smoothness we have enforced. In the next plot, the clamped down points are shown in red.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -508,7 +508,19 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     
 </div>
 
-<p>The benefit to all this that when are predicting the output for an input, we end up predicting a <em>1D Gaussian distribution</em> instead of a single value (this is not as scary as it sounds - we just predict the mean and variance). We can then use the variance of the Gaussian as a measure of uncertainty. Or any of its other properties. All of which is important for BayesOpt. Yes, this is unusual … and awesome. Let’s tie all these pieces together in the next sections.</p>
+<p>The benefit to all this that when are predicting the output for an input, we end up predicting a <em>distribution</em> instead of a single value.  This is not as scary as it sounds: consider any vertical \(Y_i\) bar in the above plot, and think about the animated line tracing values on it. Shown below.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/multiple_y_anim_10_clamped_trace.gif" alt="test" />
+    
+    
+        <p class="image-caption">The multiple values produced for each input are shown.</p>
+    
+</div>
+
+<p>The distributions of these traced values are what we are looking for. And since we know them to be Gaussian, all we are looking for are their means and variances. Yes, this is unusual … and awesome. Let’s tie all these pieces together in the next sections.</p>
 
 <p><br /></p>
 <hr style="height:1px;border-width:0;background-color:#EE2967" />
