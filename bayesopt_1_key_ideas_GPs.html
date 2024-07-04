@@ -438,7 +438,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     
 </div>
 
-<p>We will <em>assume</em> that our uncertainty distribution may be expressed as a Gaussian - like in the second plot above. This is not unreasonable - you probably have a certain value (or a set of them in a small neighborhood) that you think are likely - this is the region close to the mean of the Gaussian. The values for any \(i\) maybe expressed similarly (of course, with different Gaussians).</p>
+<p>We will <em>assume</em> that our uncertainty distribution may be expressed as a Gaussian - like in the second plot above. This is not unreasonable - you probably have a certain value (or a set of them in a small neighborhood) that you think are likely - this is the region around the mean of the Gaussian. The values for any \(i\) maybe expressed similarly (of course, with different Gaussians).</p>
 
 <p>OK, now consider two outputs \(Y_1\) and \(Y_2\). They each have their Gaussians, right? But if \(x_1\) and \(x_2\) are close together, the output values cannot differ that much (remember: smoothness), even accounting for their uncertainties. What might these, somewhat <em>coupled</em>, values look like? I am going to place the values of \(Y_1\) and \(Y_2\) on the two axes of a 2D plot. And we get something like this:</p>
 
@@ -464,7 +464,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     
 </div>
 
-<p>A 2D Gaussian! In a hand-wavy way, this is the essence of a GP. We express uncertainties in outputs for a given input as a 1D Gaussian, and the joint distribution across outputs as a high-dimensional Gaussian.</p>
+<p>A 2D Gaussian! In a hand-wavy way, this is the essence of a GP. We express uncertainties in outputs for a given input as a 1D Gaussian, and the joint distribution across outputs as a high-dimensional Gaussian. Actually, as we shall see in the next section, we just assume the latter and the former is a happy consequence of that.</p>
 
 <p>Since the coupling in the joint Gaussian distribution is controlled by the covariance matrix (like we saw earlier), we allow similarities in inputs decide its entries. Specifically, if \(k(x_i, x_j)\) denotes the similarity between \(x_i\) and \(x_j\), we let \(\Sigma_{ij} = k(x_i, x_j)\). This is a good way to precisely enforce smoothness.</p>
 
