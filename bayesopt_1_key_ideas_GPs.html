@@ -26,7 +26,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400&display=swap" rel="stylesheet"> 
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="https://blog.quipu-strands.com/bayesopt_1_key_ideas_GPs">
+  <link rel="canonical" href="http://localhost:4000/bayesopt_1_key_ideas_GPs">
   <link rel="alternate" type="application/rss+xml" title="A Not-So Primordial Soup" href="/feed.xml">
   
   
@@ -520,7 +520,19 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     
 </div>
 
-<p>The distributions of these traced values are what we are looking for. And since we know them to be Gaussian, all we are looking for are their means and variances. Yes, this is unusual … and awesome. Let’s tie all these pieces together in the next sections.</p>
+<p>The distributions of these traced values are what we are looking for. And since we know them to be Gaussian, all we are looking for are their means and variances. In fact, we can visually see that these <em>might</em> be Gaussians (of course, we will confirm this in the next section). Here I have a drawn a KDE plot for the various \(Y_i\) values that begins to get plotted once we’ve had three iterations.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/multiple_y_anim_10_clamped_trace_kde.gif" alt="test" />
+    
+    
+        <p class="image-caption">KDE plots over the various outputs - they start to approximate Gaussians as values accumulate.</p>
+    
+</div>
+
+<p>Yes, all of this is unusual, but also (I think) awesome. Intuitively, the few plots above convey the essence of GPs. What remains is to make these ideas rigorous.</p>
 
 <p><br /></p>
 <hr style="height:1px;border-width:0;background-color:#EE2967" />
@@ -614,7 +626,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
   <li>
     <p>What is an example of a kernel function? A very common example is the <em>Radial Basis Function (RBF)</em> kernel \({\color{WildStrawberry}{k(z_i, z_j) = e^{-\vert\vert z_i-z_j \vert\vert^2/(2L^2)}}}\). If \(z_i\) and \(z_j\) are close, say, \({\color{WildStrawberry}{\vert\vert z_i-z_j \vert\vert \approx 0}}\), then we’ve \({\color{WildStrawberry}{k(z_i, z_j) \approx 1}}\) (for a given \(L\)). On the other hand, if \({\color{WildStrawberry}{\vert\vert z_i-z_j \vert\vert \to \infty}}\), then \({\color{WildStrawberry}{k(z_i, z_j) \to 0}}\). This is how we would expect similarities to behave. Here \({\color{WildStrawberry}{L}}\) is known as the <em>length scale</em>, and we’ll explain its role soon. Of course, there are many other kernels, but we’ll use the RBF kernel in our examples here. For others, <a href="https://www.cs.toronto.edu/~duvenaud/cookbook/">this is a good reference</a>.</p>
 
-    <p>Can any notion of similarity be written up as a kernel function? Unfortunately not - the matrix \(K\) needs to be <a href="https://en.wikipedia.org/wiki/Definite_matrix">positive semi-definite</a>. This is a property we won’t delve into here. This is not particularly restrictive for these reasons: (a) there are many useful similarity functions that follow this property, and (b) you can use such valid kernel functions to compose new ones in <a href="https://mlweb.loria.fr/book/en/constructingkernels.html">certain ways</a> that guarantee that the new kernel also possesses this property.</p>
+    <p>Can any notion of similarity be written up as a kernel function? Good news bad news kind of situation. Unfortunately not - the matrix \(K\) needs to be <a href="https://en.wikipedia.org/wiki/Definite_matrix">positive semi-definite</a>. This is a property we won’t delve into here. This is not particularly restrictive for these reasons: (a) there are many useful similarity functions that follow this property, and (b) you can use such valid kernel functions to compose new ones in <a href="https://mlweb.loria.fr/book/en/constructingkernels.html">certain ways</a> that guarantee that the new kernel also possesses this property.</p>
   </li>
   <li>We’ll think of \(K\) as being partitioned into four sections based on the data among which similarities are computed. For example, the partition \(K_{XX^*}\) implies this submatrix contains similarities between instances in \(X\) and \(X^*\). This is shown below.</li>
 </ol>
@@ -704,7 +716,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     
 </div>
 
-<p>We had briefly mentioned that the distribution for a single output random variable \(Y^*_i\) is also a Gaussian. We can see that for ourselves - by constructing a KDE plot sideways on its values. We show this KDE plot for a couple of locations below.</p>
+<p>We noted above that the distribution for a single output random variable \(Y^*_i\) is also a Gaussian due to marginalization. Let’s plot KDEs here to see this; similar to an exercise we had done earlier. I have done this for a couple of locations below.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
