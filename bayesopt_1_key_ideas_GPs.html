@@ -780,15 +780,15 @@ As before, let test data be \(X^* \in \mathbb{R}^{M \times d}\), \(Y^* \in \math
   </li>
 </ul>
 
-<p>What we’re eventually saying above is that the output distribution is jointly Gaussian, much like the GP. And very similar to an earlier plot, we can “visually” test this. In the following plot, I have drawn a bunch of lines, whose parameters - slope \({\color{WildStrawberry}{m}}\;(=W_1)\) and intercept \({\color{WildStrawberry}{c}}\;(=W_0)\) - are drawn from a Gaussian. For each of these lines, if I now determine the value of \(y^*_i\) at \(x^*_i=0\), as per the linear model \(y^*_i \sim \mathcal{N}(mx^*_i+c, \sigma^2)\) with a fixed \(\sigma\), and show their spread using a KDE plot (again, shown sideways) this is what we get:</p>
+<p>What we’re eventually saying above is that the output distribution is jointly Gaussian, much like the GP. And very similar to an earlier plot, we can “visually” test this. In the following plot, I draw a bunch of lines, whose parameters - slope \({\color{WildStrawberry}{m}}\;(=W_1)\) and intercept \({\color{WildStrawberry}{c}}\;(=W_0)\) - are sampled from a Gaussian. For each of these lines, if I now determine the value of \(y^*_i\), as per the linear model \(y^*_i \sim \mathcal{N}(mx^*_i+c, \sigma^2)\) (here \(\sigma=0\) for convenience), and show their spread using a KDE plot (shown sideways, for some arbitrarily-picked locations) this is what we get:</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
     
-        <img src="/assets/bayesopt/lin_reg_gaussian.png" alt="test" />
+        <img src="/assets/bayesopt/lin_reg_gaussian.gif" alt="test" />
     
     
-        <p class="image-caption">Distribution of outputs at 0 using various lines. The slopes and intercepts come from a bivariate Gaussian - shown in the inset image.</p>
+        <p class="image-caption">Distribution of outputs at given locations for various lines. The slopes and intercepts come from a bivariate Gaussian - shown in the inset image. A white dot that appears corresponds to the parameters - slope and intercept - of the current line.</p>
     
 </div>
 
