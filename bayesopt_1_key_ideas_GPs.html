@@ -619,7 +619,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
   </li>
 </ul>
 
-<p>That’s a lot of Gaussians! This is one reason they are mathematically convenient - <a href="https://en.wikipedia.org/wiki/Normal_distribution#Operations_and_functions_of_normal_variables">quite a few operations</a> on them result in Gaussians. But be careful here in distinguishing between them. We used marginalization to say that its OK to think about a finite slice of the overall model as a Gaussian. The convenient form of marginalization helped here: we could just parameterize this finite distribution while assuming that these parameters were plucked out of a larger parameter space. Then we used conditioning wrt training data, on this marginal Gaussian distribution, to describe the outputs for test inputs.</p>
+<p>That’s a lot of Gaussians! <a href="https://en.wikipedia.org/wiki/Normal_distribution#Operations_and_functions_of_normal_variables">Quite a few operations</a> on Gaussians result in Gaussians; which is why they’re considered to be a mathematically convenient tool for modeling distributions. But be careful here in distinguishing between these operations. We used marginalization to say that its OK to think about a finite slice of the overall model as a Gaussian. The convenient form of marginalization helped here: we could just parameterize this finite distribution in a self-contained manner, while assuming that these parameters were plucked out of an infinitely larger parameter space. Then we used conditioning wrt training data, on this marginal finite Gaussian distribution, to describe the test outputs.</p>
 
 <p>Hopefully, it starting to look like things are coming together. A few more details should seal the deal:</p>
 <ol>
