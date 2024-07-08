@@ -164,7 +164,7 @@
   <li><a href="#gaussian_processes" id="markdown-toc-gaussian_processes">Gaussian Processes (GP)</a>    <ul>
       <li><a href="#intuition" id="markdown-toc-intuition">Intuition</a></li>
       <li><a href="#deep-dive" id="markdown-toc-deep-dive">Deep Dive</a></li>
-      <li><a href="#a-different-perspective" id="markdown-toc-a-different-perspective">A Different Perspective</a></li>
+      <li><a href="#a-surprising-connection-with-bayesian-linear-regression" id="markdown-toc-a-surprising-connection-with-bayesian-linear-regression">A Surprising Connection with Bayesian Linear Regression</a></li>
       <li><a href="#minimal-code-for-gp" id="markdown-toc-minimal-code-for-gp">Minimal Code for GP</a></li>
       <li><a href="#summary-and-challenges" id="markdown-toc-summary-and-challenges">Summary and Challenges</a></li>
     </ul>
@@ -756,7 +756,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <hr style="height: 50px; border: 0; box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);" />
 
-<h3 id="a-different-perspective">A Different Perspective</h3>
+<h3 id="a-surprising-connection-with-bayesian-linear-regression">A Surprising Connection with Bayesian Linear Regression</h3>
 
 <p>In the previous section we motivated GPs by tying in our requirements with properties of the multivariate Gaussian. That might’ve seemed a bit out of the left field. But there is another way to look at GPs that is closer to familiar territory.</p>
 
@@ -798,7 +798,20 @@ As before, let test data be \(X^* \in \mathbb{R}^{M \times d}\), \(Y^* \in \math
   <li>The effect of \(W\) here is to constrain the covariance of this distribution in certain ways, so that the model is linear. But if we’re directly modeling the output joint distribution, we don’t need these restrictions - lets just use a covariance/kernel matrix that faithfully expresses the similarity in inputs we want!</li>
 </ul>
 
-<p>In a way, GPs “cut out the middleman” from the linear model, by replacing its covariances with an arbitrarily expressive kernel matrix.</p>
+<p>Essentially we want all the “goodies” wrt output distributions without comprimising on function expressiveness. Let me bring up a plot we have seen before.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/multiple_y_anim_10_clamped_trace_kde.gif" alt="test" />
+    
+    
+        <p class="image-caption">A plot we have seen earlier. Use of GPs to learn a general function. The outputs for a given input are Gaussian.</p>
+    
+</div>
+
+<p>See how close this is to Linear Regression case? But better, because the function doesn’t have to be linear. 
+In a way, GPs “cut out the middleman” from the linear model, by replacing its covariances with an arbitrarily expressive kernel matrix.</p>
 
 <hr style="height: 50px; border: 0; box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);" />
 
