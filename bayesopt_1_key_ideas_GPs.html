@@ -387,7 +387,23 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <h3 id="intuition">Intuition</h3>
 
-<p>OK, let’s consider the regression angle. You have a bunch of points \((x_i, y_i), i=1...N\) where \(y_i \in \mathbb{R}\), to which you want to fit a function. Normally, you would posit a function \(f(x;\theta)\) with parameters \(\theta\), e.g., coefficients in Logistic Regression or weights in a Neural Network, and learn \(\theta\) that best explains the data. This is a <em>parametric</em> model, since \(f\)’s  behavior depends on the parameter \(\theta\). Once you have learned \(\theta\), you can discard your training data \(\{(x_i, y_i)\}_{i=1}^N\).</p>
+<p>OK, let’s consider the regression angle. You have a bunch of points \((x_i, y_i), i=1...N\) where \(y_i \in \mathbb{R}\), to which you want to fit a function. But when you <em>predict</em>, now that we want to explicitly talk about uncertainties, you don’t want to predict <em>one value</em> for an input.</p>
+
+<p>See (a) below - which is how we typically think about prediction - one input leads to one output only. A line through such outputs represents our model for the function. In (b), we show how predictions might look like when we are not sure yet of what we’ve learned; many values per input. Of course, we might not think all points are equally likely. Many outputs also implies we are effectively predicting <em>many functions</em> - every line that connects some output for given inputs is a possible function - see (c).</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/gp_abstract.png" alt="test" />
+    
+    
+        <p class="image-caption"></p>
+    
+</div>
+
+<p>That GPs enable (b) and (c) is a good mental model to have. Let’s start getting into details.</p>
+
+<p>Normally, you would posit a function \(f(x;\theta)\) with parameters \(\theta\), e.g., coefficients in Logistic Regression or weights in a Neural Network, and learn \(\theta\) that best explains the data. This is a <em>parametric</em> model, since \(f\)’s  behavior depends on the parameter \(\theta\). Once you have learned \(\theta\), you can discard your training data \(\{(x_i, y_i)\}_{i=1}^N\).</p>
 
 <p>GPs though, ask you to assume a certain <em>smoothness</em> in the function; which, roughly speaking, is how similar do you want \(y_i\) and \(y_j\) to be given similar \(x_i\) and \(x_j\). So instead of parameterizing the shape of the overall function, you try to define how input similarities dictate output similarities. This is a very different philosophy (something that <em>Support Vector Machines</em> also use), but quite natural. Consider the following function values:</p>
 <ul>
