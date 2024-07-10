@@ -635,7 +635,19 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
   </li>
 </ul>
 
-<p>That’s a lot of Gaussians! <a href="https://en.wikipedia.org/wiki/Normal_distribution#Operations_and_functions_of_normal_variables">Quite a few operations</a> on Gaussians result in Gaussians; which is why they’re considered to be a mathematically convenient tool for modeling distributions. But be careful here in distinguishing between these operations. We used marginalization to say that its OK to think about a finite slice of the overall model as a Gaussian. The convenient form of marginalization helped here: we could just parameterize this finite distribution in a self-contained manner, while assuming that these parameters were plucked out of an infinitely larger parameter space. Then we used conditioning wrt training data, on this marginal finite Gaussian distribution, to describe the test outputs.</p>
+<p><br /></p>
+<hr style="height:1px;border-width:0;background-color:#EE2967" />
+
+<p><span style="color:#EE2967"><strong>NOTE</strong></span>:</p>
+
+<p>That’s a lot of Gaussians! <a href="https://en.wikipedia.org/wiki/Normal_distribution#Operations_and_functions_of_normal_variables">Quite a few operations</a> on Gaussians result in Gaussians; which is why they’re considered to be a mathematically convenient tool for modeling distributions. But be careful here in distinguishing between these operations:</p>
+<ul>
+  <li>We used marginalization to say that its OK to think about a finite slice of the overall model as a Gaussian. The convenient form of marginalization helped here: we could just parameterize this finite distribution in a self-contained manner, while assuming that these parameters were plucked out of an infinitely larger parameter space.</li>
+  <li>Then, we used conditioning wrt training data, on this marginal finite Gaussian distribution, to describe the test outputs.</li>
+</ul>
+
+<hr style="height:1px;border-width:0;background-color:#EE2967" />
+<p><br /></p>
 
 <p>Hopefully, it starting to look like things are coming together. A few more details should seal the deal:</p>
 <ol>
@@ -810,15 +822,7 @@ As before, let test data be \(X^* \in \mathbb{R}^{M \times d}\), \(Y^* \in \math
     
 </div>
 
-<p>This doesn’t show what the joint distribution is, but that the marginal output distributions per \(i\) are Gaussians, i.e., this points to the feasibility of the joint being a Gaussian. We have seen this before!</p>
-
-<p>So, really, this output joint being a Gaussian is not new. We just mightn’t have thought of Linear Regression (of all things!) in this manner. I think all of this nicely segues into GPs if you consider the following arguments:</p>
-<ul>
-  <li>The output joint is a Gaussian - why not a directly model it?</li>
-  <li>The effect of \(W\) here is to constrain the covariance of this distribution in certain ways, so that the model is linear. But if we’re directly modeling the output joint distribution, we don’t need these restrictions - lets just use a covariance/kernel matrix that faithfully expresses the similarity in inputs we want!</li>
-</ul>
-
-<p>Essentially we want all the “goodies” wrt output distributions without comprimising on function expressiveness. Let me bring up a plot we have seen before.</p>
+<p>This doesn’t show what the joint distribution is, but that the marginal output distributions per \(i\) are Gaussians, i.e., this points to the feasibility of the joint being a Gaussian. We have seen this before! Let’s bring up that plot.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
