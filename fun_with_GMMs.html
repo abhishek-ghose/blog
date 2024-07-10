@@ -347,7 +347,13 @@ p(x_1, x_2,..., x_{d-3} \vert x_{d-2}=a,x_{d-1}=b,x_{d}=c)
 
 <p>Look at the various conditional distributions \(p(x_2 \vert x_1)\), for different \(x_1\). In the figure, this is equivalent to “slicing” through the Gaussian at specific values of \(x_1\), as shown by the three solid lines. Do these distributions/solid lines suspiciously look like Gaussians? They are! The conditional distributions of a Gaussian are also Gaussian. We wouldn’t go into proving this interesting property, but its important to know it is true.</p>
 
-<p><em>Note that the above animation only serves to provide a good mental model and doesn’t present the whole picture. You can delve deeper into nuances this visualization misses <a href="https://stats.stackexchange.com/questions/385823/variance-of-conditional-multivariate-gaussian">here</a>, but if this is your first encounter with the notion, you can skip it for now.</em></p>
+<p><br /></p>
+<hr style="height:1px;border-width:0;background-color:#EE2967" />
+
+<p><span style="color:#EE2967"><strong>NOTE</strong></span>: 
+the above animation only serves to provide a good mental model and doesn’t present the whole picture. You can delve deeper into nuances this visualization misses <a href="https://stats.stackexchange.com/questions/385823/variance-of-conditional-multivariate-gaussian">here</a>, but if this is your first encounter with the notion, you can skip it for now.</p>
+<hr style="height:1px;border-width:0;background-color:#EE2967" />
+<p><br /></p>
 
 <!--
 **Marginal distributions**
@@ -359,7 +365,6 @@ The following image visualizes this - at a specific $$x_2$$, the distribution of
 If I then draw a curve through the heights of these dashed lines - shown in black - we again see something approximating a Gaussian.
 
 -->
-
 <p>But what does this say about GMMs? Because of the above property, the conditional distribution for a GMM is also a GMM. This new GMM has different weights and components. You can find a derivation <a href="https://stats.stackexchange.com/questions/348941/general-conditional-distributions-for-multivariate-gaussian-mixtures">here</a>. This insight will be helpful when we deal with color images.</p>
 
 <p>OK, our short stop is over … on to actual problem-solving!</p>

@@ -26,7 +26,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400&display=swap" rel="stylesheet"> 
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="http://localhost:4000/bayesopt_1_key_ideas_GPs">
+  <link rel="canonical" href="https://blog.quipu-strands.com/bayesopt_1_key_ideas_GPs">
   <link rel="alternate" type="application/rss+xml" title="A Not-So Primordial Soup" href="/feed.xml">
   
   
@@ -403,7 +403,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <p>That GPs enable (b) and (c) is a good mental model to have. Let’s start getting into details.</p>
 
-<p>Normally, you would posit a function \(f(x;\theta)\) with parameters \(\theta\), e.g., coefficients in Logistic Regression or weights in a Neural Network, and learn \(\theta\) that best explains the data. This is a <em>parametric</em> model, since \(f\)’s  behavior depends on the parameter \(\theta\). Once you have learned \(\theta\), you can discard your training data \(\{(x_i, y_i)\}_{i=1}^N\).</p>
+<p>Normally, you would posit a function \(f(x;\theta)\) with parameters \(\theta\), e.g., coefficients in Logistic Regression or weights in a Neural Network, and learn \(\theta\) that best explains the data. This is a <em>parametric</em> model, since \(f\)’s  behavior depends on the parameters \(\theta\). Once you have learned \(\theta\), you can discard your training data \(\{(x_i, y_i)\}_{i=1}^N\). Importantly, these parameters decide the <em>overall shape</em> of your function.</p>
 
 <p>GPs though, ask you to assume a certain <em>smoothness</em> in the function; which, roughly speaking, is how similar do you want \(y_i\) and \(y_j\) to be given similar \(x_i\) and \(x_j\). So instead of parameterizing the shape of the overall function, you try to define how input similarities dictate output similarities. This is a very different philosophy (something that <em>Support Vector Machines</em> also use), but quite natural. Consider the following function values:</p>
 <ul>
@@ -640,7 +640,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <p><span style="color:#EE2967"><strong>NOTE</strong></span>:</p>
 
-<p>That’s a lot of Gaussians! <a href="https://en.wikipedia.org/wiki/Normal_distribution#Operations_and_functions_of_normal_variables">Quite a few operations</a> on Gaussians result in Gaussians; which is why they’re considered to be a mathematically convenient tool for modeling distributions. But be careful here in distinguishing between these operations:</p>
+<p>That’s a lot of Gaussians! <a href="https://en.wikipedia.org/wiki/Normal_distribution#Operations_and_functions_of_normal_variables">Quite a few operations</a> on Gaussians result in Gaussians; which is why they’re considered to be mathematically convenient. You can develop tools and strategies for Gaussians alone, and that will take you far. But be careful here in distinguishing between these operations:</p>
 <ul>
   <li>We used marginalization to say that its OK to think about a finite slice of the overall model as a Gaussian. The convenient form of marginalization helped here: we could just parameterize this finite distribution in a self-contained manner, while assuming that these parameters were plucked out of an infinitely larger parameter space.</li>
   <li>Then, we used conditioning wrt training data, on this marginal finite Gaussian distribution, to describe the test outputs.</li>
