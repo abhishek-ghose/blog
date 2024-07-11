@@ -389,7 +389,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <p>OK, let’s consider the regression angle. You have a bunch of points \((x_i, y_i), i=1...N\) where \(y_i \in \mathbb{R}\), to which you want to fit a function. But when you <em>predict</em>, now that we want to explicitly talk about uncertainties, you don’t want to predict <em>one value</em> for an input.</p>
 
-<p>See (a) below - which is how we typically think about prediction - one input leads to one output only. A line through such outputs represents our model for the function. In (b), we show how predictions might look like when we are not sure yet of what we’ve learned; many values per input. Of course, we might not think all points are equally likely. Many outputs also implies we are effectively predicting <em>many functions</em> - every line that connects some output for given inputs is a possible function - see (c).</p>
+<p>See (a) below - which is how we typically think about prediction - one input leads to one output only. A line through such outputs represents our model for the function. In (b), we show how predictions might look like when we are not sure yet of what we’ve learned; many values per input. Of course, we might not think all points are equally likely - shown in (c). Many outputs also implies we are effectively predicting <em>many functions</em> - every line that connects some output for each input is a possible function. We can also assign a probability to these function predictions by considering the confidences of the individual points they connect  - see (d).</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -401,7 +401,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     
 </div>
 
-<p>That GPs enable (b) and (c) is a good mental model to have. Let’s start getting into details.</p>
+<p>That GPs enable (c) and (d) is a good mental model to have. Let’s start getting into details.</p>
 
 <p>Normally, you would posit a function \(f(x;\theta)\) with parameters \(\theta\), e.g., coefficients in Logistic Regression or weights in a Neural Network, and learn \(\theta\) that best explains the data. This is a <em>parametric</em> model, since \(f\)’s  behavior depends on the parameters \(\theta\). Once you have learned \(\theta\), you can discard your training data \(\{(x_i, y_i)\}_{i=1}^N\). Importantly, these parameters decide the <em>overall shape</em> of your function.</p>
 
