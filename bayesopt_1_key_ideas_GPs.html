@@ -480,11 +480,25 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     
 </div>
 
-<p>A 2D Gaussian! In a hand-wavy way, this is the essence of a GP. We express uncertainties in outputs for a given input as a 1D Gaussian, and the joint distribution across outputs as a high-dimensional Gaussian. Actually, as we shall see in the next section, we just assume the latter and the former is a happy consequence of that.</p>
+<p>A 2D Gaussian! We have seen these before! It looks like if we express uncertainties in outputs for a given input as an 1D Gaussian, the joint distribution across outputs turns out to be a high-dimensional Gaussian. Actually, as we shall see in the next section, we just assume the latter and the former is a happy consequence of that.</p>
 
-<p>Since the coupling in the joint Gaussian distribution is controlled by the covariance matrix (like we saw earlier), we allow similarities in inputs decide its entries. Specifically, if \(k(x_i, x_j)\) denotes the similarity between \(x_i\) and \(x_j\), we let \(\Sigma_{ij} = k(x_i, x_j)\). This is a good way to precisely enforce smoothness.</p>
+<p>And, since the coupling in the joint Gaussian distribution is controlled by the covariance matrix, we allow similarities in inputs decide its entries. Specifically, if \(k(x_i, x_j)\) denotes the similarity between \(x_i\) and \(x_j\), we let \(\Sigma_{ij} = k(x_i, x_j)\). Controlling the covariance matrix is a great way to regulate the variation in one output wrt another, and letting input similarities decide entries in this matrix works out perfectly for us: it gives us a precise way to enforce smoothness.</p>
 
-<p>Can we visualize more than two output distributions - just to get a feel of what that might look like? This is doable with a different visualization (I saw this <a href="https://www.youtube.com/watch?v=92-98SYOdlY">here</a> first): we’ll stack the various \(Y_i\)s next to each other, with the gap between them decided by the corresponding \(x_i\)s, and for every set of values for these \(Y_i\)s, we’ll draw a line through them. This will give us an idea of how they vary relative to each other. This is shown below for three \(Y_i\)s.</p>
+<p>Can we visualize more than two output distributions? This is doable with a different visualization (I saw this <a href="https://www.youtube.com/watch?v=92-98SYOdlY">here</a> first): we’ll stack lines representing \(Y_i\)s next to each other, and for every set of values sampled from their joint distribution, we’ll draw a line through them. Let’s see what the above plot might look like in this form:</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/bayesopt/2D_variable_coupling.gif" alt="test" />
+    
+    
+        <p class="image-caption">A different representation of the joint distribution.</p>
+    
+</div>
+
+<p>The line currently shown corresponds to the current sample from the joint 2D Gaussian. Note the positive slope of the annimated line; this is because of the positive correlation between the \(Y_i\)s in the joint Gaussian.</p>
+
+<p>This gives us a way to visualize the behavior of more than just two \(Y_i\)s. And we’ll do exactly that next. But with a new twist: we’ll allow the gap between the vertical bars to be decided by the corresponding \(x_i\)s. This will give us an idea of the similarity of the inputs. Shown below for three \(Y_i\)s.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -510,9 +524,9 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
     
 </div>
 
-<p>This almost looks like a full-fledged function (the blue line)! Again, note how \(x_i\) that are close together, take on similar values. This makes the function appear smooth. What you are seeing here is a <em>distribution  of functions</em> as modeled by a GP. Sounds complex, but what we are really saying is that each line through \(Y_1-Y_{10}\) is a function,  and since we are seeing multiple functions above - because of the uncertainty of \(Y_i\)s - we are effectively looking at a distribution of functions.</p>
+<p>This almost looks like a full-fledged function! Again, note how \(x_i\) that are close together, take on similar values. This makes the function appear smooth. What you are seeing here is a <em>distribution  of functions</em> as modeled by a GP. Sounds complex, but what we are really saying is that each line through \(Y_1-Y_{10}\) is a function,  and since we are seeing multiple functions above - because of the uncertainty of \(Y_i\)s - we are effectively looking at a distribution of functions.</p>
 
-<p>Sticking with this visual metaphor, what does regression mean here? A training instance \((x_i, y_i)\) implies the corresponding variable \(Y_i\) is now fixed at the value of \(y_i\). Training data effectively <em>clamps</em> down the function at observations, leaving it to vary elsewhere. How much does the function “sway” depends on the kind of smoothness we have enforced. In the next plot, the clamped down points are shown in red.</p>
+<p>Sticking with this visual metaphor, what does regression mean here? A training instance \((x_i, y_i)\) implies the corresponding variable \(Y_i\) is now fixed at the value of \(y_i\). Training data effectively <em>clamps</em> down the function at observations, leaving it to vary elsewhere. In the next plot, the clamped down points are shown in red.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -523,6 +537,8 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
         <p class="image-caption">Training data clamps down the y values - shown with red circles.</p>
     
 </div>
+
+<p>How much does the function sway “elsewhere” - we’ll think of these as test locations - depends on (a) the degree/kind of smoothness we have enforced, and (b) how far a test input is from a training instance. In general, you might imagine that the effect of clamping reduces as you move away from the clamped points. There are exceptions to this, like if you wanted your smoothness to have some kind of periodicity (<a href="https://peterroelants.github.io/posts/gaussian-process-kernels/#Local-periodic-kernel">example</a>) - but this is a good mental model for now.</p>
 
 <p>The benefit to all this that when are predicting the output for an input, we end up predicting a <em>distribution</em> instead of a single value.  This is not as scary as it sounds: consider any vertical \(Y_i\) bar in the above plot, and think about the animated line tracing values on it. Shown below.</p>
 
@@ -557,7 +573,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 \[Y \sim \mathcal{N}(\mu, \sigma^2)\]
 
-<p>Here, \(Y\) is a random variable that takes on output values across <em>different</em> inputs, where we assume exactly one “best-guess” output for an input, i.e.,  for an \(x_i\), we just have one specific \(y_i\), and \(Y \in \{y_i\}_{i=1}^N\). Such a \(y_i\) is known as a <a href="https://en.wikipedia.org/wiki/Point_estimation">point estimate</a>. This is also why the \(y_i\)s are in lower case - they are not random variables. This is how regression models are commonly used: you plug in an input and receive an output. Instead of a covariance matrix \(\Sigma\), I am using the standard notation for variance \(\sigma^2\), since this is a 1D Gaussian.</p>
+<p>Where, \(Y\) is a random variable that takes on output values across <em>different</em> inputs, where we assume exactly one “best-guess” output for an input, i.e.,  for an \(x_i\), we just have one specific \(y_i\), and \(Y \in \{y_i\}_{i=1}^N\). Such a \(y_i\) is known as a <a href="https://en.wikipedia.org/wiki/Point_estimation">point estimate</a>. This is also why the \(y_i\)s are in lower case - they are not random variables. This is how regression models are commonly used: you plug in an input and receive an output. Instead of a covariance matrix \(\Sigma\), I am using the standard notation for variance \(\sigma^2\), since this is a 1D Gaussian.</p>
 
 <p>So, what <em>are</em> we saying? We have one Gausian random variable dedicated to possible outputs for one given input. The <em>distributions</em> of the outputs together is a multivariate Gaussian, and it describes our current knowledge (or uncertainty) of the function. The extent of coupling between individual distributions is decided by the similarity in their inputs. Mathematically, this is what we <strong>ARE</strong> saying:</p>
 
@@ -645,6 +661,8 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
   <li>We used marginalization to say that its OK to think about a finite slice of the overall model as a Gaussian. The convenient form of marginalization helped here: we could just parameterize this finite distribution in a self-contained manner, while assuming that these parameters were plucked out of an infinitely larger parameter space.</li>
   <li>Then, we used conditioning wrt training data, on this marginal finite Gaussian distribution, to describe the test outputs.</li>
 </ul>
+
+<p>So, really, the central assumption here is that the output distributions are jointly Gaussian, with a covariance matrix that encodes input similarities. All other properties are consequences.</p>
 
 <hr style="height:1px;border-width:0;background-color:#EE2967" />
 <p><br /></p>
@@ -822,7 +840,7 @@ As before, let test data be \(X^* \in \mathbb{R}^{M \times d}\), \(Y^* \in \math
     
 </div>
 
-<p>This doesn’t show what the joint distribution is, but that the marginal output distributions per \(i\) are Gaussians, i.e., this points to the feasibility of the joint being a Gaussian. We have seen this before! Let’s bring up that plot.</p>
+<p>It looks like the marginal output distributions per \(i\) are Gaussians, which is what we would expect from the joint begin Gaussian. We have seen this before! Let’s bring up that plot.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
