@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+  <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Jensen&#39;s Inequality - Visual Intuition</title>
+  <meta name="description" content="">
+  <link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Alegreya" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Raleway:300" rel="stylesheet" type='text/css'> 
+  <link href="https://fonts.googleapis.com/css?family=PT+Serif|Work+Sans:300" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,800;1,800&family=Raleway:wght@100&display=swap" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap" rel="stylesheet"> 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400&display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://blog.quipu-strands.com/jensens_inequality">
+  <link rel="alternate" type="application/rss+xml" title="A Not-So Primordial Soup" href="/feed.xml">
+  
+  
+  <!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://quipustrands.matomo.cloud/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src='//cdn.matomo.cloud/quipustrands.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+
+</head>
+
+
+  <body>
+
+    <header class="site-header" role="banner">
+
+  <div class="wrapper">
+    
+    
+    <a class="site-title" href="/">A Not-So Primordial Soup</a>
+  
+    
+      <nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+              <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+              <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger">
+          
+            
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+            
+          
+            
+            
+          
+            
+            
+          
+            
+            
+            <a class="page-link" href="/Terms/">Terms</a>
+            
+          
+        </div>
+      </nav>
+    
+  </div>
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Jensen&#39;s Inequality - Visual Intuition</h1>
+    <p class="post-meta">
+      <time datetime="2024-09-15T23:44:00-07:00" itemprop="datePublished">
+        
+        Created: Sep 15, 2024.    Last major update:
+        Sep 16, 2024. 
+      </time>
+      </p>
+  
+     
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <script type="text/x-mathjax-config"> 
+    MathJax.Hub.Config({ 
+        "HTML-CSS": { scale: 100, linebreaks: { automatic: true } }, 
+        SVG: { linebreaks: { automatic:true } }, 
+        displayAlign: "center" });
+</script>
+
+<script type="text/javascript" async="" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+</script>
+
+<p><em><a href="https://en.wikipedia.org/wiki/Jensen%27s_inequality">Jensen’s inequality</a></em> finds widespread application in mathematical proofs. I am fond of a particular intuitive explanation of it, which doesn’t seem to be very popular. I will try to present it in brief here.</p>
+
+<p>I am not sure when this argument originated, but Google does turn up a paper <a class="citation" href="#jensens_needham">(Needham, 1993)</a>. Even if this is not the source, it is a good reference. On a related note, the author of the paper, Tristan Needham, has the very well-reviewed book “<a href="https://www.amazon.com/Visual-Complex-Analysis-Tristan-Needham/dp/0198534469">Visual Complex Analysis</a>” to his credit.</p>
+
+<p>This is going to sound surprising but let’s start with the idea of the <em>center of mass (CM)</em>.</p>
+
+<h2 id="center-of-mass">Center of Mass</h2>
+
+<p>For our purposes, we can think of the center of mass of an object as that one point where you could hold up an object. Easy to intuit and easily shown with pictures. Below, you see the objects - a toy bird and a baseball bat - held up at their CM.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/jensens/cm_examples.png" alt="test" />
+    
+    
+        <p class="image-caption">Real world examples of the CM. Sources: <a href="https://en.wikipedia.org/wiki/Center_of_mass">[1]</a>, <a href="http://www.exo.net/~pauld/activities/baseball/batcofm.htm">[2]</a></p>
+    
+</div>
+
+<p>We wouldn’t be looking at the CMs of bodies like the toy bird or a baseball bat, but of groups of disconnected masses, like in the figure on the left below; here, a mass is represented by a circle, where its size corresponds to its mass. The CM is shown with a red square. If the disconnected-ness of the masses seems confusing, you could assume that the masses are affixed to a Plexiglas sheet of negligible weight, as shown on the right. Again, the intuition for the CM is that you can hold up this system at its location.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/jensens/cm_masses.png" alt="test" />
+    
+    
+        <p class="image-caption"></p>
+    
+</div>
+
+<p>Let’s look at some more shapes - just to nail down the intuition. Here are some more masses and their CMs.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/jensens/cm_more_masses_False.png" alt="test" />
+    
+    
+        <p class="image-caption">Some more mass distributions and their CMs.</p>
+    
+</div>
+
+<p>The key takeaway - which might seem silly because it’s obvious to our physical intuition - should be that the CM always within the <em>convex hull</em> of the masses. There are great descriptions of <a href="https://en.wikipedia.org/wiki/Convex_hull">convex hull</a> online of course, but a description I like is: Think of the given points as locations of nails driven into a board. If you now were to snap a rubber band around these nails, the shape it ends up with is the convex hull. Let’s look at the masses above again - now with the convex hull also shown.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/jensens/cm_more_masses_True.png" alt="test" />
+    
+    
+        <p class="image-caption">The CM always lies on the convex hull.</p>
+    
+</div>
+
+<h2 id="jensens-inequality">Jensen’s Inequality</h2>
+
+<p>We now know enough to understand the inequality. Let’s first consider a concave curve \(f\) - the green line in the figure below. Assume we have placed four masses on it, as if we were stringing beads (the masses) with the curve. The masses and their locations are labeled: \(m_i, (x_i, y_i)\). Their CM is again shown with a red square; we’ll denote its coordinates as \((x_{CM}, y_{CM})\). Now consider the square with the red outline right above it - this is \(f(x_{CM})\). For a concave curve, the y-coordinate of this is <em>greater</em> than \(y_{CM}\). Kind of obvious, isn’t it? Well that’s the inequality.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/jensens/inequality.png" alt="test" />
+    
+    
+        <p class="image-caption">Finally: Jensen's Inequality!</p>
+    
+</div>
+
+<p>Let’s write that down in symbols, starting with the familiar expressions for computing the CM’s coordinates:</p>
+
+\[\begin{aligned}
+x_{CM} = \frac{\sum_i m_i x_i}{\sum_i m_i}, \;\; y_{CM} = \frac{\sum_i m_i y_i}{\sum_i m_i}
+\end{aligned}\]
+
+<p>Jensen’s inequality states that \(y_{CM} \leq f(x_{CM})\). This is:</p>
+
+\[\begin{aligned}
+    \frac{\sum_i m_i y_i}{\sum_i m_i} \leq f(\frac{\sum_i m_i x_i}{\sum_i m_i})
+\end{aligned}\]
+
+<p>If we want to make it concise, we can use mass <em>fractions</em>, i.e., let \(p_i = m_i/\sum_j m_j\). Then the inequality may be written as:</p>
+
+\[\begin{aligned}
+    \sum_i p_i y_i \leq f(\sum_i p_i x_i)
+\end{aligned}\]
+
+<p>For a <em>convex</em> curve, the sign of the inequality is reversed, i.e.,  \(y_{CM} \geq f(x_{CM})\), and we instead have:</p>
+
+\[\begin{aligned}
+    \sum_i p_i y_i \geq f(\sum_i p_i x_i)
+\end{aligned}\]
+
+<h2 id="references">References</h2>
+<ol class="bibliography"><li><span id="jensens_needham">Needham, T. (1993). A Visual Explanation of Jensen’s Inequality. <i>American Mathematical Monthly</i>, <i>100</i>. https://doi.org/10.2307/2324783</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="jensens_needham-abstract">
+    
+    </div>
+
+</li></ol>
+
+  </div>
+
+  
+</article>
+
+      </div>
+    </main>
+
+
+<!--
+    <script src="https://giscus.app/client.js"
+        data-repo="[ENTER REPO HERE]"
+        data-repo-id="[ENTER REPO ID HERE]"
+        data-category="[ENTER CATEGORY NAME HERE]"
+        data-category-id="[ENTER CATEGORY ID HERE]"
+        data-mapping="pathname"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-theme="light"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+    </script>
+-->
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">A Not-So Primordial Soup</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>
+            
+              A Not-So Primordial Soup
+            
+            </li>
+            
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+
+          
+	  
+	  
+  	 <li>
+            <a href="https://linkedin.com/in/abhishek-ghose-36197624">
+            <i class="fa fa-linkedin"></i> LinkedIn
+            </a>
+         </li>
+         
+
+         
+  	 <li>
+            <a href="https://www.quora.com/profile/Abhishek-Ghose">
+            <i class="fa fa-quora" aria-hidden="true"></i> Quora
+            </a>
+         </li>
+         
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>My thought-recorder.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+    <script>
+    
+    var elements = document.querySelectorAll('p');
+    Array.prototype.forEach.call(elements, function(el, i){
+        if(el.innerHTML=='[expand]') {
+            var parentcontent = el.parentNode.innerHTML.replace('<p>[expand]</p>','<div class="expand" style="display: none; height: 0; overflow: hidden;">').replace('<p>[/expand]</p>','</div>');
+            el.parentNode.innerHTML = parentcontent;
+        }
+    });
+
+    var elements = document.querySelectorAll('div.expand');
+    Array.prototype.forEach.call(elements, function(el, i){
+        el.previousElementSibling.innerHTML = el.previousElementSibling.innerHTML + '<span>..&nbsp; <a href="#" style="cursor: pointer;" onclick="this.parentNode.parentNode.nextElementSibling.style.display = \'block\'; this.parentNode.parentNode.nextElementSibling.style.height = \'auto\'; this.parentNode.style.display = \'none\';">read&nbsp;more&nbsp;&rarr;</a></span>';
+    });
+
+</script>
+  </body>
+
+</html>
