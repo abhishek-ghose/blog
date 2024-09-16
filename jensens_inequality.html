@@ -217,22 +217,28 @@ This is going to sound surprising but let’s start with the idea of the <em>cen
 x_{CM} = \frac{\sum_i m_i x_i}{\sum_i m_i}, \;\; y_{CM} = \frac{\sum_i m_i y_i}{\sum_i m_i}
 \end{aligned}\]
 
-<p>Jensen’s inequality states that \(y_{CM} \leq f(x_{CM})\). The equality can happen for some cases such as when all the masses have the same location. This is:</p>
+<p>Jensen’s inequality states that \(y_{CM} \leq f(x_{CM})\). The equality case occures for some cases such as when all the masses have the same location. This is:</p>
 
 \[\begin{aligned}
-    \frac{\sum_i m_i y_i}{\sum_i m_i} \leq f(\frac{\sum_i m_i x_i}{\sum_i m_i})
+    \frac{\sum_i m_i y_i}{\sum_i m_i} \leq f\Big(\frac{\sum_i m_i x_i}{\sum_i m_i}\Big)
 \end{aligned}\]
 
-<p>If we want to make the above expression concise, we can use mass <em>fractions</em>, i.e., let \(p_i = m_i/\sum_j m_j\). Then the inequality may be written as:</p>
+<p>Note that \(y_i = f(x_i)\), since the masses are <em>on</em> the curve \(f\). Let’s make this substitution as well:</p>
 
 \[\begin{aligned}
-    \sum_i p_i y_i \leq f(\sum_i p_i x_i)
+    \frac{\sum_i m_i f(x_i)}{\sum_i m_i} \leq f\Big(\frac{\sum_i m_i x_i}{\sum_i m_i}\Big)
+\end{aligned}\]
+
+<p>This matches the wikipedia expression for the concave function we saw above. If we want to make the expression concise, we can use mass <em>fractions</em>, i.e., let \(a_i = m_i/\sum_j m_j\). Then the inequality may be written as:</p>
+
+\[\begin{aligned}
+    \sum_i a_i f(x_i) \leq f\Big(\sum_i a_i x_i \Big)
 \end{aligned}\]
 
 <p>For a <em>convex</em> curve, the sign of the inequality is reversed, i.e.,  \(y_{CM} \geq f(x_{CM})\), and we instead have:</p>
 
 \[\begin{aligned}
-    \sum_i p_i y_i \geq f(\sum_i p_i x_i)
+    \sum_i a_i f(x_i) \geq f(\sum_i a_i x_i)
 \end{aligned}\]
 
 <h2 id="references">References</h2>
