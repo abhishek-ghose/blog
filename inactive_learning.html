@@ -131,7 +131,7 @@
 
 <p>In theory, <em>Active Learning (AL)</em> is a tremendous idea. You need labeled data, but your kind of labeling comes at a cost, e.g., you need to obtain them from a domain expert. Now, lets say, your goal is to use this labeled data to train a classifier that gets to a held-out accuracy of \(90\%\). If you randomly sampled points to label, you might require \(1000\) points. Active Learning comes along and lets you <em>strategically</em> pick just \(500\) points for labeling, to reach the same accuracy. Half the labeling cost for the same outcome. This is great!</p>
 
-<p>Except that in a lot of real-world cases this is not how it plays out.  I suspected this from my personal experiments, and then in some stuff we did at <a href="https://www.247.ai/">[24]7.ai</a>. So we decided to thoroughly test out multiple scenarios in text classification, where you believe (or current literature leads us to believe) Active Learning <em>should</em> work … but it just doesn’t. We summarized our observations into the paper <em>“On the Fragility of Active Learners for Text Classification”</em> <a class="citation" href="#fragilityActive">(Ghose &amp; Nguyen, 2024)</a>, and that is what I’d refer to you for details. This post is part overview and part thoughts not in the paper.</p>
+<p>Except that in a lot of real-world cases this is not how it plays out.  I suspected this from my personal experiments, and then in some stuff we did at <a href="https://www.247.ai/">[24]7.ai</a>. So we decided to thoroughly test out multiple scenarios in text classification, where you believe (or current literature leads us to believe) Active Learning <em>should</em> work … but it just doesn’t. We summarized our observations into the paper <em>“On the Fragility of Active Learners for Text Classification”</em> <a class="citation" href="#fragilityActive">(Ghose &amp; Nguyen, 2024)</a> [<a href="https://arxiv.org/pdf/2403.15744">PDF</a>], and that is what I’d refer to you for details. This post is part overview and part thoughts not in the paper.</p>
 
 <h2 id="what-do-we-expect-to-see">What do we expect to see?</h2>
 
@@ -244,9 +244,15 @@
     </ul>
   </li>
   <li>Related to the above point: I have heard arguments along the lines that performing model selection or calibration is time-consuming. First, that should not be an excuse to report volatile numbers. Second, we can’t solve problems we are not aware of, and if selection/calibration is a deal-breaker for AL research, let’s let that be widely known so that someone out there might take a crack at it. Maybe that will renew focus on efforts like the <em>Swiss Army Infinitesimal Jacknife</em> <a class="citation" href="#pmlr-v89-giordano19a">(Giordano et al., 2019)</a>.</li>
+  <li>
+    <p>Some AL algorithms have fine-tunable hyperparameters. These are impossible to use in practice. We are in a setup where labeled data is non-existent - what are these hyperparams supposed to be fine-tuned against? And remember that at each iteration you’re picking one batch of points, which implies the hyperparams are held fixed to some values at an iteration; so, over how many iterations should this fine-tuning occur, and how do we stabilize this process given the number of data points at iterations differ? These questions are typically not addressed in the literature.</p>
+
+    <p>AL hyperparams are like <em>existence proofs</em> in mathematics - “we know for some value of these hyerparams our algorithm knocks it out of the park!” - as opposed to <em>constructive proofs</em> - “Ah! But we don’t know how to get to that value…”.</p>
+  </li>
+  <li>Lack of experiment standards: its hard to compare AL techniques across papers because there is no standard for setting batch or seed sizes or even the labeling budget (the final number of labeled points). These widely vary across papers, and sadly, they heavily influence performance, especially when you want to pick an algorithm for actual use.</li>
 </ul>
 
-<p>I hope this post doesn’t convey the impression that I hate AL. But yes, it can be frustrating :-) I still think its a worthy problem, and I often read papers from the area. All we are saying is that it is perhaps time to scrutinize the more practical aspects of AL.</p>
+<p>I hope this post doesn’t convey the impression that I hate AL. But yes, it can be frustrating :-) I still think its a worthy problem, and I often read papers from the area. In fact, we have an ICML workshop paper involving AL from earlier <a class="citation" href="#XAI_human_in_the_loop">(Nguyen &amp; Ghose, 2023)</a>. All we are saying is that it is time to scrutinize the various practical aspects of AL. The paper is accompanied by a <a href="https://github.com/ThuongTNguyen/active_learning_comparisons">library we’re open-sourcing</a> (still polishing up things) - which will hopefully make good benchmarking convenient.</p>
 
 <h2 id="acknowledgements">Acknowledgements</h2>
 
@@ -269,7 +275,7 @@
     </div>
 
 </li>
-<li><span id="fragilityActive">Ghose, A., &amp; Nguyen, E. T. (2024). On the Fragility of Active Learners for Text Classification. <i>The 2024 Conference on Empirical Methods in Natural Language Processing</i>.</span>
+<li><span id="fragilityActive">Ghose, A., &amp; Nguyen, E. T. (2024). On the Fragility of Active Learners for Text Classification. <i>The 2024 Conference on Empirical Methods in Natural Language Processing</i>. https://arxiv.org/abs/2403.15744</span>
     
 
     
@@ -329,6 +335,23 @@
     
         
     <div class="dropDownAbstract" id="pmlr-v89-giordano19a-abstract">
+    
+    </div>
+
+</li>
+<li><span id="XAI_human_in_the_loop">Nguyen, E. T., &amp; Ghose, A. (2023). Are Good Explainers Secretly Human-in-the-Loop Active Learners? <i>AI&amp;HCI Workshop at the 40th International Conference on Machine Learning,
+               ICML</i>. https://arxiv.org/abs/2306.13935</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="XAI_human_in_the_loop-abstract">
     
     </div>
 
