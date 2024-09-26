@@ -244,7 +244,7 @@
   <li>
     <p>Some AL algorithms have fine-tunable hyperparameters. These are impossible to use in practice. We are in a setup where labeled data is non-existent - what are these hyperparams supposed to be fine-tuned against? And remember that at each iteration you’re picking one batch of points, which implies the hyperparams are held fixed to some values at the iteration; so, over how many iterations should this fine-tuning occur, and how do we stabilize this process given the number of labeled data points at iterations differ? These questions are typically not addressed in the literature.</p>
 
-    <p>AL hyperparams are like <em>existence proofs</em> in mathematics - “we know for some value of these hyerparams our algorithm knocks it out of the park!” - as opposed to <em>constructive proofs</em> - “Ah! But we don’t know how to get to that value…”.</p>
+    <p>AL hyperparams are like <em>existence proofs</em> in mathematics - “we know for some value of these hyperparams our algorithm knocks it out of the park!” - as opposed to <em>constructive proofs</em> - “Ah! But we don’t know how to get to that value…”.</p>
   </li>
   <li>Lack of experiment standards: its hard to compare AL techniques across papers because there is no standard for setting batch or seed sizes or even the labeling budget (the final number of labeled points). These <strong>wildly</strong> vary in the literature (for an idea, take a look at Table 4 in the paper), and sadly, they heavily influence performance.</li>
 </ul>
