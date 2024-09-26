@@ -118,7 +118,7 @@
 
 <p>I totally stole the title from a paper <a class="citation" href="#10.1145/1964897.1964906">(Attenberg &amp; Provost, 2011)</a>.</p>
 
-<p>In theory, <em>Active Learning (AL)</em> is a tremendous idea. You need labeled data, but your kind of labeling comes at a cost, e.g., you need to obtain them from a domain expert. Now, lets say, your goal is to use this labeled data to train a classifier that gets to a held-out accuracy of \(90\%\). If you randomly sampled points to label, you might require \(1000\) points. Active Learning comes along and lets you <em>strategically</em> pick just \(500\) points for labeling, to reach the same accuracy. Half the labeling cost for the same outcome. This is great!</p>
+<p>In theory, <em>Active Learning (AL)</em> is a tremendous idea. You need labeled data, but your kind of labeling comes at a cost, e.g., you need to obtain them from a domain expert. Now, lets say, your goal is to use this labeled data to train a classifier that gets to a held-out accuracy of \(90\%\). If you randomly sampled points to label, you might require \(1000\) points. Active Learning lets you <em>strategically</em> pick just \(500\) points for labeling, to reach the same accuracy. Half the labeling cost for the same outcome. This is great!</p>
 
 <p>Except that in a lot of real-world cases this is not how it plays out.  I suspected this from my personal experiments, and then in some stuff we did at <a href="https://www.247.ai/">[24]7.ai</a>. So we decided to thoroughly test out multiple scenarios in text classification, where you believe (or current literature leads us to believe) Active Learning <em>should</em> work … but it just doesn’t. We summarized our observations into the paper <em>“On the Fragility of Active Learners for Text Classification”</em> <a class="citation" href="#fragilityActive">(Ghose &amp; Nguyen, 2024)</a> [<a href="https://arxiv.org/pdf/2403.15744">PDF</a>], and that is what I’d refer to you for details. This post is part overview and part thoughts not in the paper. Here’s the layout:</p>
 
@@ -132,7 +132,7 @@
 
 <h2 id="what-do-we-expect-to-see">What do we expect to see?</h2>
 
-<p>OK, just for an idea, what would be an example of an AL technique? Let me pick one of the earliest ones: <em>Uncertainty Sampling</em>  <a class="citation" href="#uncertainty_sampling">(Lewis &amp; Gale, 1994)</a>. Here you pick points to be labeled in <em>batches</em>. You kick-off with a random batch (also known as the “seed” set), label them and train a classifier. Next, you use this classifier to predict labels of the unlabeled points. You note the <em>confidence</em> of each prediction, and pick the points for which the confidences were the lowest, or equivalently, the <em>uncertainty</em> was the greatest. This is the batch you now label. Rinse and repeat. We’ll often refer to an AL technique by its other moniker, a <em>Query Strategy (QS)</em>, which comes from the fact that it is used to <em>query</em> points for labeling.</p>
+<p>OK, just for an idea, what would be an example of an AL technique? Let’s look at one of the earliest ones: <em>Uncertainty Sampling</em>  <a class="citation" href="#uncertainty_sampling">(Lewis &amp; Gale, 1994)</a>. Here you pick points to be labeled in <em>batches</em>. You kick-off with a random batch (also known as the “seed” set), label them and train a classifier. Next, you use this classifier to predict labels of the unlabeled points. You note the <em>confidence</em> of each prediction, and pick the points for which the confidences were the lowest, or equivalently, the <em>uncertainty</em> was the greatest. This is the batch you now label. Rinse and repeat. We’ll often refer to an AL technique by its other moniker, a <em>Query Strategy (QS)</em>, which comes from the fact that it is used to <em>query</em> points for labeling.</p>
 
 <p>The idea is that by supplying to the classifier the points it is most wrong about, you force it to improve faster. This view has problems, and we’ll get to it in a while. But if it worked - if any AL technique worked - here’s what we would expect to see:</p>
 
@@ -146,7 +146,7 @@
     
 </div>
 
-<p>The F1-scores on the y-axis are reported over a held-out set, i.e., a test set with labels. This is <em>not available</em> in a real-world setting; because if you had labels for a significantly large test dataset, in a world where labeling is expensive, you will use it (or part of it) for training, thus negating the need for using AL. The batch size in the plot’s setup is \(100\).</p>
+<p>The F1-scores on the y-axis are reported over a held-out set, i.e., a test set with labels. This is <em>not available</em> in a real-world setting; because if you had labels for a significantly large test dataset, in a world where labeling is expensive you will use it (or part of it) for training, thus negating the need for using AL. The batch size in the plot’s setup is \(100\).</p>
 
 <p>We can make the plot a little concise by just plotting the relative percentage improvement of the AL technique, i.e., \(100 \times (F1_{AL} - F1_{random})/F1_{random}\). This is shown below:</p>
 
@@ -197,7 +197,7 @@
   <li>RoBERTa seems to register positive improvements for most setups, but this is not a high number; its close to \(1\%\).</li>
 </ul>
 
-<p>In short, at low labeled-data regimes, AL does poorly; this is unfortunate, since this is when you want AL to actually work. AL has diminished utility at larger data regimes, because the performance of random sampling <em>also improves</em> just because we have more data. And we see that in the plot above: at high labeled-data regimes, the relative improvements are positive but low. If I were to visualize this as a line plot, the average behavior of AL seems closer to this:</p>
+<p>In short, at low labeled-data regimes, AL does poorly; this is unfortunate, since this is when you want AL to actually work. AL has diminished utility at larger data regimes, because the performance of random sampling <em>also improves</em> just because we have more data. And we see that in the plot above: at high labeled-data regimes, when the relative improvements are positive they are low. If I were to distill these trends as a line plot, I’d say the average behavior of AL seems closer to this:</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -212,21 +212,33 @@
 <h2 id="here-be-dragons">Here be Dragons</h2>
 <p>So why the discrepancy between theory and practice? Let’s start by appreciating that AL is a particularly hard problem. Consider what you are up against: you are trying to build a <em>supervised</em> model <em>while</em> you are soliciting the supervision, i.e., labels. You will only know you were right or wrong about your pick of the AL technique <em>after</em> you have labeled enough data (because you can then simulate random sampling and see how much its trajectory is better or worse). But this is too late because your labeling budget is already expended. AL problems are unforgiving because you need to get it right in one-shot; using a classifier and representation that is likely different from what was used in reporting the original results, on a dataset that was definitely not used (if its a problem you’re solving in the industry) by the original literature. The AL problem is a model <em>transferability</em> problem in disguise.</p>
 
-<p>To give you an example of the challenges, let’s revisit Uncertainty Sampling and consider a toy problem (this is from <a class="citation" href="#10.1145/1390156.1390183">(Dasgupta &amp; Hsu, 2008)</a>, and the figures are from my <a href="https://drive.google.com/file/d/1zf_MIWyLY7nxEr5UioUQ7KhOQ1_clYYl/view?usp=drive_link">PhD thesis</a>). In the bottom image of the figure, we have a one-dimensional dataset with two labels (red and green). Note the distribution - two big chunks P and Q, and some smaller chunks. Our goal is to learn a classifier, which here is essentially a point on the number line, and the classification logic is that all data to its left will be classified as “green”, and data to its right would be classified as “red”.</p>
+<p>To give you an example of the challenges, let’s revisit Uncertainty Sampling and consider a toy problem (this is from <a class="citation" href="#10.1145/1390156.1390183">(Dasgupta &amp; Hsu, 2008)</a>, and the figures are from my <a href="https://drive.google.com/file/d/1zf_MIWyLY7nxEr5UioUQ7KhOQ1_clYYl/view?usp=drive_link">PhD thesis</a>). In the figure below, we have a one-dimensional dataset (shown on a line, with the rectangles showing their density) with two labels, red and green. Note the distribution - two big chunks P and Q, and some smaller chunks. Our goal is to learn a classifier, which here is essentially a point on the number line, and the classification logic is that all data to its left will be classified as “green”, and data to its right would be classified as “red”.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
     
-        <img src="/assets/active_learning/uncertainty_sampling_bias.png" alt="test" />
+        <img src="/assets/active_learning/sampling_bias_problem.png" alt="test" />
     
     
-        <p class="image-caption">Sampling bias created by Uncertainty Sampling.</p>
+        <p class="image-caption">1D toy dataset, where the distribution is shown with rectangles.</p>
     
 </div>
 
 <p>What’s the location of the best classifier? Its location B: the only misclassified points are in the thin green slice of points towards its right. That slice has a width of \(2.5\%\), so that’s the best classification error in this setup.</p>
 
-<p>Now consider the AL setting where we don’t have any label information. In the first iteration, we randomly sample a batch of points. Its highly likely that we would end up sampling points from the larger chunks P and Q. So we get them labeled, and learn a classifier, which is going to be near C - right at the middle, with the good stuff like maximized margins. Now we compute the uncertainty values for all points. The plot at the top of the figure shows these values. The greatest uncertainty is right in the middle of P and Q, since this represents the classifier’s boundary. In the next iteration, we sample points around C. The slim chunks of points around C match what the classifier has already seen, and it cannot know (with this sampling strategy) that there is a small red chunk, with width \(5\%\) a little further out to its left. So the classification boundary doesn’t change, and C’s uncertainty view is reinforced in future iterations, leading to cascaded sampling bias. Classifier C has an error of \(5\%\).</p>
+<p>Now consider the AL setting where we don’t have any label information. In the first iteration, we randomly sample a batch of points. Its highly likely that we would end up sampling points from the larger chunks P and Q. So we get them labeled, and learn a classifier, which is going to be near C - right at the middle, with the good stuff like maximized margins. Now we compute the uncertainty values for all points. The plot below shows these values.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/active_learning/sampling_bias_unc.png" alt="test" />
+    
+    
+        <p class="image-caption">Uncertainty scores of predictions on the input space.</p>
+    
+</div>
+
+<p>The greatest uncertainty is right in the middle of P and Q, since this represents the classifier’s boundary. In the next iteration, we sample points around C. The slim chunks of points around C match what the classifier has already seen, and it cannot know (with this sampling strategy) that there is a small red chunk, with width \(5\%\) a little further out to its left. So the classification boundary doesn’t change, and C’s uncertainty view is reinforced in future iterations, leading to cascaded sampling bias. Classifier C has an error of \(5\%\).</p>
 
 <p>Now, this is a contrived example, and you can argue you can come up with a better heuristic to deal with this specific case (these are precisely the kind of problems AL research tries to address)- but the larger point is that there is going to be this pesky issue of dealing with unknowns: the dataset, classifier, representation, etc.</p>
 
