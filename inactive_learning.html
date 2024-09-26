@@ -168,7 +168,7 @@
 <h2 id="what-do-we-see">What do we see?</h2>
 <p>A learning setup can vary wrt multiple things: the dataset, the classifier family (something traditional like <em>Random Forests</em> vs a recent one like <em>RoBERTa</em>) and the text representation (so many embeddings to pick from, e.g., <em>MPNet</em>, <em>USE</em>). You’re thrown into such a setup, and you have no labeled data, but you have read about this cool new AL technique - would you expect it to work?</p>
 
-<p>This is the aspect of AL that we explored. The figure below - taken from the paper - shows the cross-product of the different factors we tried. In all, there are \(350\) experiment settings. Note that RoBERTa is an end-to-end model, so in its case, both the “Representation” and “Classifier” are identical. Not counting random sampling, we tested out \(4\) query strategies (right-most box below), some traditional (“Margin” is a form of Uncertainty Sampling), some new.</p>
+<p>This is the aspect of AL that we explored. The figure below - taken from the paper - shows the cross-product of the different factors we tested. In all, there are \(350\) experiment settings. Note that RoBERTa is an end-to-end model, so in its case, both the “Representation” and “Classifier” are identical. Not counting random sampling, we tested out \(4\) query strategies (right-most box below), some traditional (“Margin” is a form of Uncertainty Sampling), some new.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -249,7 +249,7 @@
 
     <p>AL hyperparams are like <em>existence proofs</em> in mathematics - “we know for some value of these hyerparams our algorithm knocks it out of the park!” - as opposed to <em>constructive proofs</em> - “Ah! But we don’t know how to get to that value…”.</p>
   </li>
-  <li>Lack of experiment standards: its hard to compare AL techniques across papers because there is no standard for setting batch or seed sizes or even the labeling budget (the final number of labeled points). These <strong>wildly</strong> vary across papers (for an idea, take a look at Table 4 in the paper), and sadly, they heavily influence performance.</li>
+  <li>Lack of experiment standards: its hard to compare AL techniques across papers because there is no standard for setting batch or seed sizes or even the labeling budget (the final number of labeled points). These <strong>wildly</strong> vary in the literature (for an idea, take a look at Table 4 in the paper), and sadly, they heavily influence performance.</li>
 </ul>
 
 <p>I hope this post doesn’t convey the impression that I hate AL. But yes, it can be frustrating :-) I still think its a worthy problem, and I often read papers from the area. In fact, we have an ICML workshop paper involving AL from earlier <a class="citation" href="#XAI_human_in_the_loop">(Nguyen &amp; Ghose, 2023)</a>. All we are saying is that it is time to scrutinize the various practical aspects of AL. Our paper is accompanied by a <a href="https://github.com/ThuongTNguyen/active_learning_comparisons">library that we’re releasing</a> (still polishing up things) - which will hopefully make good benchmarking convenient.</p>
