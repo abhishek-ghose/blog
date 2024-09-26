@@ -116,22 +116,19 @@
 
 </script>
 
+<p>I totally stole the title from a paper <a class="citation" href="#10.1145/1964897.1964906">(Attenberg &amp; Provost, 2011)</a>.</p>
+
+<p>In theory, <em>Active Learning (AL)</em> is a tremendous idea. You need labeled data, but your kind of labeling comes at a cost, e.g., you need to obtain them from a domain expert. Now, lets say, your goal is to use this labeled data to train a classifier that gets to a held-out accuracy of \(90\%\). If you randomly sampled points to label, you might require \(1000\) points. Active Learning comes along and lets you <em>strategically</em> pick just \(500\) points for labeling, to reach the same accuracy. Half the labeling cost for the same outcome. This is great!</p>
+
+<p>Except that in a lot of real-world cases this is not how it plays out.  I suspected this from my personal experiments, and then in some stuff we did at <a href="https://www.247.ai/">[24]7.ai</a>. So we decided to thoroughly test out multiple scenarios in text classification, where you believe (or current literature leads us to believe) Active Learning <em>should</em> work … but it just doesn’t. We summarized our observations into the paper <em>“On the Fragility of Active Learners for Text Classification”</em> <a class="citation" href="#fragilityActive">(Ghose &amp; Nguyen, 2024)</a> [<a href="https://arxiv.org/pdf/2403.15744">PDF</a>], and that is what I’d refer to you for details. This post is part overview and part thoughts not in the paper. Here’s the layout:</p>
+
 <ul id="markdown-toc">
-  <li><a href="#introduction" id="markdown-toc-introduction">Introduction</a></li>
   <li><a href="#what-do-we-expect-to-see" id="markdown-toc-what-do-we-expect-to-see">What do we expect to see?</a></li>
   <li><a href="#what-do-we-see" id="markdown-toc-what-do-we-see">What do we see?</a></li>
   <li><a href="#here-be-dragons" id="markdown-toc-here-be-dragons">Here be Dragons</a></li>
   <li><a href="#acknowledgements" id="markdown-toc-acknowledgements">Acknowledgements</a></li>
   <li><a href="#references" id="markdown-toc-references">References</a></li>
 </ul>
-
-<h2 id="introduction">Introduction</h2>
-
-<p>I totally stole the title from a paper <a class="citation" href="#10.1145/1964897.1964906">(Attenberg &amp; Provost, 2011)</a>.</p>
-
-<p>In theory, <em>Active Learning (AL)</em> is a tremendous idea. You need labeled data, but your kind of labeling comes at a cost, e.g., you need to obtain them from a domain expert. Now, lets say, your goal is to use this labeled data to train a classifier that gets to a held-out accuracy of \(90\%\). If you randomly sampled points to label, you might require \(1000\) points. Active Learning comes along and lets you <em>strategically</em> pick just \(500\) points for labeling, to reach the same accuracy. Half the labeling cost for the same outcome. This is great!</p>
-
-<p>Except that in a lot of real-world cases this is not how it plays out.  I suspected this from my personal experiments, and then in some stuff we did at <a href="https://www.247.ai/">[24]7.ai</a>. So we decided to thoroughly test out multiple scenarios in text classification, where you believe (or current literature leads us to believe) Active Learning <em>should</em> work … but it just doesn’t. We summarized our observations into the paper <em>“On the Fragility of Active Learners for Text Classification”</em> <a class="citation" href="#fragilityActive">(Ghose &amp; Nguyen, 2024)</a> [<a href="https://arxiv.org/pdf/2403.15744">PDF</a>], and that is what I’d refer to you for details. This post is part overview and part thoughts not in the paper.</p>
 
 <h2 id="what-do-we-expect-to-see">What do we expect to see?</h2>
 
