@@ -173,7 +173,7 @@
         <img src="/assets/active_learning/experiment_viz.png" alt="test" />
     
     
-        <p class="image-caption">Factors that were varied in our experiments.</p>
+        <p class="image-caption">Factors that were varied in our experiments. Figure 1 in the paper.</p>
     
 </div>
 
@@ -185,17 +185,17 @@
         <img src="/assets/active_learning/AL_results.png" alt="test" />
     
     
-        <p class="image-caption">Observations.</p>
+        <p class="image-caption">Observations. Figure 3 in the paper.</p>
     
 </div>
 
 <p>Here are the key takeaways:</p>
-<ul>
+<ol>
   <li>A lot of the percentage relative improvements are negative.</li>
   <li>As the number of labeled points increase, they tend towards positive. But remember that having a lot of data - even randomly picked - is bound to increase classifier performance anyway; so even for the positive-improvement cases the <em>relative improvements over random</em> are quite small.</li>
   <li>Different setups seem to also have different “warm-up” times, i.e., the number of labeled examples at which the transition from red to green improvement occurs. There is no way to predict these warm-up times by looking at the setup; so you get what you get.</li>
   <li>RoBERTa seems to register positive improvements for most setups, but this is not a high number; its close to \(1\%\).</li>
-</ul>
+</ol>
 
 <p>In short, at low labeled-data regimes, AL does poorly; this is unfortunate, since this is when you want AL to actually work. AL has diminished utility at larger data regimes, because the performance of random sampling <em>also improves</em> just because we have more data. And we see that in the plot above: at high labeled-data regimes, when the relative improvements are positive they are low. If I were to distill these trends as a line plot, I’d say the average behavior of AL seems closer to this:</p>
 
@@ -243,14 +243,14 @@
 <p>Now, this is a contrived example, and you can argue you can come up with a better heuristic to deal with this specific case (these are precisely the kind of problems AL research tries to address)- but the larger point is that there is going to be this pesky issue of dealing with unknowns: the dataset, classifier, representation, etc.</p>
 
 <p>There is obviously a lot to say on this topic, but I’ll try to summarize my thoughts below:</p>
-<ul>
+<ol>
   <li>AL is unforgiving because you see results reported from one setup, and based on that you <em>hope</em> it will work for <em>your setup</em>. And you have one-shot to get it right. We need ways to scientifically evaluate similarity in setups or applicability of a technique to a new setup - these are lacking in the area today.</li>
   <li>The focal point of much of AL research has been the query strategy, but our experiments (and there have been others before us, including the paper whose title we have re-used) tell us it is sensitive to other factors in non-trivial ways. We think that there needs to be much broader discourse around what specific problems AL should be attacking. Hint: it can’t be an isolated view of the query strategy alone.</li>
   <li>We need better benchmarking. When we went around looking for benchmarking codes or AL libraries, often we found that:
-    <ul>
+    <ol>
       <li>There is no model selection performed on the classifier that is learned in every iteration. Library defaults get used. Future researchers, there is nothing magical about <code class="language-plaintext highlighter-rouge">C=1</code> in scikit’s <a href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html">LinearSVC</a>! Fitting on an arbitrary hyperparam value makes already shaky results even more shaky. It provides no reference frame, and with a different dataset etc, there is a greater chance that the gains you see will vanish.</li>
       <li>Same goes for <a href="https://scikit-learn.org/stable/modules/calibration.html">model calibration</a>. Some query strategies rely on good probability estimates for the classifier’s predictions, and for that classifier needs to be properly calibrated.</li>
-    </ul>
+    </ol>
   </li>
   <li>Related to the above point: I have heard arguments along the lines that performing model selection or calibration is time-consuming. First, that should not be an excuse to report volatile numbers. Second, we can’t solve problems we are not aware of, and if selection/calibration is a deal-breaker for AL research, let’s let that be widely known so that someone out there might take a crack at it. Maybe that will renew focus on efforts like the <em>Swiss Army Infinitesimal Jacknife</em> <a class="citation" href="#pmlr-v89-giordano19a">(Giordano et al., 2019)</a>.</li>
   <li>
@@ -259,7 +259,7 @@
     <p>AL hyperparams are like <em>existence proofs</em> in mathematics - “we know for some value of these hyperparams our algorithm knocks it out of the park!” - as opposed to <em>constructive proofs</em> - “Ah! But we don’t know how to get to that value…”.</p>
   </li>
   <li>Lack of experiment standards: its hard to compare AL techniques across papers because there is no standard for setting batch or seed sizes or even the labeling budget (the final number of labeled points). These <strong>wildly</strong> vary in the literature (for an idea, take a look at Table 4 in the paper), and sadly, they heavily influence performance.</li>
-</ul>
+</ol>
 
 <p>I hope this post doesn’t convey the impression that I hate AL. But yes, it can be frustrating :-) I still think its a worthy problem, and I often read papers from the area. In fact, we have an ICML workshop paper involving AL from earlier <a class="citation" href="#XAI_human_in_the_loop">(Nguyen &amp; Ghose, 2023)</a>. All we are saying is that it is time to scrutinize the various practical aspects of AL. Our paper is accompanied by a <a href="https://github.com/ThuongTNguyen/active_learning_comparisons">library that we’re releasing</a> (still polishing up things) - which will hopefully make good benchmarking convenient.</p>
 
