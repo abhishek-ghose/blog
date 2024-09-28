@@ -240,6 +240,16 @@
 
 <p>The greatest uncertainty is right in the middle of P and Q, since this represents the classifier’s boundary. In the next iteration, we sample points around C. The slim chunks of points around C match what the classifier has already seen, and it cannot know (with this sampling strategy) that there is a small red chunk, with width \(5\%\) a little further out to its left. So the classification boundary doesn’t change, and C’s uncertainty view is reinforced in future iterations, leading to cascaded sampling bias. Classifier C has an error of \(5\%\).</p>
 
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/active_learning/sampling_bias_errors.png" alt="test" />
+    
+    
+        <p class="image-caption">Error regions for each classifier.</p>
+    
+</div>
+
 <p>Now, this is a contrived example, and you can argue you can come up with a better heuristic to deal with this specific case (these are precisely the kind of problems AL research tries to address)- but the larger point is that there is going to be this pesky issue of dealing with unknowns: the dataset, classifier, representation, etc.</p>
 
 <p>There is obviously a lot to say on this topic, but I’ll try to summarize my thoughts below:</p>
