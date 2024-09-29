@@ -269,7 +269,18 @@
     <p>AL hyperparams are like <em>existence proofs</em> in mathematics - “we know for some value of these hyperparams our algorithm knocks it out of the park!” - as opposed to <em>constructive proofs</em> - “Ah! But we don’t know how to get to that value…”.</p>
   </li>
   <li>Lack of experiment standards: its hard to compare AL techniques across papers because there is no standard for setting batch or seed sizes or even the labeling budget (the final number of labeled points). These <strong>wildly</strong> vary in the literature (for an idea, take a look at Table 4 in the paper), and sadly, they heavily influence performance.</li>
+  <li>This caveat is for readers of AL literature. Be careful in interpreting reported results, especially the <a href="https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test">Wilcoxon signed-rank</a> statistical test. In AL, this is used to compare the held-out accuracies between a query strategy and random (or another query strategy) at various labeled-data sizes. You would want a small <em>p-value</em>, <strong>but</strong> that doesn’t tell you by <em>how much</em> a query strategy is better. Look at the legend in the plot below. Both strategies QS1 and QS2, when compared to random, lead to the same p-value. But you probably want QS2.</li>
 </ol>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/active_learning/wilcoxon_limitation.png" alt="test" />
+    
+    
+        <p class="image-caption">Different query strategies might lead to identical p-values on the Wilcoxon test.</p>
+    
+</div>
 
 <p>I hope this post doesn’t convey the impression that I hate AL. But yes, it can be frustrating :-) I still think its a worthy problem, and I often read papers from the area. In fact, we have an ICML workshop paper involving AL from earlier <a class="citation" href="#XAI_human_in_the_loop">(Nguyen &amp; Ghose, 2023)</a>. All we are saying is that it is time to scrutinize the various practical aspects of AL. Our paper is accompanied by a <a href="https://github.com/ThuongTNguyen/active_learning_comparisons">library that we’re releasing</a> (still polishing up things) - which will hopefully make good benchmarking convenient.</p>
 
