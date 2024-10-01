@@ -6,7 +6,82 @@
         <link>https://blog.quipu-strands.com</link>
         <atom:link href="https://blog.quipu-strands.com/feed.xml" rel="self" type="application/rss+xml" />
         <description>My thought-recorder.</description>
-        <lastBuildDate>Tue, 13 Feb 2024 14:15:48 -0800</lastBuildDate>
+        <lastBuildDate>Sun, 29 Sep 2024 12:32:36 -0700</lastBuildDate>
+        
+        <item>
+            <title>Inactive Learning?</title>
+            <link>
+                https://blog.quipu-strands.com/inactive_learning
+            </link>
+            <description>
+                &lt;script type=&quot;text/x-mathjax-config&quot;&gt; 
+    MathJax.Hub.Config({ 
+        &quot;HTML-CSS&quot;: { scale: 100, linebreaks: { automatic: true } }, 
+        SVG: { linebreaks: { automatic:true } }, 
+        displayAlign: &quot;center&quot; });
+&lt;/script&gt;
+
+&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot;&gt;
+
+&lt;/script&gt;
+
+&lt;p&gt;I totally stole the title from a paper &lt;a class=&quot;citation&quot; href=&quot;#10.1145/1964897.1964906&quot;&gt;(Attenberg &amp;amp; Provost, 2011)&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In theory, &lt;em&gt;Active Learning (AL)&lt;/em&gt; is a tremendous idea. You need labeled data, but your kind of labeling comes at a cost, e.g., you need to obtain them from a domain expert. Now, lets say, your goal is to use this labeled data to train a classifier that gets to a held-out accuracy of \(90\%\). If you randomly sampled points to label, you might require \(1000\) points. Active Learning lets you &lt;em&gt;strategically&lt;/em&gt; pick just \(500\) points for labeling, to reach the same accuracy. Half the labeling cost for the same outcome. This is great!&lt;/p&gt;
+
+&lt;p&gt;Except that in a lot of real-world cases this is not how it plays out.  I suspected this from my personal experiments, and then in some stuff we did at &lt;a href=&quot;https://www.247.ai/&quot;&gt;[24]7.ai&lt;/a&gt;. So we decided to thoroughly test out multiple scenarios in text classification, where you believe (or current literature leads us to believe) Active Learning &lt;em&gt;should&lt;/em&gt; work … but it just doesn’t. We summarized our observations into the paper &lt;em&gt;“On the Fragility of Active Learners for Text Classification”&lt;/em&gt; &lt;a class=&quot;citation&quot; href=&quot;#fragilityActive&quot;&gt;(Ghose &amp;amp; Nguyen, 2024)&lt;/a&gt; [&lt;a href=&quot;https://arxiv.org/pdf/2403.15744&quot;&gt;PDF&lt;/a&gt;], and th...
+            </description>
+            <pubDate>Wed, 25 Sep 2024 12:00:00 -0700</pubDate>
+            <guid>
+                https://blog.quipu-strands.com/inactive_learning
+            </guid>
+        </item>
+        
+        <item>
+            <title>Jensen's Inequality - A Visual Intuition</title>
+            <link>
+                https://blog.quipu-strands.com/jensens_inequality
+            </link>
+            <description>
+                &lt;script type=&quot;text/x-mathjax-config&quot;&gt; 
+    MathJax.Hub.Config({ 
+        &quot;HTML-CSS&quot;: { scale: 100, linebreaks: { automatic: true } }, 
+        SVG: { linebreaks: { automatic:true } }, 
+        displayAlign: &quot;center&quot; });
+&lt;/script&gt;
+
+&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot;&gt;
+
+&lt;/script&gt;
+
+&lt;p&gt;&lt;strong&gt;Jensen’s inequality&lt;/strong&gt; finds widespread application in mathematical proofs. I am fond of a particular intuitive explanation of it, which doesn’t seem to be very popular. I will try to present it in brief here.&lt;/p&gt;
+
+&lt;p&gt;I am not sure when this argument originated, but Google does turn up a paper &lt;a class=&quot;citation&quot; href=&quot;#jensens_needham&quot;&gt;(Needham, 1993)&lt;/a&gt;. Even if this is not the source, it is a good reference. On a related note, the author of the paper, Tristan Needham, has the very well-reviewed book “&lt;a href=&quot;https://www.amazon.com/Visual-Complex-Analysis-Tristan-Needham/dp/0198534469&quot;&gt;Visual Complex Analysis&lt;/a&gt;” to his credit.&lt;/p&gt;
+
+&lt;p&gt;For the record, &lt;a href=&quot;(https://en.wikipedia.org/wiki/Jensen%27s_inequality)&quot;&gt;Wikipedia&lt;/a&gt; states one version in this way:&lt;/p&gt;
+
+&lt;!-- _includes/image.html --&gt;
+&lt;div class=&quot;image-wrapper&quot;&gt;
+    
+        &lt;img src=&quot;/assets/jensens/wiki.png&quot; alt=&quot;test&quot; /&gt;
+    
+    
+        &lt;p class=&quot;image-caption&quot;&gt;Jensen&#39;s Inequality, as on Wikipedia.&lt;/p&gt;
+    
+&lt;/div&gt;
+
+&lt;p&gt;But don’t read too much into this yet; we’ll discover this form along the way.
+This is going to sound surprising but let’s start with the idea of the &lt;em&gt;center of mass (CM)&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;center-of-mass&quot;&gt;Center of Mass&lt;/h2&gt;
+
+&lt;p&gt;For our purposes, we can think of th...
+            </description>
+            <pubDate>Sun, 15 Sep 2024 23:44:00 -0700</pubDate>
+            <guid>
+                https://blog.quipu-strands.com/jensens_inequality
+            </guid>
+        </item>
         
         <item>
             <title>Bayesian Optimization, Part 2: Acquisition Functions</title>
