@@ -146,21 +146,13 @@
     
 </div>
 
-<p>The F1-scores on the y-axis are reported over a held-out set, i.e., a test set with labels. This is <em>not available</em> in a real-world setting; because if you had labels for a significantly large test dataset, in a world where labeling is expensive you will use it (or part of it) for training, thus negating the need for using AL. The batch size in the plot’s setup is \(100\).</p>
+<p>The F1-scores on the y-axis are reported over a held-out set, i.e., a test set with labels. This is <em>not available</em> in a real-world setting; because if you had labels for a significantly large test dataset, in a world where labeling is expensive you will use it (or part of it) for training, thus negating the need for using AL. The batch size in the plot’s setup is \(100\) (which is not very important here - its just indicative).</p>
 
-<p>We can make the plot a little concise by just plotting the relative percentage improvement of the AL technique, i.e., \(100 \times (F1_{AL} - F1_{random})/F1_{random}\). This is shown below:</p>
-
-<!-- _includes/image.html -->
-<div class="image-wrapper">
-    
-        <img src="/assets/active_learning/rel_improve.png" alt="test" />
-    
-    
-        <p class="image-caption">AL performance as %age improvement over random.</p>
-    
-</div>
-
-<p>Note that as labeled data increases both curves converge to the same accuracy (or similar accuracies in practice). This is bound to happen since beyond a critical mass of points (collected via AL or randomly) the classifier has seen all patterns in the data, and will be able to generalize well.</p>
+<p>Note that:</p>
+<ul>
+  <li>The initial accuracies are identical - or in practice, quite similar. This is because the seed set is typically randomly picked (true in this illustration).</li>
+  <li>As labeled data increases, both curves converge to the same accuracy (or similar accuracies in practice). This is bound to happen since beyond a critical mass of points (collected via AL or randomly) the classifier has seen all patterns in the data, and will be able to generalize well.</li>
+</ul>
 
 <h2 id="what-do-we-see">What do we see?</h2>
 <p>A learning setup can vary wrt multiple things: the dataset, the classifier family (something traditional like <em>Random Forests</em> vs a recent one like <em>RoBERTa</em>) and the text representation (so many embeddings to pick from, e.g., <em>MPNet</em>, <em>USE</em>). You’re thrown into such a setup, and you have no labeled data, but you have read about this cool new AL technique - would you expect it to work?</p>
@@ -177,7 +169,7 @@
     
 </div>
 
-<p>And below are the results we observe. Each row is a classifier+representation combination. There are 5 heatmaps each corresponding to the number of labeled points, e.g., \(1000, 2000, ..., 5000\). Within a heatmap, each column represents a query strategy. Each cell shows the percentage relative improvement of a non-random query strategy over random sampling (this is why we have only \(4\) columns in each heatmap). The acronyms are declared in the previous image. The results are averaged over multiple datasets and trials.</p>
+<p>And below are the results we observe. Each row is a classifier+representation combination. There are 5 heatmaps each corresponding to the number of labeled points, e.g., \(1000, 2000, ..., 5000\). Within a heatmap, each column represents a query strategy. Each cell shows the <strong>percentage relative improvement</strong> of a non-random query strategy over random sampling (this is why we have only \(4\) columns in each heatmap). The acronyms are declared in the previous image. The results are averaged over multiple datasets and trials.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
