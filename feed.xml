@@ -6,7 +6,53 @@
         <link>https://blog.quipu-strands.com</link>
         <atom:link href="https://blog.quipu-strands.com/feed.xml" rel="self" type="application/rss+xml" />
         <description>My thought-recorder.</description>
-        <lastBuildDate>Sun, 29 Sep 2024 12:32:36 -0700</lastBuildDate>
+        <lastBuildDate>Thu, 06 Mar 2025 22:39:16 +0530</lastBuildDate>
+        
+        <item>
+            <title>Evaluating LLMs - Notes on a NeurIPS'24 Tutorial</title>
+            <link>
+                https://blog.quipu-strands.com/eval-llms
+            </link>
+            <description>
+                &lt;script type=&quot;text/x-mathjax-config&quot;&gt; 
+    MathJax.Hub.Config({ 
+        &quot;HTML-CSS&quot;: { scale: 100, linebreaks: { automatic: true } }, 
+        SVG: { linebreaks: { automatic:true } }, 
+        displayAlign: &quot;center&quot; });
+&lt;/script&gt;
+
+&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot;&gt;
+
+&lt;/script&gt;
+
+&lt;!-- _includes/image.html --&gt;
+&lt;div class=&quot;image-wrapper&quot;&gt;
+    
+        &lt;img src=&quot;/assets/eval_llm/banner.png&quot; alt=&quot;test&quot; /&gt;
+    
+    
+        &lt;p class=&quot;image-caption&quot;&gt;&lt;/p&gt;
+    
+&lt;/div&gt;
+
+&lt;style&gt;
+@import url(&#39;https://fonts.googleapis.com/css2?family=Indie+Flower&amp;display=swap&#39;);
+&lt;/style&gt;
+
+&lt;p&gt;I attended NeurIPS’24 virtually, and I was happy to see that they had two tutorials on topics that I care about. One was on evaluating LLMs, and the other one was on decoding-time strategies. This post covers the former. I have been meaning to publish this for a while, but this languished as a draft for a long time while life got in the way. Well.&lt;/p&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#introduction&quot; id=&quot;markdown-toc-introduction&quot;&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tutorial-intro---irina-sigler&quot; id=&quot;markdown-toc-tutorial-intro---irina-sigler&quot;&gt;Tutorial Intro - Irina Sigler&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#quality-evaluation---yuan-xue-talk-irina-sigler-code&quot; id=&quot;markdown-toc-quality-evaluation---yuan-xue-talk-irina-sigler-code&quot;&gt;Quality Evaluation - Yuan Xue (talk), Irina Sigler (code)&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#scope-of-evaluation&quot; id=&quot;markdown-toc-scope-of-evaluation&quot;&gt;Scope of Evaluation&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#how...
+            </description>
+            <pubDate>Thu, 06 Mar 2025 22:30:00 +0530</pubDate>
+            <guid>
+                https://blog.quipu-strands.com/eval-llms
+            </guid>
+        </item>
         
         <item>
             <title>Inactive Learning?</title>
@@ -31,7 +77,7 @@
 
 &lt;p&gt;Except that in a lot of real-world cases this is not how it plays out.  I suspected this from my personal experiments, and then in some stuff we did at &lt;a href=&quot;https://www.247.ai/&quot;&gt;[24]7.ai&lt;/a&gt;. So we decided to thoroughly test out multiple scenarios in text classification, where you believe (or current literature leads us to believe) Active Learning &lt;em&gt;should&lt;/em&gt; work … but it just doesn’t. We summarized our observations into the paper &lt;em&gt;“On the Fragility of Active Learners for Text Classification”&lt;/em&gt; &lt;a class=&quot;citation&quot; href=&quot;#fragilityActive&quot;&gt;(Ghose &amp;amp; Nguyen, 2024)&lt;/a&gt; [&lt;a href=&quot;https://arxiv.org/pdf/2403.15744&quot;&gt;PDF&lt;/a&gt;], and th...
             </description>
-            <pubDate>Wed, 25 Sep 2024 12:00:00 -0700</pubDate>
+            <pubDate>Thu, 26 Sep 2024 00:30:00 +0530</pubDate>
             <guid>
                 https://blog.quipu-strands.com/inactive_learning
             </guid>
@@ -77,7 +123,7 @@ This is going to sound surprising but let’s start with the idea of the &lt;em&
 
 &lt;p&gt;For our purposes, we can think of th...
             </description>
-            <pubDate>Sun, 15 Sep 2024 23:44:00 -0700</pubDate>
+            <pubDate>Mon, 16 Sep 2024 12:14:00 +0530</pubDate>
             <guid>
                 https://blog.quipu-strands.com/jensens_inequality
             </guid>
@@ -120,7 +166,7 @@ Now we take a look at the other pillar BayesOpt rests on: acquisition functions.
       &lt;li&gt;&lt;a href=&quot;#predictive-entropy-search&quot; id=&quot;markdown-toc-predictive-entropy-search&quot;&gt;Predictive Entropy Search&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#max-value-entropy-search&quot; id=&quot;markdown-toc-max-value-entropy-search&quot;&gt;Max-value Entropy ...
             </description>
-            <pubDate>Sat, 18 Nov 2023 11:00:00 -0800</pubDate>
+            <pubDate>Sun, 19 Nov 2023 00:30:00 +0530</pubDate>
             <guid>
                 https://blog.quipu-strands.com/bayesopt_2_acq_fns
             </guid>
@@ -163,7 +209,7 @@ Now we take a look at the other pillar BayesOpt rests on: acquisition functions.
   &lt;li&gt;Plasma control in nuclear fusion &lt;a class=&quot;citation&quot; href=&quot;#mehta2022an&quot;&gt;(Mehta et al., 2022)&lt;/a&gt;.&lt;/li&gt;
   &lt;li&gt;Parameter tuning for lasers &lt;a class=&quot;citation&quot; href=&quot;#20.500.11850/385...
             </description>
-            <pubDate>Sat, 18 Nov 2023 11:00:00 -0800</pubDate>
+            <pubDate>Sun, 19 Nov 2023 00:30:00 +0530</pubDate>
             <guid>
                 https://blog.quipu-strands.com/bayesopt_1_key_ideas_GPs
             </guid>
@@ -197,7 +243,7 @@ Now we take a look at the other pillar BayesOpt rests on: acquisition functions.
 
 &lt;p&gt;In this post, I will try to illustrate this mechanism using a specific generative model: the &lt;strong&gt;Gaussian Mixture Model (GMM)&lt;/strong&gt;. We will use it to capture patterns &lt;em&gt;in images&lt;/em&gt;. Pixels will be our data, and patterns are how they are “lumped” together. Of course, this lumping is what humans perceive as the image itself. Effectively then, much like our artist, we will use a generative model to “see” an image and then have it reproduce it later. &lt;strong&gt;Think of this as a rudimentary, mostly visual, tutorial on GMMs&lt;/strong&gt;, where we focus on their representational capability. Or an article where I mostly ramble but touch upon GMMs, use of probabilities, all the w...
             </description>
-            <pubDate>Fri, 22 Apr 2022 20:00:00 -0700</pubDate>
+            <pubDate>Sat, 23 Apr 2022 08:30:00 +0530</pubDate>
             <guid>
                 https://blog.quipu-strands.com/fun_with_GMMs
             </guid>
@@ -232,7 +278,7 @@ Now we take a look at the other pillar BayesOpt rests on: acquisition functions.
 
 &lt;p&gt;I have been asked about the domain name “quipu strands” (by the 3 and a 1/2 readers I have) . These were a device used by the Incas to...
             </description>
-            <pubDate>Wed, 26 Apr 2017 08:01:36 -0700</pubDate>
+            <pubDate>Wed, 26 Apr 2017 20:31:36 +0530</pubDate>
             <guid>
                 https://blog.quipu-strands.com/hello-new-blog
             </guid>

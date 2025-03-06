@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+  <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Evaluating LLMs - Notes on a NeurIPS&#39;24 Tutorial</title>
+  <meta name="description" content="">
+  <link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Alegreya" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Raleway:300" rel="stylesheet" type='text/css'> 
+  <link href="https://fonts.googleapis.com/css?family=PT+Serif|Work+Sans:300" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,800;1,800&family=Raleway:wght@100&display=swap" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap" rel="stylesheet"> 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400&display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://blog.quipu-strands.com/eval-llms">
+  <link rel="alternate" type="application/rss+xml" title="A Not-So Primordial Soup" href="/feed.xml">
+  
+  
+  
+
+<script data-goatcounter="https://abhgh.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</head>
+
+
+  <body>
+
+    <header class="site-header" role="banner">
+
+  <div class="wrapper">
+    
+    
+    <a class="site-title" href="/">A Not-So Primordial Soup</a>
+  
+    
+      <nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+              <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+              <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger">
+          
+            
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+            
+          
+            
+            
+          
+            
+            
+          
+            
+            
+            <a class="page-link" href="/Terms/">Terms</a>
+            
+          
+        </div>
+      </nav>
+    
+  </div>
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Evaluating LLMs - Notes on a NeurIPS&#39;24 Tutorial</h1>
+    <p class="post-meta">
+      <time datetime="2025-03-06T22:30:00+05:30" itemprop="datePublished">
+        
+        Created: Mar 6, 2025.    Last major update:
+        Mar 6, 2025. 
+      </time>
+      </p>
+  
+     
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <script type="text/x-mathjax-config"> 
+    MathJax.Hub.Config({ 
+        "HTML-CSS": { scale: 100, linebreaks: { automatic: true } }, 
+        SVG: { linebreaks: { automatic:true } }, 
+        displayAlign: "center" });
+</script>
+
+<script type="text/javascript" async="" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+</script>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/eval_llm/banner.png" alt="test" />
+    
+    
+        <p class="image-caption"></p>
+    
+</div>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+</style>
+
+<p>I attended NeurIPS’24 virtually, and I was happy to see that they had two tutorials on topics that I care about. One was on evaluating LLMs, and the other one was on decoding-time strategies. This post covers the former. I have been meaning to publish this for a while, but this languished as a draft for a long time while life got in the way. Well.</p>
+
+<ul id="markdown-toc">
+  <li><a href="#introduction" id="markdown-toc-introduction">Introduction</a></li>
+  <li><a href="#tutorial-intro---irina-sigler" id="markdown-toc-tutorial-intro---irina-sigler">Tutorial Intro - Irina Sigler</a></li>
+  <li><a href="#quality-evaluation---yuan-xue-talk-irina-sigler-code" id="markdown-toc-quality-evaluation---yuan-xue-talk-irina-sigler-code">Quality Evaluation - Yuan Xue (talk), Irina Sigler (code)</a>    <ul>
+      <li><a href="#scope-of-evaluation" id="markdown-toc-scope-of-evaluation">Scope of Evaluation</a></li>
+      <li><a href="#how-do-we-evaluate" id="markdown-toc-how-do-we-evaluate">How do we Evaluate?</a>        <ul>
+          <li><a href="#computation-based-metrics" id="markdown-toc-computation-based-metrics">Computation-based Metrics</a></li>
+          <li><a href="#human-annotation" id="markdown-toc-human-annotation">Human Annotation</a></li>
+          <li><a href="#autoraters" id="markdown-toc-autoraters">AutoRaters</a></li>
+        </ul>
+      </li>
+      <li><a href="#meta-evaluation" id="markdown-toc-meta-evaluation">Meta-Evaluation</a></li>
+      <li><a href="#limitations-and-mitigation" id="markdown-toc-limitations-and-mitigation">Limitations and Mitigation</a></li>
+    </ul>
+  </li>
+  <li><a href="#summary" id="markdown-toc-summary">Summary</a></li>
+  <li><a href="#conclusion" id="markdown-toc-conclusion">Conclusion</a></li>
+  <li><a href="#references" id="markdown-toc-references">References</a></li>
+</ul>
+
+<p><em>Note: Of the three talk sections, I don’t cover “Safety Evaluations”, presented by Bo Li.</em></p>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>This was a ~3 hr session by staff at Google AI - here are the <a href="https://nips.cc/media/neurips-2024/Slides/99524.pdf">slides</a>. Just before publishing this post I discovered that the presenters have distilled the tutorial content into <a href="https://services.google.com/fh/files/blogs/neurips_evaluation.pdf?linkId=12695737&amp;trk=feed-detail_comments-list_comment-textWe%27d">a whitepaper</a> which also links to colab notebooks. The tutorial was well done and I often found myself nodding along with what the speakers had to say. This is an important topic to me, and is increasingly receiving general attention: now that prototyping AI solutions has become simpler, the burden of rolling out a reliable product had shifted to the testing phase. It is easy to build <em>something</em>, but how can you be sure that it is the something that you wanted? Especially since LLMs can be sneaky: it is easy to end up with a false sense of confidence with them.</p>
+
+<p>Answer: rigorous evaluations. I am reminded a bit of D. Richard Hipp - primary author of SQLite - who heavily credits testing for their overwhelming success. As of writing this, their test-suite has <a href="https://www.sqlite.org/testing.html">590x</a> more code than the SQLite codebase itself.</p>
+
+<p>LLMs are an outstanding achievement. As of writing this, I have been working on Natural Language Processing (NLP) and associated areas for 17 years, and frankly, good Natural Language Generation (NLG) has been the proverbial thorn in the side for NLP practitioners. Till recently that is - when ChatGPT signaled an inflection point (or around that time, depending on what you consider the start, e.g., maybe the Transformers paper?) . It makes the academic and the hobbyist in me happy, but as someone building software systems, I still am a <em>skeptoptimist</em> (<a href="https://cutlefish.substack.com/p/tbm-325-skeptoptimism-thinking-slow">skeptical optimist</a>). LLM-based systems often easily pass “vibe checks” (I recently came across <a href="https://github.com/lisadunlap/VibeCheck">VibeCheck</a> <a class="citation" href="#dunlap2025vibecheck">(Dunlap et al., 2025)</a> - a library to quantify difference in LLMs - yes, the joke is on me)- they’re convincing on a handful of examples - but then reveal surprising failure modes on wider validation. This is in contrast to earlier, where such anecdotal checks were often unconvincing, and the struggle to socialize your solution was different: you had to appeal to gross performance to appease critics, e.g., “Look this is right 80% of time - you need to try a lot of examples to know - and it is more scalable than humans! (we often didn’t/couldn’t make an argument for accuracy wrt humans)”. We need to equip ourselves for this new world.</p>
+
+<p>It is important to recognize that with LLMs the model “blackbox-ness” problem has not gone away. Let it not fool you that you can communicate with them in natural language. That’s the <em>interface</em>, and sure, that lowers the barrier of entry for their use, but then we inherit its lack of precision. Also the interface doesn’t tell you about the inner workings of a model.</p>
+
+<p>As as an aside, why do we have a problem with evaluations <em>now</em>? Well, it has always been hard to validate NLG. But since we didn’t have widespread good NLG systems prior to the ChatGPT-era, this didn’t register broadly as an area needing attention. The sudden leap-frogging to high-quality NLG has left validation techniques behind. And its popularity has highlighted this gap.</p>
+
+<p>To put it bluntly: earlier NLG systems weren’t good enough for widespread use, and therefore didn’t warrant this level of attention.</p>
+
+<p>Let’s get started. I will summarize the session here, while interleaving my opinions which I’ll call out. Direct quotes from the presenters or the slides <span style="color:#FF5F15">are in this color</span>.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/section_start.png" alt="test" />
+    
+    
+        <p class="image-caption"></p>
+    
+</div>
+
+<h2 id="tutorial-intro---irina-sigler">Tutorial Intro - Irina Sigler</h2>
+
+<p>Previously, there was a lot of work involved in building a <em>Minimum Viable Product (MVP)</em> - collect the right data, possibly label, train models, etc., but today, that part is made extremely convenient by LLMs, and the real work begins post MVP. For ex., the MVP might have seemed convincing with a few prompts, but with real users, you want an effective and reliable <em>prompt template</em>. There are other decisions to be made past the MVP stage: do you have the right model, should you use a distilled version, fine-tune vs RAG, etc.</p>
+
+<p>A good evaluation framework is important in guiding such decision making. It prevents you from <span style="color:#FF5F15">confidently marching into the wrong direction</span>. In the table below, rows show the broader axes to keep in mind when coming up with an evaluation framework, with columns providing additional detail. There is no strict ordering in terms of rigor, or when in a product life-cycle an item applies, in moving from left to right across the columns for a row. Look out for <mark>highlighted text</mark> - these are links.</p>
+
+<table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+  <tr>
+    <td style="padding: 5px; width: 19%; vertical-align: top; border: 1px solid gray;">1. <b>Use Case</b>:<br />Ensure coverage of prompts that various user actions can produce.<br /><br /><span style="font-family: 'Indie Flower', sans-serif;color:#002D62">[AG] This is like the "data scope", where data now is the set of prompts user actions might trigger.</span></td>
+    <td style="padding: 5px; width: 27%; vertical-align: top; border: 1px solid gray;">A. Manual.<br /> <br /><span style="font-family: 'Indie Flower', sans-serif;color:#002D62">Think up some prompts, involve your team, your domain expert - more the better!</span>  </td>
+    <td style="padding: 5px; width: 27%; vertical-align: top; border: 1px solid gray;">B. Synthetic.<br /> <br /><span style="font-family: 'Indie Flower', sans-serif;color:#002D62">Use the LLM to augment the scenario data you already have. But it is advised to perform the previous step <u>first</u>. </span>  </td>
+      <td style="padding: 5px; width: 27%; vertical-align: top; border: 1px solid gray;">C. Traffic. <br /><br /><span style="font-family: 'Indie Flower', sans-serif;color:#002D62">Use actual production data  to validate your system. In other words, keep refining your tests based on data that you log.<br /><br />[AG] As always, the ultimate litmus test. But necessary especially today, since airtight offline testing of LLM-based systems might not be possible due to the innate variability of natural language. So we need to keep looking out for things that fail during actual use.</span>  </td>
+  </tr>
+
+  <tr>
+    <td style="padding: 5px; width: 19%; vertical-align: top; border: 1px solid gray;">2. <b>Context</b>:<br />To what view of the system does a test apply?</td>
+    <td style="padding: 5px; width: 27%; vertical-align: top; border: 1px solid gray;">A. Final. <br /><br /><span style="font-family: 'Indie Flower', sans-serif;color:#002D62">You want to test the output of the whole system, or the "final" output the given an input. This is <u>not</u> the input/output for the LLM.</span>  </td>
+    <td style="padding: 5px; width: 27%; vertical-align: top; border: 1px solid gray;">B. Intermediate. <br /><br /><span style="font-family: 'Indie Flower', sans-serif;color:#002D62">As your system grows, e.g., maybe you now have a RAG system, a cache, etc., you might want to perform component-wise evaluation, for insights or just in the interest of granular debugging. For ex., using <mark><a href="https://en.wikipedia.org/wiki/Discounted_cumulative_gain#Normalized_DCG"> NDCG </a></mark> to evaluate RAG.</span>  </td>
+      <td style="padding: 5px; width: 27%; vertical-align: top; border: 1px solid gray;">C. Trajectory. <br /><br /><span style="font-family: 'Indie Flower', sans-serif;color:#002D62">Instead of treating the components independently, you want to look the trajectory of components an input touches, and the corresponding outputs. <br /><br />[AG] I don't know how practical this is in a system that has a high branching factor in going from one component to the next. Might be feasible for a small number of examples.</span>  </td>
+  </tr>
+
+  <tr>
+    <td style="padding: 5px; width: 19%; vertical-align: top; border: 1px solid gray;">3. <b>Criteria</b>:<br /> Metrics.</td>
+    <td style="padding: 5px; width: 27%; vertical-align: top; border: 1px solid gray;">A. Similarity. <br /><br /><span style="font-family: 'Indie Flower', sans-serif;color:#002D62">These metrics are easy to compute but can be inaccurate, e.g, embeddings-based similarity scores such as <mark><a href="https://huggingface.co/blog/g-ronimo/semscore">SemScore</a></mark>. They may not capture nuances, leading to clearing inaccurate responses or penalizing valid ones. But OK to use as long as people are aware of this limitation. <br /><br />[AG] Also, sometimes a good "first-level" validation since they may be done at scale. But yes, can be tricky. You need to think hard about what is considered "pass".</span>  </td>
+    <td style="padding: 5px; width: 27%; vertical-align: top; border: 1px solid gray;">B. Criteria per task. <br /><br /><span style="font-family: 'Indie Flower', sans-serif;color:#002D62"> For certain attributes, it is helpful to break them down to smaller factors that are relatively easier to test or agree upon, e.g., "Is the lan" <br /><br />[AG] For example, if you want to assign a quality score to a student essay, you might also want to provide a break-up of what worked well, or didn't, across pre-defined axes  such as "prose quality", "verbosity", etc. LLM-based metrics such as <mark><a href="https://github.com/nlpyang/geval">G-Eval</a></mark> are useful for such setups.</span>  </td>
+      <td style="padding: 5px; width: 27%; vertical-align: top; border: 1px solid gray;">C. Rubrics per data point. <br /><br /><span style="font-family: 'Indie Flower', sans-serif;color:#002D62">You might have bespoke criteria per input/output which need to be validated.<br /><br /> [AG] To take the example of essay grading again, maybe the grading criteria differ, or the relative weights of criteria differ, based on the topic. For ex., we might want essays on AI to discuss ethical concerns - something that may not apply to other topics. And again, techniques like G-Eval are useful here. </span>  </td>
+  </tr>
+  
+</table>
+<p><br /></p>
+
+<p>Here’s a rephrased version for something the presenter said - and something I’ve been saying for a while: previously models were built for specific tasks/data, which we would then try to generalize for broader use-cases. Like a <em>widening funnel</em> if you will. Today, we start with a highly general model - trained on the entire Internet’s worth of data - and then try to focus it on the task at hand. A <em>narrowing funnel</em>. So, it shouldn’t be surprising that evaluations need to change - from detecting a model from doing too less to doing too much, e.g., hallucinations.</p>
+
+<p>There is one silver lining in all this: the new metrics are easily expressible in plain English. For ex., it is easy to understand (broadly) what we want to measure with “fluency”. Contrast this to the earlier era, where metrics would be hard to explain to a layperson. This rings true wrt my personal experience - today we talk about “coherence” and “fluency” as opposed to F1-score, AUC, entropy. It is hard to know <em>how</em> we are going to measure something like “coherence”, but it is (somewhat) clear <em>what</em> we want to measure.</p>
+
+<p><strong>Resources</strong>: The <a href="https://paperswithcode.com/sota/multi-task-language-understanding-on-mmlu">Measuring Massive Multitask Language Understanding (MMLU)</a> and <a href="https://lmarena.ai/?leaderboard">Chatbot Arena</a> (formerly LMSYS) benchmarks were mentioned as examples of general benchmarks that <em>do not</em> directly tell you about how LLMs would do on your specific task. <a href="https://huyenchip.com/2024/07/25/genai-platform.html">This diagram</a> by Chip Huyen was used to show what a real-world GenAI platform might look like. Personally, I have known GenAI stacks to get far more complex. The <span style="font-size:80%">Eval</span>LM paper <a class="citation" href="#evallm">(Kim et al., 2024)</a> was cited which discusses how designers iterate over prompts (based on interviews), and how criteria-based automated evaluations may be used in practice. The problem of criteria <em>refinement</em> was also briefly discussed <a class="citation" href="#evalgen">(Shankar et al., 2024)</a>; this is when a designer modifies their criteria based on grading some outputs (a very real phenomena in my opinion). The cited paper calls it <em>criteria drift</em> and proposes a framework called <em>EVALGEN</em> to aid the refinement process.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/section_start.png" alt="test" />
+    
+    
+        <p class="image-caption"></p>
+    
+</div>
+
+<h2 id="quality-evaluation---yuan-xue-talk-irina-sigler-code">Quality Evaluation - Yuan Xue (talk), Irina Sigler (code)</h2>
+
+<p>This part was a deep-dive into methodologies of evaluation. Here, I will mention the resources in text.</p>
+
+<h3 id="scope-of-evaluation">Scope of Evaluation</h3>
+
+<p>The task of evaluation in a general sense was discussed first. This may be concisely represented as:</p>
+
+<p>\(F(\text{subject}, \text{criteria}, \text{reference}^*) \rightarrow  \text{result}\).</p>
+
+<p>Here,</p>
+<ul>
+  <li><em>subject</em> is what we want to evaluate.</li>
+  <li><em>criteria</em> are evaluation criteria.</li>
+  <li><em>result</em> is the evaluation itself, which may be accompanied by explanations.</li>
+  <li><em>reference</em> is optional, and is provided if the criteria needs to compare to some form of ground truth. For ex., in a summarization task, a sample ground-truth summary, or a few such summaries, might be provided.</li>
+</ul>
+
+<p>Consider the <em>subject</em> first. Since we are evaluating LLMs (or possibly Agent systems), we are going to look at the combination of <em>prompt and response</em> as the subject. Note here that the prompt is not just your query to the LLM, but also context, e.g., demonstrations, documents from a RAG system. The two common kinds of subjects are:</p>
+<ul>
+  <li><strong>Point-wise</strong>. We are rating a prompt and corresponding response as input, and we require an absolute score. Also known as <em>direct assessment</em>.</li>
+  <li><strong>Pair-wise</strong>. We ask for a comparison between two responses for the same prompt. Presumably one response is a baseline, e.g., one might be a human response and the other an LLM-generated one. [AG] - if you’re a ChatGPT user, you’re probably familiar with this - sometimes you’re asked to pick between two responses.</li>
+</ul>
+
+<p>The following image shows the two kinds of subjects. From the <em>Prometheus 2</em> open Language Model evaluator <a class="citation" href="#prometheus2">(Kim et al., 2024)</a>.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/eval_llm/prometheus.png" alt="prometheus" />
+    
+    
+        <p class="image-caption">Two kinds of subjects. <a href="https://aclanthology.org/2024.emnlp-main.248/">Source</a>.</p>
+    
+</div>
+
+<p>Moving onto the <em>criteria</em>, the two key parts are:</p>
+<ul>
+  <li><strong>Aspect</strong> or <strong>dimension</strong> of evaluation: These can be general criteria like <em>coherence</em> and <em>fluency</em>, but also task-specific ones like <em>groundedness</em> for a RAG system. Of course, there might be task specific ones as well such as following a specific tone that’s representative of a company or a demographic. Radar charts such as the one below are a convenient representation:</li>
+</ul>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/eval_llm/stablelm_radar_chart.png" alt="zephyr performance" />
+    
+    
+        <p class="image-caption">Comparing LLM capabilities across various aspects. <a href="https://huggingface.co/stabilityai/stablelm-2-zephyr-1_6b">Source</a>.</p>
+    
+</div>
+
+<ul>
+  <li><strong>Rubric</strong>: Set of scores (these maybe ordinal values as well, e.g., <em>Good</em>, <em>Average</em> and <em>Bad</em>) defined in terms of combination of criteria. Common examples are essay-grading rubrics such as <a href="https://lsa.umich.edu/content/dam/sweetland-assets/sweetland-documents/teachingresources/GivingFeedbackonStudentWriting/Sample_EssayGradingRubric.pdf">this</a>.</li>
+</ul>
+
+<p>[AG] - Evaluating rubrics is where LLMs provide a significant and definitive advantage wrt scalability over (a) human-annotation, and (b) fine-tuned models. This is especially true where rubrics might change at short notice, which is not uncommon in industrial settings, e.g., “For the next week, all customers must be informed of our &lt;NEW CAMPAIGN&gt;.”. There is no time to collect data to fine-tune a model, and the change itself is short-lived, so there is a question of how much effort must be invested; the ability to just prompt a model seems like a godsend.</p>
+
+<p>Let’s look at the <em>result</em> next. As mentioned earlier, there are two kinds here: absolute measure and relative preference. Here’s the image from the Prometheus 2 paper again - note the results this time:</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/eval_llm/prometheus.png" alt="prometheus" />
+    
+    
+        <p class="image-caption">Two kinds of results. <a href="https://aclanthology.org/2024.emnlp-main.248/">Source</a>.</p>
+    
+</div>
+
+<p>It is to be noted that in either case the result can be on a spectrum, i.e., on a continuous scale for direct assessment, or the extent by which A is better than B (or not). Of course, these might be binned later, e.g., “A is better”, for easy consumption.</p>
+
+<p>Often we want the results to be accompanied by a “rationale” - this provides insight into the results, makes the user trust the results ([AG] - is this always a good thing?) and possibly acts as a <em>chain-of-thought</em>, which helps the LLM produce accurate results in the first place.</p>
+
+<p>[AG] - I would also add good <em>Uncertainty Quantification (UQ)</em> to the list of things we want in the result, i.e., mention a confidence or confidence bounds. See <em>Prediction-powered Inference</em> <a class="citation" href="#pred-power-inference">(Angelopoulos et al., 2023)</a> as an example. In fact, this can often make design easier because you don’t have to worry about results being blindly misread as much. It makes usage safer. To me, good UQ is a means for <em>graceful degradation</em>. It is great design if you can make it happen.</p>
+
+<h3 id="how-do-we-evaluate">How do we Evaluate?</h3>
+
+<p>So, who does the evaluations? This is “\(F()\)” in the formulation. We have three options:</p>
+<ol>
+  <li><strong>Computation-based Metrics</strong>, e.g., cosine similarity, BERTScore <a class="citation" href="#BERTScore">(Zhang* et al., 2020)</a>.</li>
+  <li><strong>Humans</strong>. This is considered to be the gold-standard.</li>
+  <li><strong>LLMs</strong>. Usually referred to as <em>LLM-as-Judge</em> or <em>LLM-as-Critic</em> or <strong>AutoRater</strong>. The last term was used in the remaining talk.</li>
+</ol>
+
+<p>Let’s look at them one at a time.</p>
+
+<h4 id="computation-based-metrics">Computation-based Metrics</h4>
+
+<p><em>Computation-based</em> metrics are cheap to utilize (usually these are heuristics or small models) and thus are conveniently scalable. These can be lexicon-based, such as ROUGE <a class="citation" href="#lin-2004-rouge">(Lin, 2004)</a> or BLEU <a class="citation" href="#bleu">(Papineni et al., 2002)</a>, which look at overlap of characters. Or they might be semantic - such as BERTScore or BARTScore <a class="citation" href="#BARTscore">(Yuan et al., 2021)</a> - which compare embeddings of the texts, to determine commonality in meaning. The presenter called out that for lexicon-based metrics, a good practice is to preprocess text to remove artifacts such as spaces, punctuation, etc., since they can have surprising effects on the scores.</p>
+
+<p>[AG] - Lexicon-based similarities have been around for a long time, since they are useful in cases where information is (expected to be) <em>extracted</em> from text, such as in <em>extractive</em> summarization. Such systems predate good language synthesis, e.g., <em>abstractive</em> summarization, and hence these metrics also predate metrics based on semantic similarity. They are still useful in cases where enterprise policy dictates certain phrases show up in text, or in response to a technical question you’d want particular product names to show up.</p>
+
+<p>While they are fast to compute, in general, they offer poor alignment to human judgement. For ex., look at comparisons of <em>ROUGE-L</em> (a ROUGE variant), <em>BLEU-4</em> and <em>BERTScore</em> against human evaluations in the table below. This is from the G-Eval paper <a class="citation" href="#geval">(Liu et al., 2023)</a>, and the metrics reported are Spearman’s correlation \(\rho\) and Kendall’s Tau \(\tau\):</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/eval_llm/geval.png" alt="geval" />
+    
+    
+        <p class="image-caption">Computation-based metrics usually compare poorly against human judgement. From the G-Eval paper.</p>
+    
+</div>
+
+<p>Their continued use is explained primarily by the fact that they are immensely scalable. They can be used as an approximate-but-fast indicator of quality in:</p>
+<ol>
+  <li>Simple settings where you expect to find exact or similar phrases among a small set.</li>
+  <li>Tasks that can be decomposed into simpler subtasks, e.g., to measure tool use, you can use one of these to compare function signatures, parameter names, etc.</li>
+  <li>Low-cost sanity checking for fine-tuning. We might think of cross-entropy loss - which compares tokens - as using a simple computation-based metric.</li>
+  <li>Setups that are complementary to the use of the other metrics. For ex., a large set of “good responses” (as per these metrics) can be identified from an even larger pool, which may then be passed off to a human for more precise annotation. Essentially it can defray the cost of expensive human annotation by serving as a filter.</li>
+</ol>
+
+<p>[AG] - Outside of evaluations, the area of embeddings and similarity assessment have seen quite a bit of resurgence, being an integral component in the “retrieval” step of RAG. They are also useful as intermediate representations in classification or clustering tasks. In fact, my favorite way to set up a good classification baseline <em>quickly</em> is to use an embedding such as MPNet <a class="citation" href="#mpnet">(Song et al., 2020)</a> for text representation and pair it with a traditional classifier such as a Support Vector Machine (SVM).</p>
+
+<p>[AG] - I think it is very important to be aware of the fact that often these metrics <em>disagree</em> with each other! So if you’re in a setting where these metrics might be trusted by layperson users, ensure they know of their limitations, and as a safeguard, offer multiple metrics so that they get a well-rounded view of the data. The presenter briefly touched upon this problem of incompatibility as well.</p>
+
+<h4 id="human-annotation">Human Annotation</h4>
+
+<p>This is the gold-standard evaluation, so the real focus here is on controlling the expense, which might arise due to:</p>
+<ol>
+  <li>Relatively long turn-around times, i.e., this is a low bandwidth channel for evaluation.</li>
+  <li>Cost of hiring human annotators.</li>
+  <li>Variability in expertise: it is important to pick appropriately skilled human annotators for a task. Some options are to crowdsource, e.g., using <a href="https://www.mturk.com/">Mechanical Turk</a>, engage professional annotators, or find domain experts. Ensure there is inter-rater agreement.</li>
+</ol>
+
+<p>[AG] - I find that the value of the last point above is often underestimated (may be because annotators who understand your task are hard to find, or expensive, or require training), and it takes a costly mistake (or a few) for course-correction. The bottom-line is that this should be your gold-standard, and if you fail to ensure quality in this step, <em>there is likely no recovering later</em>.</p>
+
+<p>The presenters called out for a <em>phased-approach</em> where we begin with an annotation task of a few examples, so as to calibrate the judgements of the human annotators. And then, slowly scale this up. This also allows for iterative refinement of the evaluation criteria (something that was mentioned in the earlier segment of the talk).</p>
+
+<p>Given the expense, the best use of human-evaluation are:</p>
+<ol>
+  <li>Just before production release, to definitively certify product readiness.</li>
+  <li>To strategically annotate data that may be used to calibrate AutoRaters.</li>
+</ol>
+
+<h4 id="autoraters">AutoRaters</h4>
+
+<p>We want something that has the scalability of computation-based methods and are accurate as human evaluators. This is the realm of AutoRaters. In terms of capability of what AutoRaters may rate, they match up with humans, e.g., can provide results and rationales, work in diverse settings. The image below shows the anatomy of an AutoRater.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/eval_llm/autorater-anatomy.png" alt="AutoRater" />
+    
+    
+        <p class="image-caption">Anatomy of an AutoRater. Based on talk slides. Stuff in green is data/information.</p>
+    
+</div>
+
+<p>The key bits in the above image are:</p>
+<ul>
+  <li><strong>Task</strong>: This is the input to the AutoRater. This should have the <em>subject</em>, <em>criteria</em>, and optionally, the <em>reference</em>.</li>
+  <li><strong>Prompt Formatter</strong>: This component constructs the prompt that eventually gets fed into the evaluator language model. In building the prompt it uses the task input. It has its own high-level evaluation instructions, e.g., “You’re an expert evaluator.”, which might also contain the formatting spec for the output.</li>
+  <li><strong>Language Model (LM) Evaluator(s)</strong>: The heart of the system. A model like GPT-4 or a model fine-tuned for evaluation such as Prometheus-2. This component may have more than one model, i.e., a panel of judges <a class="citation" href="#juries">(Verga et al., 2024; Chan et al., 2024; Li et al., 2024)</a> that collaborates to produce accurate, nuanced and unbiased judgement. Another advantage of a panel is that you might be able to perform well with small models which is cheaper than using a single LLM <a class="citation" href="#juries">(Verga et al., 2024)</a>.</li>
+  <li><strong>Result Parser</strong>: The output from the evaluator might need specific formatting that downstream components depend on. Formatting spec might be described in the Prompt Formatter. This component ensures compliance to the specified format; [AG] - it should detect and fix malformed outputs when possible, and when not, it  should at least flag such cases.</li>
+</ul>
+
+<p>[AG] - On the topic of judgement-bias, I want to point out this interesting analysis from the G-Eval paper <a class="citation" href="#geval">(Liu et al., 2023)</a>. Summaries were generated by both humans and LLMs (GPT-3.5) for some texts, and then human annotators and AutoRaters (GPT-4) were used to rate these summaries. Based on the judgement from the human annotators, three groups of these paired summaries were created:</p>
+
+<ol>
+  <li>Where the human summary is better.</li>
+  <li>Where the LLM summary is better.</li>
+  <li>Where the human and LLM summaries are equally good.</li>
+</ol>
+
+<p>These groups are shown on the x-axis in the plot below. Per group, the bars show the average scores assigned by the AutoRater to human and LLM summaries. It is easy to see that the in all cases the AutoRater prefers the LLM outputs. In the first group, where human evaluators think that human summaries are better, the average scores assigned by the AutoRater to human summaries is higher than in other groups, but still lower than the LLM summary scores in the same group.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/eval_llm/judgement-bias.png" alt="LLM Judgement Bias" />
+    
+    
+        <p class="image-caption">LLM judgement bias leans towards preferring LLM outputs.</p>
+    
+</div>
+
+<p><a href="https://huggingface.co/spaces/allenai/reward-bench">RewardBench</a> <a class="citation" href="#lambert2024rewardbench">(Lambert et al., 2024)</a> was briefly mentioned as a benchmark/leaderboard for comparing reward models (screenshot below). This is relevant because you can use rewards models as AutoRaters.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/eval_llm/rewardbench.png" alt="RewardBench" />
+    
+    
+        <p class="image-caption">Screenshot of the <a href="https://huggingface.co/spaces/allenai/reward-bench">RewardBench</a> leaderboard.</p>
+    
+</div>
+
+<p>[AG] - Let’s dwell on this a bit - its a slightly unusual benchmark. Reward models are an important piece of the current LLM revolution. These models are what guide LLMs to generate correct answers, at training time. These are explicit separate models in the case of <em>Reinforcement Learning from Human Feedback (RLHF)</em> - which was popularized by OpenAI for <a href="https://openai.com/index/chatgpt/">training the original ChatGPT</a>. Later, a computationally-lightweight technique called <em>Direct Preference Optimization (DPO)</em> <a class="citation" href="#dpo">(Rafailov et al., 2023)</a> became widely popular, where the LLM has an implicit notion of rewards. This benchmark directly rates this notion of rewards - explicit or implicit. In a way, it peeks behind the curtain to see why a LLM believes a certain response is a good response. Conceptually, it is measuring a simpler entity: instead of measuring the outcomes a reward model leads to, it directly measures those rewards. Here is an <a href="https://www.interconnects.ai/p/why-reward-models-matter">article</a> and a <a href="https://www.youtube.com/watch?v=CAaHAfCqrBA">video</a> by one of the co-authors that go into some detail. He also has co-authored a paper on the history of RLHF <a class="citation" href="#rlhf-history">(Lambert et al., 2023)</a>. I found this other <a href="https://sebastianraschka.com/blog/2024/research-papers-in-march-2024.html">article</a> to be succinct and helpful.</p>
+
+<h3 id="meta-evaluation">Meta-Evaluation</h3>
+
+<p>Meta-Evaluation is the process of validating the AutoRaters themselves. This is important - I think that no matter how amazing an AutoRater’s performance is on a public dataset, you still need to evaluate on data that’s task-specific to know if it will work for you. Production surprises are the worst kinds of surprises.</p>
+
+<p>This part of the talk touched upon these aspects:</p>
+<ol>
+  <li>What <strong>metrics</strong> might be used for Meta-Evaluation?</li>
+  <li>What kind of <strong>datasets and benchmarks</strong> do we have for this?</li>
+  <li>What’s the <strong>transferability</strong> of results on a public benchmark to your task?</li>
+  <li><strong>Fine-tuning</strong> for better AutoRaters.</li>
+</ol>
+
+<p><strong>Metrics</strong>: These are broadly of two kinds. On benchmarks where <em>point-wise</em> scores are provided, the common options are:</p>
+<ol>
+  <li><a href="https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient">Spearman correlation</a>: <span style="color:#FF5F15">Good for monotonic relationships, less sensitive to outliers. </span></li>
+  <li><a href="https://en.wikipedia.org/wiki/Kendall_rank_correlation_coefficient">Kendall’s Tau</a>: <span style="color:#FF5F15">Suitable for ranked data and assessing concordance/discordance, handles ties well. </span></li>
+  <li><a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">Pearson correlation</a>: <span style="color:#FF5F15">Best for linear relationships with normally distributed data.</span> [AG] - I think this is fragile for use in most cases.</li>
+</ol>
+
+<p>[AG] - Call out to the <em>Chatterjee Coefficient</em> <a class="citation" href="#chatterjee-coeff">(Chatterjee, 2021)</a>, which is a relatively new metric with some interesting properties. I should also mention that while correlation coefficients help in assessing alignment, if you are interested in exactly matching the scoring scheme of human annotators (the scores [5, 6, 7] and [1, 2, 3] are positively correlated but one is not a drop-in replacement of the other if users expect the former scale) you should also consider <em>transforming</em> the scores with a model; see <em>LLM-Rubric</em> <a class="citation" href="#llm-rubric">(Hashemi et al., 2024)</a> as an example, where a feed-forward network is used.</p>
+
+<p>The other type is <em>pair-wise</em> scores. Here the common options are:</p>
+<ol>
+  <li><a href="https://en.wikipedia.org/wiki/Cohen%27s_kappa">Cohen’s Kappa</a>:  <span style="color:#FF5F15"> Measures the agreement between two raters on categorical data, accounting for chance agreement [weight=quadric]. </span> The presenter mentioned that while there is a difference of opinion around how these scores might be interpreted, generally \(\kappa&gt;0.8\)  and \(\kappa&gt;0.6\) are considered to be strong and moderate correlations, respectively. [AG] - “quadric” is probably a typo, and the metric being referred to likely is <em>Quadratic Weighted Kappa (QWK)</em>; references <a href="https://stats.stackexchange.com/questions/59798/quadratic-weighted-kappa-versus-linear-weighted-kappa">here</a> and <a href="https://www.kaggle.com/code/aroraaman/quadratic-kappa-metric-explained-in-5-simple-steps">here</a>. For more than two raters, <a href="https://en.wikipedia.org/wiki/Fleiss%27_kappa">Fleiss’ Kappa</a> is popular - but this is probably not needed here since we are comparing human annotations to those produced by LLMs.</li>
+  <li><a href="https://en.wikipedia.org/wiki/Confusion_matrix">Confusion Matrix</a> and <em>accuracy</em> are also used. [AG] - the <em>Root Mean Squared Error (RMSE)</em> may also be used in some circumstances <a class="citation" href="#llm-rubric">(Hashemi et al., 2024)</a>.</li>
+</ol>
+
+<p><strong>Datasets and Benchmarks</strong>: There is a long and growing list of these. Items in the list below were briefly mentioned - most of the notes were later added by me. Note that sometimes the distinction between a dataset and a benchmark is not strong, e.g., <em>HumanEvalPack</em> is also considered to be a benchmark although it is listed under datasets.</p>
+
+<p><em>Datasets</em>:</p>
+<ol>
+  <li><a href="https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge">MT-Bench</a> and <a href="https://lmarena.ai/">ChatBot Arena</a> <a class="citation" href="#zheng2023judging">(Zheng et al., 2023)</a>: <span style="color:#FF5F15">[pair-wise]</span> <em>MT-bench</em> is a series of open-ended questions (with 8 categories of user prompts) that evaluates multi-turn conversational and instruction-following ability. <em>Chatbot Arena</em> is a crowdsourced platform featuring anonymous battles between chatbots – users engage in conversations with two chatbots at the same time and rate their responses based on personal preferences. While these datasets have human annotations, the paper also highlights/implements AutoRaters as a proxy.</li>
+  <li><a href="https://huggingface.co/datasets/nvidia/HelpSteer/viewer">HelpSteer</a> <a class="citation" href="#helpsteer">(Wang et al., 2024)</a> and <a href="https://huggingface.co/datasets/nvidia/HelpSteer2">HelpSteer2</a> <a class="citation" href="#helpsteer2">(Wang et al., 2024)</a>: <span style="color:#FF5F15">[pair-wise]</span> These evaluate various aspects such as <em>correctness</em>, <em>coherence</em>, <em>verbosity</em> and <em>complexity</em> that contribute to the perceived <em>helpfulness</em> of responses.</li>
+  <li><a href="https://huggingface.co/datasets/princeton-nlp/LLMBar">LLMBar</a> <a class="citation" href="#zeng2024llmbar">(Zeng et al., 2024)</a>: <span style="color:#FF5F15">[pair-wise]</span> Specifically evaluates instruction following, i.e., how closely generated text adheres to a given instruction.</li>
+  <li><a href="https://tatsu-lab.github.io/alpaca_eval/">AlpacaEval</a> and AlpacaFarm <a class="citation" href="#dubois2023alpacafarm">(Dubois et al., 2023)</a>: <span style="color:#FF5F15">[pair-wise]</span> AlpacaFarm combines several open-source evaluation datasets and uses real-world interactions with a demo instruction-following LM as guidance for constructing this combination. AlpacaEval is AutoRater that has <a href="https://github.com/tatsu-lab/alpaca_eval?tab=readme-ov-file#evaluators">high agreement</a> with human annotations.</li>
+  <li><a href="https://github.com/anthropics/hh-rlhf">Anthropic Helpful &amp; Harmless</a> <a class="citation" href="#bai2022traininghelpfulharmlessassistant">(Bai et al., 2022)</a>, and <a href="https://github.com/google/BIG-bench/tree/main/bigbench/benchmark_tasks/hhh_alignment">Anthropic HHH</a> <a class="citation" href="#askell2021generallanguageassistantlaboratory">(Askell et al., 2021)</a>: <span style="color:#FF5F15">[pair-wise]</span> The former dataset contains human preferences for <em>helpful</em> and <em>harmless</em> responses, as interpreted by crowd-workers. An interesting aspect that the authors point out is that often these goals are in conflict with each other and a model that exclusively performs well on one might possibly do poorly on the other. HHH stands for “helpful, honest, and harmless”, which is an older dataset.</li>
+  <li>“summarize from feedback” <a class="citation" href="#summarize-feedback">(Stiennon et al., 2020)</a>: <span style="color:#FF5F15">[pair-wise]</span> Dataset of human comparisons between summaries. Incidentally the paper is mostly about how <em>ROUGE</em> (a computation-based metric that we saw earlier) is not great at indicating quality of summaries, and instead a evaluator model trained with the contributed dataset does much better.</li>
+  <li><a href="https://huggingface.co/datasets/bigcode/humanevalpack">HumanEvalPack</a> <a class="citation" href="#muennighoff2024octopack">(Muennighoff et al., 2024)</a>: <span style="color:#FF5F15">[point-wise]</span> Dataset for the coding tasks of <em>Code Repair</em>, <em>Code Explanation</em>, <em>Code Synthesis</em> across 6 languages. This is an extension of the <em>HumanEval</em> dataset. I found the paper creative in that it performs instruction tuning based on Git code commits paired with human instructions (based on <a href="https://www.gharchive.org/">this dataset</a>).</li>
+  <li>FLASK <a class="citation" href="#ye2024flask">(Ye et al., 2024)</a>: <span style="color:#FF5F15">[point-wise]</span> Fine-grained scoring with 4 primary abilities which are divided into 12 fine-grained skills for comprehensive evaluation:
+    <ol>
+      <li><em>Logical Thinking</em>:  Logical Correctness, Logical Robustness, Logical Efficiency.</li>
+      <li><em>Background Knowledge</em>: Factuality, Commonsense Understanding.</li>
+      <li><em>Problem Handling</em>: Comprehension, Insightfulness, Completeness, Metacognition.</li>
+      <li><em>User Alignment</em>: Conciseness, Readability, Harmlessness.</li>
+    </ol>
+  </li>
+</ol>
+
+<p><em>Benchmarks</em>:</p>
+<ol>
+  <li><a href="https://huggingface.co/spaces/allenai/reward-bench">RewardBench</a>: This was discussed earlier in the section on AutoRaters.</li>
+  <li><a href="https://huggingface.co/datasets/lytang/LLM-AggreFact">LLM-AggreFact</a> <a class="citation" href="#minicheck">(Tang et al., 2024)</a>: For testing <em>groundedness</em> of LLM responses against reference documents. Useful for <em>Retrieval Augmented Generation (RAG)</em> systems, QA systems, summarizers, etc. Aside from the dataset contribution, the paper also shows how to build small fact-checking models that are much cheaper than GPT-4 for similar accuracies.</li>
+  <li><a href="https://huggingface.co/spaces/ScalerLab/JudgeBench">JudgeBench</a> <a class="citation" href="#tan2025judgebench">(Tan et al., 2025)</a>: Provides challenging response pairs spanning knowledge, reasoning, math, and coding.</li>
+  <li><a href="https://huggingface.co/datasets/allenai/WildBench">WildBench</a> <a class="citation" href="#lin2024wildbenchbenchmarkingllmschallenging">(Lin et al., 2024)</a>: Designed to benchmark large language models (LLMs) using challenging, real-world user queries. Consists of 1,024 examples carefully selected from over one million human-chatbot conversation logs. I would note that this benchmark itself provides AutoRated scoring (GPT-4-Turbo) but they show a high correlation with human ratings in Chatbot Arena. That might make it useful for meta-evaluation.</li>
+  <li>EvalBiasBench <a class="citation" href="#park-etal-2024-offsetbias">(Park et al., 2024)</a>: Interesting benchmark that targets <em>bias</em> evaluation for judges. The authors identify following kind of biases (note that while <em>position bias</em> - susceptibility of a model to change judgement based on order in which responses are presented - is investigated, it is not part of the benchmark):
+    <ol>
+      <li><em>Length Bias</em>: Judge models prefer longer responses.</li>
+      <li><em>Concreteness Bias</em>: Assign credibility to responses with more details, e.g., citations.</li>
+      <li><em>Empty Reference Bias</em>: In case of an instruction that is incomplete because it is missing references, a judge should not hallucinate, and instead should ask for clarification and declare uncertainty in their response.</li>
+      <li><em>Content Continuation Bias</em>: Some models might switch to “sentence completion” mode when provided with instructions accompanied by input text.</li>
+      <li><em>Nested Instruction Bias</em>: This is an interesting one. This is bias to respond to an instruction or question embedded withing a larger instruction. For ex., in the query “Read the following sentence and suggest one correction. <em>Are you familiar with the the US?</em>”, the italicized portion is an embedded question. A good response might be “You might need to omit one of the adjacent ‘the’ in the sentence.”, while a bad response is “<em>Yes</em>, including various aspects of society and daily life.”.</li>
+      <li><em>Familiar Knowledge Bias</em>: Preference for responses that contain common knowledge, such as idioms.</li>
+    </ol>
+  </li>
+  <li>CoBBLEr <a class="citation" href="#cobbler">(Koo et al., 2024)</a>: This also is intended to measure biases of judge models. The biases of interest here are:
+    <ol>
+      <li><em>Order Bias</em>: This is similar to the <em>position bias</em> mentioned in the previous point.</li>
+      <li><em>Compassion Fade</em>: Preference for responses with recognizable names.</li>
+      <li><em>Egocentric Bias</em>: Preference for a models own outputs. We discussed this behavior in the AutoRaters section in the context of the G-Eval paper.</li>
+      <li><em>Salience Bias</em>: This is the same as <em>length bias</em> in the previous point.</li>
+      <li><em>Bandwagon Effect</em>: Preference for a majority belief. This is similar to the <em>familiar knowledge bias</em> from the previous point.</li>
+      <li><em>Attentional Bias</em>: Preference for irrelevant or unimportant details. This is similar to the <em>concreteness bias</em> from the previous point.</li>
+    </ol>
+  </li>
+</ol>
+
+<p><strong>Transferability to your task</strong>: Performance on the above datasets and benchmarks are only indicative of performance on your specific task. If you’re choosing a model based on public benchmarks you need to ensure the prompts and responses in the benchmark are reflective of your actual use. This is a bit tricky to do, and there is chance of suffering from both omission and commission: the cases you require may not be represented, while the overall score might be influenced by a whole host of scenarios you do not care for. Nevertheless, under tight deadlines to deliver, you might have to resort to this kind of fine-grained “problem matching”.</p>
+
+<p>Ideally, you would want to human-annotate your own data - perhaps a small pool - to absolutely ensure that your evaluators are aligned with your business objective.</p>
+
+<p><strong>Fine-tuning of AutoRaters</strong>: OK, so you know that your AutoRater stands to improve, and may be you have some annotated data as well. What next? You could <em>fine-tune</em> your AutoRater to become better at your task. I won’t go into details, but here’s an image from the talk’s whitepaper showing some fine-tuned AutoRaters. The “Type” column shows what kind of result a model produces, e.g., a <em>discriminative</em> model produces (preference) scores, while a <em>generative</em> model produces a textual response. Just to get an idea of how powerful targeted fine-tuning can be here, the model in the first row, <em>FLAMe-24B</em> <a class="citation" href="#flame">(Vu et al., 2024)</a>, beats GPT-4o in its overall score on RewardBench.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/eval_llm/finetune.png" alt="autorate fine-tuning" />
+    
+    
+        <p class="image-caption">Some fine-tuned AutoRaters. From the tutorial's <a href="https://nips.cc/media/neurips-2024/Slides/99524.pdf">slides</a>.</p>
+    
+</div>
+
+<h3 id="limitations-and-mitigation">Limitations and Mitigation</h3>
+
+<p>AutoRaters potentially suffer from both issues of <em>bias</em> and <em>consistency</em>. Some common biases are preference for long responses (which we have earlier referred to as <em>salience bias</em> and <em>length bias</em>), dependence on position of some artifact in the prompt (we’ve encountered this too: <em>position bias</em> or <em>order bias</em>) and egocentric bias (we have encountered this before both in the Benchmarks and the AutoRater sections). We have seen some others as well, in the discussion on Datasets and Benchmarks. Consistency refers to the fact that AutoRater outputs may vary based on (minor) changes in a prompt or just due to pure randomness.</p>
+
+<p>As mitigation the presenter suggested the strategies:</p>
+<ol>
+  <li>Swapping positions of responses to detect position bias.</li>
+  <li>Call the AutoRater multiple times to verify self-consistency. [AG] - this is also a good way to determine <em>semantic uncertainty</em> <a class="citation" href="#kuhn2023semantic">(Kuhn et al., 2023)</a>.</li>
+  <li>Use a panel of diverse (i.e., originating from different model families) models <a class="citation" href="#juries">(Verga et al., 2024)</a>.</li>
+  <li>Good demonstration as part of the prompt, i.e., in-context learning.</li>
+  <li>Fine-tune on de-biasing datasets such as the ones for EvalBiasBench <a class="citation" href="#park-etal-2024-offsetbias">(Park et al., 2024)</a> and CoBBLEr <a class="citation" href="#cobbler">(Koo et al., 2024)</a>, which we encountered earlier.</li>
+</ol>
+
+<h2 id="summary">Summary</h2>
+
+<p>We looked at three kinds of evaluators:</p>
+<ul>
+  <li>Computation-based metrics.</li>
+  <li>Human Annotation.</li>
+  <li>AutoRaters.</li>
+</ul>
+
+<p>Each come with their pros and cons. In practice, at a high-level, we need to mindful of the following:</p>
+<ol>
+  <li>Choose between evaluators:
+    <ul>
+      <li>The right trade-off between cost and quality based on the task.</li>
+      <li>Utilize the fact that these types of evaluations might be complementary. For ex., during model training it is common to use a computation-based metric ensure that we do not end up with surprisingly bad model. When the model reaches a good regime, picking between its checkpoints can be done by an AutoRater. And finally, human annotators might be involved to validate production readiness. [AG] - the other example of this is of course, that the human evaluators prepare a small but high-quality pool of annotations, which may then be used to calibrate an AutoRater.</li>
+    </ul>
+  </li>
+  <li>Customize your AutoRater via:
+    <ul>
+      <li>Prompt-engineering.</li>
+      <li>Fine-tuning.</li>
+    </ul>
+  </li>
+  <li>Calibrate:
+    <ul>
+      <li>Align with system or business objectives.</li>
+      <li>Align with the domain and judging criteria.</li>
+      <li>De-bias.</li>
+    </ul>
+  </li>
+</ol>
+
+<p>I quite agreed with the presenter when she said “<span style="color:#FF5F15">we want to carry a mindset of evaluation-based development</span>”.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/section_start.png" alt="test" />
+    
+    
+        <p class="image-caption"></p>
+    
+</div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>This section is not from the tutorial - these are my opinions. Let’s ask a fundamental question: can we do without AutoRaters? Should we invest time in understanding the paradigm better?</p>
+
+<p>In response, here is a plot from the paper that introduced <em>Dynabench</em> <a class="citation" href="#dynabench">(Kiela et al., 2021)</a>, a model benchmarking framework. Each line denotes a task, e.g., MNIST. The y-axis shows how the competence of AI/ML techniques have evolved over time for a task; this is normalized at -1 when the task was introduced, and human performance - shown with the black horizontal line - is normalized at 0. A curve going above this line indicates the some AI/ML method has outperformed humans.</p>
+
+<p>Consider this plot for a while.</p>
+
+<!-- _includes/image.html -->
+<div class="image-wrapper">
+    
+        <img src="/assets/eval_llm/benchmark_saturation.png" alt="benchmark saturation" />
+    
+    
+        <p class="image-caption">The time to overtake humans on a benchmark has been decreasing!</p>
+    
+</div>
+
+<p>Note that:</p>
+<ul>
+  <li>For all tasks, human performance has been surpassed.</li>
+  <li>The time to surpass human-level performance is growing increasingly shorter.</li>
+</ul>
+
+<p>More than anything else, the above graph (which I first encountered in <a href="https://www.youtube.com/watch?v=VViyQRGxSKo">this talk</a>) tells me that AutoRating is going to catch up to human-level annotation soon, and given its scalability, it is well on its way to be indispensable in LLM-based system evaluations. In other words, I think it is here to stay.</p>
+
+<p>Right now the area is messy. Multiple techniques, different suggested best practices, a new technique emerging probably every week. I think these are the teething troubles of a new area. Like it or not, if you are in the AI/ML industry, very likely you do not have the option to stand back now and comfortably re-enter the field when it has matured. What makes it worthwhile to participate, or be an active audience, in its development is the general trend seen in the plot above. At least some of these techniques are going to stick around; so some of our learnings are going to be useful for a while.</p>
+
+<p>Something that was out of scope for the talk was techniques for evaluation of RAG-based systems (although the <em>LLM-AggreFact</em> <a class="citation" href="#minicheck">(Tang et al., 2024)</a> benchmark was mentioned). These are probably the most common form of LLM-based systems out there today, and not surprisingly, there is an urgent need to evaluate such systems in a way that is cheap and accurate. It is an active area of research, and some techniques are <em>RAGAs</em> <a class="citation" href="#ragas">(Es et al., 2024)</a>, <em>RAGChecker</em> <a class="citation" href="#ragchecker">(Ru et al., 2024)</a> and <em>ARES</em> <a class="citation" href="#ares">(Saad-Falcon et al., 2023)</a>.</p>
+
+<p>Anyway, many thanks to the presenters for the great tutorial! Not only was it thought-provoking, but also I ended up learning a bunch of new things and got a look at the bigger picture.</p>
+
+<h2 id="references">References</h2>
+<ol class="bibliography"><li><span id="dunlap2025vibecheck">Dunlap, L., Mandal, K., Darrell, T., Steinhardt, J., &amp; Gonzalez, J. E. (2025). VibeCheck: Discover and Quantify Qualitative Differences in Large Language Models. <i>The Thirteenth International Conference on Learning Representations</i>. https://openreview.net/forum?id=acxHV6werE</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="dunlap2025vibecheck-abstract">
+    
+    </div>
+
+</li>
+<li><span id="evallm">Kim, T. S., Lee, Y., Shin, J., Kim, Y.-H., &amp; Kim, J. (2024). <i>EvalLM: Interactive Evaluation of Large Language Model Prompts on User-Defined Criteria</i>. https://doi.org/10.1145/3613904.3642216</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="evallm-abstract">
+    
+    </div>
+
+</li>
+<li><span id="evalgen">Shankar, S., Zamfirescu-Pereira, J. D., Hartmann, B., Parameswaran, A., &amp; Arawjo, I. (2024). <i>Who Validates the Validators? Aligning LLM-Assisted Evaluation of LLM Outputs with Human Preferences</i>. https://doi.org/10.1145/3654777.3676450</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="evalgen-abstract">
+    
+    </div>
+
+</li>
+<li><span id="prometheus2">Kim, S., Suk, J., Longpre, S., Lin, B. Y., Shin, J., Welleck, S., Neubig, G., Lee, M., Lee, K., &amp; Seo, M. (2024). Prometheus 2: An Open Source Language Model Specialized in Evaluating Other Language Models. In Y. Al-Onaizan, M. Bansal, &amp; Y.-N. Chen (Eds.), <i>Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing</i> (pp. 4334–4353). Association for Computational Linguistics. https://doi.org/10.18653/v1/2024.emnlp-main.248</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="prometheus2-abstract">
+    
+    </div>
+
+</li>
+<li><span id="pred-power-inference">Angelopoulos, A. N., Bates, S., Fannjiang, C., Jordan, M. I., &amp; Zrnic, T. (2023). Prediction-powered inference. <i>Science</i>, <i>382</i>(6671), 669–674. https://doi.org/10.1126/science.adi6000</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="pred-power-inference-abstract">
+    
+    </div>
+
+</li>
+<li><span id="BERTScore">Zhang*, T., Kishore*, V., Wu*, F., Weinberger, K. Q., &amp; Artzi, Y. (2020). BERTScore: Evaluating Text Generation with BERT. <i>International Conference on Learning Representations</i>. https://openreview.net/forum?id=SkeHuCVFDr</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="BERTScore-abstract">
+    
+    </div>
+
+</li>
+<li><span id="lin-2004-rouge">Lin, C.-Y. (2004). ROUGE: A Package for Automatic Evaluation of Summaries. <i>Text Summarization Branches Out</i>, 74–81. https://aclanthology.org/W04-1013/</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="lin-2004-rouge-abstract">
+    
+    </div>
+
+</li>
+<li><span id="bleu">Papineni, K., Roukos, S., Ward, T., &amp; Zhu, W.-J. (2002). BLEU: a method for automatic evaluation of machine translation. <i>Proceedings of the 40th Annual Meeting on Association for Computational Linguistics</i>, 311–318. https://doi.org/10.3115/1073083.1073135</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="bleu-abstract">
+    
+    </div>
+
+</li>
+<li><span id="BARTscore">Yuan, W., Neubig, G., &amp; Liu, P. (2021). BARTSCORE: evaluating generated text as text generation. <i>Proceedings of the 35th International Conference on Neural Information Processing Systems</i>.</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="BARTscore-abstract">
+    
+    </div>
+
+</li>
+<li><span id="geval">Liu, Y., Iter, D., Xu, Y., Wang, S., Xu, R., &amp; Zhu, C. (2023). G-Eval: NLG Evaluation using Gpt-4 with Better Human Alignment. In H. Bouamor, J. Pino, &amp; K. Bali (Eds.), <i>Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing</i> (pp. 2511–2522). Association for Computational Linguistics. https://doi.org/10.18653/v1/2023.emnlp-main.153</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="geval-abstract">
+    
+    </div>
+
+</li>
+<li><span id="mpnet">Song, K., Tan, X., Qin, T., Lu, J., &amp; Liu, T.-Y. (2020). MPNet: Masked and Permuted Pre-training for Language Understanding. In H. Larochelle, M. Ranzato, R. Hadsell, M. F. Balcan, &amp; H. Lin (Eds.), <i>Advances in Neural Information Processing Systems</i> (Vol. 33, pp. 16857–16867). Curran Associates, Inc. https://proceedings.neurips.cc/paper_files/paper/2020/file/c3a690be93aa602ee2dc0ccab5b7b67e-Paper.pdf</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="mpnet-abstract">
+    
+    </div>
+
+</li>
+<li><span id="juries">Verga, P., Hofstatter, S., Althammer, S., Su, Y., Piktus, A., Arkhangorodsky, A., Xu, M., White, N., &amp; Lewis, P. (2024). <i>Replacing Judges with Juries: Evaluating LLM Generations with a Panel of Diverse Models</i>. https://arxiv.org/abs/2404.18796</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="juries-abstract">
+    
+    </div>
+
+</li>
+<li><span id="chateval">Chan, C.-M., Chen, W., Su, Y., Yu, J., Xue, W., Zhang, S., Fu, J., &amp; Liu, Z. (2024). ChatEval: Towards Better LLM-based Evaluators through Multi-Agent Debate. <i>The Twelfth International Conference on Learning Representations</i>. https://openreview.net/forum?id=FQepisCUWu</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="chateval-abstract">
+    
+    </div>
+
+</li>
+<li><span id="MATEeval">Li, Y., Zhang, S., Wu, R., Huang, X., Chen, Y., Xu, W., Qi, G., &amp; Min, D. (2024). MATEval: A Multi-agent Discussion Framework for Advancing Open-Ended Text Evaluation. In M. Onizuka, J.-G. Lee, Y. Tong, C. Xiao, Y. Ishikawa, S. Amer-Yahia, H. V. Jagadish, &amp; K. Lu (Eds.), <i>Database Systems for Advanced Applications</i> (pp. 415–426). Springer Nature Singapore.</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="MATEeval-abstract">
+    
+    </div>
+
+</li>
+<li><span id="lambert2024rewardbench">Lambert, N., Pyatkin, V., Morrison, J., Miranda, L. J., Lin, B. Y., Chandu, K., Dziri, N., Kumar, S., Zick, T., Choi, Y., Smith, N. A., &amp; Hajishirzi, H. (2024). <i>RewardBench: Evaluating Reward Models for Language Modeling</i>.</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="lambert2024rewardbench-abstract">
+    
+    </div>
+
+</li>
+<li><span id="dpo">Rafailov, R., Sharma, A., Mitchell, E., Manning, C. D., Ermon, S., &amp; Finn, C. (2023). Direct Preference Optimization: Your Language Model is Secretly a Reward Model. In A. Oh, T. Naumann, A. Globerson, K. Saenko, M. Hardt, &amp; S. Levine (Eds.), <i>Advances in Neural Information Processing Systems</i> (Vol. 36, pp. 53728–53741). Curran Associates, Inc. https://proceedings.neurips.cc/paper_files/paper/2023/file/a85b405ed65c6477a4fe8302b5e06ce7-Paper-Conference.pdf</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="dpo-abstract">
+    
+    </div>
+
+</li>
+<li><span id="rlhf-history">Lambert, N., Gilbert, T. K., &amp; Zick, T. (2023). <i>The History and Risks of Reinforcement Learning and Human Feedback</i>. https://arxiv.org/abs/2310.13595</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="rlhf-history-abstract">
+    
+    </div>
+
+</li>
+<li><span id="chatterjee-coeff">Chatterjee, S. (2021). A New Coefficient of Correlation. <i>Journal of the American Statistical Association</i>, <i>116</i>(536), 2009–2022. https://doi.org/10.1080/01621459.2020.1758115</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="chatterjee-coeff-abstract">
+    
+    </div>
+
+</li>
+<li><span id="llm-rubric">Hashemi, H., Eisner, J., Rosset, C., Van Durme, B., &amp; Kedzie, C. (2024). LLM-Rubric: A Multidimensional, Calibrated Approach to Automated Evaluation of Natural Language Texts. In L.-W. Ku, A. Martins, &amp; V. Srikumar (Eds.), <i>Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)</i> (pp. 13806–13834). Association for Computational Linguistics. https://doi.org/10.18653/v1/2024.acl-long.745</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="llm-rubric-abstract">
+    
+    </div>
+
+</li>
+<li><span id="zheng2023judging">Zheng, L., Chiang, W.-L., Sheng, Y., Zhuang, S., Wu, Z., Zhuang, Y., Lin, Z., Li, Z., Li, D., Xing, E., Zhang, H., Gonzalez, J. E., &amp; Stoica, I. (2023). Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena. <i>Thirty-Seventh Conference on Neural Information Processing Systems Datasets and Benchmarks Track</i>. https://openreview.net/forum?id=uccHPGDlao</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="zheng2023judging-abstract">
+    
+    </div>
+
+</li>
+<li><span id="helpsteer">Wang, Z., Dong, Y., Zeng, J., Adams, V., Sreedhar, M. N., Egert, D., Delalleau, O., Scowcroft, J., Kant, N., Swope, A., &amp; Kuchaiev, O. (2024). HelpSteer: Multi-attribute Helpfulness Dataset for SteerLM. In K. Duh, H. Gomez, &amp; S. Bethard (Eds.), <i>Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers)</i> (pp. 3371–3384). Association for Computational Linguistics. https://doi.org/10.18653/v1/2024.naacl-long.185</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="helpsteer-abstract">
+    
+    </div>
+
+</li>
+<li><span id="helpsteer2">Wang, Z., Dong, Y., Delalleau, O., Zeng, J., Shen, G., Egert, D., Zhang, J. J., Sreedhar, M. N., &amp; Kuchaiev, O. (2024). HelpSteer 2: Open-source dataset for training top-performing reward models. <i>The Thirty-Eight Conference on Neural Information Processing Systems Datasets and Benchmarks Track</i>. https://openreview.net/forum?id=PvVKUFhaNy</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="helpsteer2-abstract">
+    
+    </div>
+
+</li>
+<li><span id="zeng2024llmbar">Zeng, Z., Yu, J., Gao, T., Meng, Y., Goyal, T., &amp; Chen, D. (2024). Evaluating Large Language Models at Evaluating Instruction Following. <i>International Conference on Learning Representations (ICLR)</i>.</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="zeng2024llmbar-abstract">
+    
+    </div>
+
+</li>
+<li><span id="dubois2023alpacafarm">Dubois, Y., Li, X., Taori, R., Zhang, T., Gulrajani, I., Ba, J., Guestrin, C., Liang, P., &amp; Hashimoto, T. (2023). AlpacaFarm: A Simulation Framework for Methods that Learn from Human Feedback. <i>Thirty-Seventh Conference on Neural Information Processing Systems</i>. https://openreview.net/forum?id=4hturzLcKX</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="dubois2023alpacafarm-abstract">
+    
+    </div>
+
+</li>
+<li><span id="bai2022traininghelpfulharmlessassistant">Bai, Y., Jones, A., Ndousse, K., Askell, A., Chen, A., DasSarma, N., Drain, D., Fort, S., Ganguli, D., Henighan, T., Joseph, N., Kadavath, S., Kernion, J., Conerly, T., El-Showk, S., Elhage, N., Hatfield-Dodds, Z., Hernandez, D., Hume, T., … Kaplan, J. (2022). <i>Training a Helpful and Harmless Assistant with Reinforcement Learning from Human Feedback</i>. https://arxiv.org/abs/2204.05862</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="bai2022traininghelpfulharmlessassistant-abstract">
+    
+    </div>
+
+</li>
+<li><span id="askell2021generallanguageassistantlaboratory">Askell, A., Bai, Y., Chen, A., Drain, D., Ganguli, D., Henighan, T., Jones, A., Joseph, N., Mann, B., DasSarma, N., Elhage, N., Hatfield-Dodds, Z., Hernandez, D., Kernion, J., Ndousse, K., Olsson, C., Amodei, D., Brown, T., Clark, J., … Kaplan, J. (2021). <i>A General Language Assistant as a Laboratory for Alignment</i>. https://arxiv.org/abs/2112.00861</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="askell2021generallanguageassistantlaboratory-abstract">
+    
+    </div>
+
+</li>
+<li><span id="summarize-feedback">Stiennon, N., Ouyang, L., Wu, J., Ziegler, D. M., Lowe, R., Voss, C., Radford, A., Amodei, D., &amp; Christiano, P. (2020). Learning to summarize from human feedback. <i>Proceedings of the 34th International Conference on Neural Information Processing Systems</i>.</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="summarize-feedback-abstract">
+    
+    </div>
+
+</li>
+<li><span id="muennighoff2024octopack">Muennighoff, N., Liu, Q., Zebaze, A. R., Zheng, Q., Hui, B., Zhuo, T. Y., Singh, S., Tang, X., Werra, L. V., &amp; Longpre, S. (2024). OctoPack: Instruction Tuning Code Large Language Models. <i>The Twelfth International Conference on Learning Representations</i>. https://openreview.net/forum?id=mw1PWNSWZP</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="muennighoff2024octopack-abstract">
+    
+    </div>
+
+</li>
+<li><span id="ye2024flask">Ye, S., Kim, D., Kim, S., Hwang, H., Kim, S., Jo, Y., Thorne, J., Kim, J., &amp; Seo, M. (2024). FLASK: Fine-grained Language Model Evaluation based on Alignment Skill Sets. <i>The Twelfth International Conference on Learning Representations</i>. https://openreview.net/forum?id=CYmF38ysDa</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="ye2024flask-abstract">
+    
+    </div>
+
+</li>
+<li><span id="minicheck">Tang, L., Laban, P., &amp; Durrett, G. (2024). MiniCheck: Efficient Fact-Checking of LLMs on Grounding Documents. In Y. Al-Onaizan, M. Bansal, &amp; Y.-N. Chen (Eds.), <i>Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing</i> (pp. 8818–8847). Association for Computational Linguistics. https://doi.org/10.18653/v1/2024.emnlp-main.499</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="minicheck-abstract">
+    
+    </div>
+
+</li>
+<li><span id="tan2025judgebench">Tan, S., Zhuang, S., Montgomery, K., Tang, W. Y., Cuadron, A., Wang, C., Popa, R., &amp; Stoica, I. (2025). JudgeBench: A Benchmark for Evaluating LLM-Based Judges. <i>The Thirteenth International Conference on Learning Representations</i>. https://openreview.net/forum?id=G0dksFayVq</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="tan2025judgebench-abstract">
+    
+    </div>
+
+</li>
+<li><span id="lin2024wildbenchbenchmarkingllmschallenging">Lin, B. Y., Deng, Y., Chandu, K., Brahman, F., Ravichander, A., Pyatkin, V., Dziri, N., Bras, R. L., &amp; Choi, Y. (2024). <i>WildBench: Benchmarking LLMs with Challenging Tasks from Real Users in the Wild</i>. https://arxiv.org/abs/2406.04770</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="lin2024wildbenchbenchmarkingllmschallenging-abstract">
+    
+    </div>
+
+</li>
+<li><span id="park-etal-2024-offsetbias">Park, J., Jwa, S., Meiying, R., Kim, D., &amp; Choi, S. (2024). OffsetBias: Leveraging Debiased Data for Tuning Evaluators. In Y. Al-Onaizan, M. Bansal, &amp; Y.-N. Chen (Eds.), <i>Findings of the Association for Computational Linguistics: EMNLP 2024</i> (pp. 1043–1067). Association for Computational Linguistics. https://doi.org/10.18653/v1/2024.findings-emnlp.57</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="park-etal-2024-offsetbias-abstract">
+    
+    </div>
+
+</li>
+<li><span id="cobbler">Koo, R., Lee, M., Raheja, V., Park, J. I., Kim, Z. M., &amp; Kang, D. (2024). Benchmarking Cognitive Biases in Large Language Models as Evaluators. In L.-W. Ku, A. Martins, &amp; V. Srikumar (Eds.), <i>Findings of the Association for Computational Linguistics: ACL 2024</i> (pp. 517–545). Association for Computational Linguistics. https://doi.org/10.18653/v1/2024.findings-acl.29</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="cobbler-abstract">
+    
+    </div>
+
+</li>
+<li><span id="flame">Vu, T., Krishna, K., Alzubi, S., Tar, C., Faruqui, M., &amp; Sung, Y.-H. (2024). Foundational Autoraters: Taming Large Language Models for Better Automatic Evaluation. In Y. Al-Onaizan, M. Bansal, &amp; Y.-N. Chen (Eds.), <i>Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing</i> (pp. 17086–17105). Association for Computational Linguistics. https://doi.org/10.18653/v1/2024.emnlp-main.949</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="flame-abstract">
+    
+    </div>
+
+</li>
+<li><span id="kuhn2023semantic">Kuhn, L., Gal, Y., &amp; Farquhar, S. (2023). Semantic Uncertainty: Linguistic Invariances for Uncertainty Estimation in Natural Language Generation. <i>The Eleventh International Conference on Learning Representations </i>. https://openreview.net/forum?id=VD-AYtP0dve</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="kuhn2023semantic-abstract">
+    
+    </div>
+
+</li>
+<li><span id="dynabench">Kiela, D., Bartolo, M., Nie, Y., Kaushik, D., Geiger, A., Wu, Z., Vidgen, B., Prasad, G., Singh, A., Ringshia, P., Ma, Z., Thrush, T., Riedel, S., Waseem, Z., Stenetorp, P., Jia, R., Bansal, M., Potts, C., &amp; Williams, A. (2021). Dynabench: Rethinking Benchmarking in NLP. In K. Toutanova, A. Rumshisky, L. Zettlemoyer, D. Hakkani-Tur, I. Beltagy, S. Bethard, R. Cotterell, T. Chakraborty, &amp; Y. Zhou (Eds.), <i>Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies</i> (pp. 4110–4124). Association for Computational Linguistics. https://doi.org/10.18653/v1/2021.naacl-main.324</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="dynabench-abstract">
+    
+    </div>
+
+</li>
+<li><span id="ragas">Es, S., James, J., Espinosa Anke, L., &amp; Schockaert, S. (2024). RAGAs: Automated Evaluation of Retrieval Augmented Generation. In N. Aletras &amp; O. De Clercq (Eds.), <i>Proceedings of the 18th Conference of the European Chapter of the Association for Computational Linguistics: System Demonstrations</i> (pp. 150–158). Association for Computational Linguistics. https://aclanthology.org/2024.eacl-demo.16/</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="ragas-abstract">
+    
+    </div>
+
+</li>
+<li><span id="ragchecker">Ru, D., Qiu, L., Hu, X., Zhang, T., Shi, P., Chang, S., Jiayang, C., Wang, C., Sun, S., Li, H., Zhang, Z., Wang, B., Jiang, J., He, T., Wang, Z., Liu, P., Zhang, Y., &amp; Zhang, Z. (2024). RAGChecker: A Fine-grained Framework for Diagnosing Retrieval-Augmented Generation. <i>The Thirty-Eight Conference on Neural Information Processing Systems Datasets and Benchmarks Track</i>. https://openreview.net/forum?id=J9oefdGUuM</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="ragchecker-abstract">
+    
+    </div>
+
+</li>
+<li><span id="ares">Saad-Falcon, J., Khattab, O., Potts, C., &amp; Zaharia, M. (2023). <i>ARES: An Automated Evaluation Framework for Retrieval-Augmented Generation Systems</i>.</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="ares-abstract">
+    
+    </div>
+
+</li></ol>
+
+  </div>
+
+  
+</article>
+
+      </div>
+    </main>
+
+
+<!--
+    <script src="https://giscus.app/client.js"
+        data-repo="[ENTER REPO HERE]"
+        data-repo-id="[ENTER REPO ID HERE]"
+        data-category="[ENTER CATEGORY NAME HERE]"
+        data-category-id="[ENTER CATEGORY ID HERE]"
+        data-mapping="pathname"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-theme="light"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+    </script>
+-->
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">A Not-So Primordial Soup</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>
+            
+              A Not-So Primordial Soup
+            
+            </li>
+            
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+
+          
+	  
+	  
+  	 <li>
+            <a href="https://linkedin.com/in/abhishek-ghose-36197624">
+            <i class="fa fa-linkedin"></i> LinkedIn
+            </a>
+         </li>
+         
+
+         
+  	 <li>
+            <a href="https://www.quora.com/profile/Abhishek-Ghose">
+            <i class="fa fa-quora" aria-hidden="true"></i> Quora
+            </a>
+         </li>
+         
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>My thought-recorder.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+    <script>
+    
+    var elements = document.querySelectorAll('p');
+    Array.prototype.forEach.call(elements, function(el, i){
+        if(el.innerHTML=='[expand]') {
+            var parentcontent = el.parentNode.innerHTML.replace('<p>[expand]</p>','<div class="expand" style="display: none; height: 0; overflow: hidden;">').replace('<p>[/expand]</p>','</div>');
+            el.parentNode.innerHTML = parentcontent;
+        }
+    });
+
+    var elements = document.querySelectorAll('div.expand');
+    Array.prototype.forEach.call(elements, function(el, i){
+        el.previousElementSibling.innerHTML = el.previousElementSibling.innerHTML + '<span>..&nbsp; <a href="#" style="cursor: pointer;" onclick="this.parentNode.parentNode.nextElementSibling.style.display = \'block\'; this.parentNode.parentNode.nextElementSibling.style.height = \'auto\'; this.parentNode.style.display = \'none\';">read&nbsp;more&nbsp;&rarr;</a></span>';
+    });
+
+</script>
+  </body>
+
+</html>
