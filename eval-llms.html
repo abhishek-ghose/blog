@@ -372,7 +372,7 @@
         <img src="/assets/eval_llm/autorater-anatomy.png" alt="AutoRater" />
     
     
-        <p class="image-caption">Anatomy of an AutoRater. Based on talk slides. Stuff in green is data/information.</p>
+        <p class="image-caption">Anatomy of an AutoRater. Based on the talk <a href="https://nips.cc/media/neurips-2024/Slides/99524.pdf">slides</a>. Stuff in green is data/information.</p>
     
 </div>
 
@@ -416,7 +416,7 @@
     
 </div>
 
-<p>[AG] - Let’s dwell on this a bit - its a slightly unusual benchmark. Reward models are an important piece of the current LLM revolution. These models are what guide LLMs to generate correct answers, at training time. These are explicit separate models in the case of <em>Reinforcement Learning from Human Feedback (RLHF)</em> - which was popularized by OpenAI for <a href="https://openai.com/index/chatgpt/">training the original ChatGPT</a>. Later, a computationally-lightweight technique called <em>Direct Preference Optimization (DPO)</em> <a class="citation" href="#dpo">(Rafailov et al., 2023)</a> became widely popular, where the LLM has an implicit notion of rewards. This benchmark directly rates this notion of rewards - explicit or implicit. In a way, it peeks behind the curtain to see why a LLM believes a certain response is a good response. Conceptually, it is measuring a simpler entity: instead of measuring the outcomes a reward model leads to, it directly measures those rewards. Here is an <a href="https://www.interconnects.ai/p/why-reward-models-matter">article</a> and a <a href="https://www.youtube.com/watch?v=CAaHAfCqrBA">video</a> by one of the co-authors that go into some detail. He also has co-authored a paper on the history of RLHF <a class="citation" href="#rlhf-history">(Lambert et al., 2023)</a>. I found this other <a href="https://sebastianraschka.com/blog/2024/research-papers-in-march-2024.html">article</a> to be succinct and helpful.</p>
+<p>[AG] - Let’s dwell on this a bit - its a slightly unusual benchmark. Reward models are an important piece of the current LLM revolution. These models are what guide LLMs to generate correct answers, at training time. These are explicit separate models in the case of <em>Reinforcement Learning from Human Feedback (RLHF)</em> - which was popularized by OpenAI for <a href="https://openai.com/index/chatgpt/">training the original ChatGPT</a>. Later, a computationally-lightweight technique called <em>Direct Preference Optimization (DPO)</em> <a class="citation" href="#dpo">(Rafailov et al., 2023)</a> became widely popular, where the LLM has an implicit notion of rewards. This benchmark directly rates this notion of rewards - explicit or implicit. In a way, it peeks behind the curtain to see why a LLM believes a certain response is a good response. Conceptually, it is measuring a simpler entity: the rewards, instead of the outcomes they lead to. Here is an <a href="https://www.interconnects.ai/p/why-reward-models-matter">article</a> and a <a href="https://www.youtube.com/watch?v=CAaHAfCqrBA">video</a> by one of the co-authors that go into some detail. He also has co-authored a paper on the history of RLHF <a class="citation" href="#rlhf-history">(Lambert et al., 2023)</a>. I found this other <a href="https://sebastianraschka.com/blog/2024/research-papers-in-march-2024.html">article</a> to be succinct and helpful.</p>
 
 <h3 id="meta-evaluation">Meta-Evaluation</h3>
 
@@ -498,7 +498,7 @@
 
 <p>Ideally, you would want to human-annotate your own data - perhaps a small pool - to absolutely ensure that your AutoRaters are aligned with your business objective.</p>
 
-<p><strong>Fine-tuning of AutoRaters</strong>: OK, so you know that your AutoRater stands to improve, and may be you have some annotated data as well. What next? You could <em>fine-tune</em> your AutoRater to become better at your task. I won’t go into details, but here’s an image from the talk’s slides showing some fine-tuned AutoRaters. The “Type” column shows what kind of result a model produces, e.g., a <em>discriminative</em> model produces (preference) scores, while a <em>generative</em> model produces a textual response. Just to get an idea of how powerful targeted fine-tuning can be here, the model in the first row, <em>FLAMe-24B</em> <a class="citation" href="#flame">(Vu et al., 2024)</a>, beats GPT-4o in its overall score on RewardBench.</p>
+<p><strong>Fine-tuning of AutoRaters</strong>: OK, so you know that your AutoRater stands to improve, and may be you have some annotated data as well. What next? You could <em>fine-tune</em> your AutoRater to become better at your task. I won’t go into details, but here’s an image from the talk’s slides showing some fine-tuned AutoRaters. The “Type” column shows what kind of result a model produces, e.g., a <em>discriminative</em> model produces (preference) scores, while a <em>generative</em> model produces a textual response. [AG] - Just to get an idea of how powerful targeted fine-tuning can be here, the model in the first row, <em>FLAMe-24B</em> <a class="citation" href="#flame">(Vu et al., 2024)</a>, beats GPT-4o in its overall score on RewardBench.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
