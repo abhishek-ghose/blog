@@ -433,9 +433,9 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
 \nabla_l R = \frac{2}{\tau} (b \odot (b-y-c))
 \end{aligned}\]
 
-<p>In my shorthand above, \(c\) (a scalar) is subtracted from every entry in the \(b-y\) vector.</p>
+<p>In my shorthand above, \(c\) (a scalar) is subtracted from every entry in the \(b-y\) vector. The “\(\odot\)” symbol denotes the element-wise product aka the <em>Hadamard</em> product.</p>
 
-<p>Alright, time for some code! - pay heed to the comments. This is primarily meant to be illustrative, and as always on this blog, assume this is released under the <a href="https://matt.might.net/articles/crapl/">CRAPL</a> license :-)</p>
+<p>Alright, time for some code - pay heed to the comments!</p>
 
 <figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
