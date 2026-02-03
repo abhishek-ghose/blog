@@ -126,7 +126,7 @@
   </figcaption>
 </figure>
 
-<p>When we set out to learn a function or some property of it (like its maximum), we hope it is <em>differentiable</em>, because that means we have at our disposal a host of well-studied, and often fast, techniques. But sometimes we are not so lucky - and then there are broadly two options: (a) use a technique that doesn’t rely on differentiability, e.g., Bayesian Optimization, or (b) use an approximation that is differentiable. The topic of this post is a very useful and elegant instance of the latter. It’s a technique to make sampling from a categorical distribution differentiable, using the <em>Gumbel</em> distribution <a class="citation" href="#mcfadden_conditional_1974">(McFadden, 1974; Jang et al., 2017; Maddison et al., 2017)</a>. The need to differentiate through the categorical distribution shows up in various places <a class="citation" href="#gumbel_review">(Huijben et al., 2023)</a>. About the trick, <a href="https://arxiv.org/pdf/1903.06059">this</a> paper <a class="citation" href="#DBLP:journals/corr/abs-1903-06059">(Kool et al., 2019)</a> says:</p>
+<p>When we set out to learn a function or some property of it (like its maximum), we hope it is <em>differentiable</em>, because that means we have at our disposal a host of well-studied, and often fast, techniques. But sometimes we are not so lucky - and then there are broadly two options: (a) use a technique that doesn’t rely on differentiability, e.g., Bayesian Optimization, or (b) use an approximation that is differentiable. The topic of this post is a very useful and elegant instance of the latter. It’s a technique to make sampling from a categorical distribution differentiable, using the <em>Gumbel</em> distribution <a class="citation" href="#mcfadden_conditional_1974">(McFadden, 1974; Jang et al., 2017; Maddison et al., 2017)</a>. The need to differentiate through the categorical distribution shows up in various places <a class="citation" href="#gumbel_review">(Huijben et al., 2023)</a>. JAX <a href="https://docs.jax.dev/en/latest/_autosummary/jax.random.categorical.html">implements</a> a differentiable version of categorical sampling using the Gumbel-max trick. About it <a href="https://arxiv.org/pdf/1903.06059">this</a> paper <a class="citation" href="#DBLP:journals/corr/abs-1903-06059">(Kool et al., 2019)</a> says:</p>
 
 <blockquote>
   <p>We think the Gumbel-Max trick is like a magic trick.</p>
@@ -339,7 +339,7 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
 
 <h2 id="toy-problem---modeling-a-biased-die">Toy Problem - Modeling a Biased Die</h2>
 
-<p>We will look at a toy problem of modelling the categorical distribution for a biased die. This will help us appreciate the mechanics up close.</p>
+<p>We will look at a toy problem of modelling the categorical distribution for a biased die. This will help us appreciate the mechanics up close. For an example using a Variation Autoencoder (VAE), Eric Jang, one of the authors of the Gumbel-softmax paper <a class="citation" href="#jang2017categorical">(Jang et al., 2017)</a>, has an example <a href="https://blog.evjang.com/2016/11/tutorial-categorical-variational.html">on his blog</a>.</p>
 
 <p>Here’s the problem we’ll solve: We are going to learn the probabilities of each face coming up for a 6-sided die. We will roll the die a few times, and report the fraction of times each face came up. For example, if we roll it thrice and see:</p>
 <ul>
