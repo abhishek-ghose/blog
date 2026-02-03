@@ -6,7 +6,41 @@
         <link>https://blog.quipu-strands.com</link>
         <atom:link href="https://blog.quipu-strands.com/feed.xml" rel="self" type="application/rss+xml" />
         <description></description>
-        <lastBuildDate>Sat, 15 Mar 2025 11:02:18 +0530</lastBuildDate>
+        <lastBuildDate>Tue, 03 Feb 2026 00:51:19 -0800</lastBuildDate>
+        
+        <item>
+            <title>The Gumbel-Max Trick</title>
+            <link>
+                https://blog.quipu-strands.com/gumbel
+            </link>
+            <description>
+                &lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js&quot;&gt;
+&lt;/script&gt;
+
+&lt;figure&gt;
+  &lt;p&gt;&lt;img src=&quot;/assets/gumbel/loaded_die_banner.png&quot; alt=&quot;biased_die&quot; width=&quot;100%&quot; /&gt;&lt;/p&gt;
+
+  &lt;figcaption style=&quot;text-align:center; color: #777;&quot;&gt;
+
+  &lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;When we set out to learn a function or some property of it (like its maximum), we hope it is &lt;em&gt;differentiable&lt;/em&gt;, because that means we have at our disposal a host of well-studied, and often fast, techniques. But sometimes we are not so lucky - and then there are broadly two options: (a) use a technique that doesn’t rely on differentiability, e.g., Bayesian Optimization, or (b) use an approximation that is differentiable. The topic of this post is a very useful and elegant instance of the latter. It’s a technique to make sampling from a categorical distribution differentiable, using the &lt;em&gt;Gumbel&lt;/em&gt; distribution &lt;a class=&quot;citation&quot; href=&quot;#mcfadden_conditional_1974&quot;&gt;(McFadden, 1974; Jang et al., 2017; Maddison et al., 2017)&lt;/a&gt;. The need to differentiate through the categorical distribution shows up in various places &lt;a class=&quot;citation&quot; href=&quot;#gumbel_review&quot;&gt;(Huijben et al., 2023)&lt;/a&gt;. About the trick, &lt;a href=&quot;https://arxiv.org/pdf/1903.06059&quot;&gt;this&lt;/a&gt; paper &lt;a class=&quot;citation&quot; href=&quot;#DBLP:journals/corr/abs-1903-06059&quot;&gt;(Kool et al., 2019)&lt;/a&gt; says:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;We think the Gumbel-Max trick is like a magic trick.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I agree! Let’s get started.&lt;/p&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#why-differentiability&quot; id=&quot;markdown-toc-why-differentiability&quot;&gt;Why Differentiability&lt;/...
+            </description>
+            <pubDate>Tue, 03 Feb 2026 00:38:00 -0800</pubDate>
+            <guid>
+                https://blog.quipu-strands.com/gumbel
+            </guid>
+        </item>
         
         <item>
             <title>Evaluating LLMs - Notes on a NeurIPS'24 Tutorial</title>
@@ -48,7 +82,7 @@
       &lt;li&gt;&lt;a href=&quot;#scope-of-evaluation&quot; id=&quot;markdown-toc-scope-of-evaluation&quot;&gt;Scope of Evaluation&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#how...
             </description>
-            <pubDate>Thu, 06 Mar 2025 22:30:00 +0530</pubDate>
+            <pubDate>Thu, 06 Mar 2025 09:00:00 -0800</pubDate>
             <guid>
                 https://blog.quipu-strands.com/eval-llms
             </guid>
@@ -77,7 +111,7 @@
 
 &lt;p&gt;Except that in a lot of real-world cases this is not how it plays out.  I suspected this from my personal experiments, and then in some stuff we did at &lt;a href=&quot;https://www.247.ai/&quot;&gt;[24]7.ai&lt;/a&gt;. So we decided to thoroughly test out multiple scenarios in text classification, where you believe (or current literature leads us to believe) Active Learning &lt;em&gt;should&lt;/em&gt; work … but it just doesn’t. We summarized our observations into the paper &lt;em&gt;“On the Fragility of Active Learners for Text Classification”&lt;/em&gt; &lt;a class=&quot;citation&quot; href=&quot;#fragilityActive&quot;&gt;(Ghose &amp;amp; Nguyen, 2024)&lt;/a&gt; [&lt;a href=&quot;https://arxiv.org/pdf/2403.15744&quot;&gt;PDF&lt;/a&gt;], and th...
             </description>
-            <pubDate>Thu, 26 Sep 2024 00:30:00 +0530</pubDate>
+            <pubDate>Wed, 25 Sep 2024 12:00:00 -0700</pubDate>
             <guid>
                 https://blog.quipu-strands.com/inactive_learning
             </guid>
@@ -123,7 +157,7 @@ This is going to sound surprising but let’s start with the idea of the &lt;em&
 
 &lt;p&gt;For our purposes, we can think of th...
             </description>
-            <pubDate>Mon, 16 Sep 2024 12:14:00 +0530</pubDate>
+            <pubDate>Sun, 15 Sep 2024 23:44:00 -0700</pubDate>
             <guid>
                 https://blog.quipu-strands.com/jensens_inequality
             </guid>
@@ -166,7 +200,7 @@ Now we take a look at the other pillar BayesOpt rests on: acquisition functions.
       &lt;li&gt;&lt;a href=&quot;#predictive-entropy-search&quot; id=&quot;markdown-toc-predictive-entropy-search&quot;&gt;Predictive Entropy Search&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#max-value-entropy-search&quot; id=&quot;markdown-toc-max-value-entropy-search&quot;&gt;Max-value Entropy ...
             </description>
-            <pubDate>Sun, 19 Nov 2023 00:30:00 +0530</pubDate>
+            <pubDate>Sat, 18 Nov 2023 11:00:00 -0800</pubDate>
             <guid>
                 https://blog.quipu-strands.com/bayesopt_2_acq_fns
             </guid>
@@ -209,7 +243,7 @@ Now we take a look at the other pillar BayesOpt rests on: acquisition functions.
   &lt;li&gt;Plasma control in nuclear fusion &lt;a class=&quot;citation&quot; href=&quot;#mehta2022an&quot;&gt;(Mehta et al., 2022)&lt;/a&gt;.&lt;/li&gt;
   &lt;li&gt;Parameter tuning for lasers &lt;a class=&quot;citation&quot; href=&quot;#20.500.11850/385...
             </description>
-            <pubDate>Sun, 19 Nov 2023 00:30:00 +0530</pubDate>
+            <pubDate>Sat, 18 Nov 2023 11:00:00 -0800</pubDate>
             <guid>
                 https://blog.quipu-strands.com/bayesopt_1_key_ideas_GPs
             </guid>
@@ -243,7 +277,7 @@ Now we take a look at the other pillar BayesOpt rests on: acquisition functions.
 
 &lt;p&gt;In this post, I will try to illustrate this mechanism using a specific generative model: the &lt;strong&gt;Gaussian Mixture Model (GMM)&lt;/strong&gt;. We will use it to capture patterns &lt;em&gt;in images&lt;/em&gt;. Pixels will be our data, and patterns are how they are “lumped” together. Of course, this lumping is what humans perceive as the image itself. Effectively then, much like our artist, we will use a generative model to “see” an image and then have it reproduce it later. &lt;strong&gt;Think of this as a rudimentary, mostly visual, tutorial on GMMs&lt;/strong&gt;, where we focus on their representational capability. Or an article where I mostly ramble but touch upon GMMs, use of probabilities, all the w...
             </description>
-            <pubDate>Sat, 23 Apr 2022 08:30:00 +0530</pubDate>
+            <pubDate>Fri, 22 Apr 2022 20:00:00 -0700</pubDate>
             <guid>
                 https://blog.quipu-strands.com/fun_with_GMMs
             </guid>
@@ -278,7 +312,7 @@ Now we take a look at the other pillar BayesOpt rests on: acquisition functions.
 
 &lt;p&gt;I have been asked about the domain name “quipu strands” (by the 3 and a 1/2 readers I have) . These were a device used by the Incas to...
             </description>
-            <pubDate>Wed, 26 Apr 2017 20:31:36 +0530</pubDate>
+            <pubDate>Wed, 26 Apr 2017 08:01:36 -0700</pubDate>
             <guid>
                 https://blog.quipu-strands.com/hello-new-blog
             </guid>
