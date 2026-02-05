@@ -217,7 +217,7 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
   <li>
     <p><strong>Property 1</strong>: 🔺Sampling from \(G(a, 1)\) is equivalent to sampling from \(G(0,1)\) and adding \(a\) to the sampled values.</p>
 
-    <p><em>Proof</em>: We reinterpret the statement above: if I sample a bunch of \(x\)s from \(G(0,1)\), and add \(a\) to them, they’re as good as samples from \(G(a,1)\). In other words: the \(\texttt{pdf}\) value of \(x \sim G(0, 1)\) and \((x+a) \sim G(a,1)\) are identical. Let’s consider \(p(x+a\vert G(a,1))\). This is the \(z\) we’ll have to use in the \(\texttt{pdf}\) expression (see Gumbel \(\texttt{pdf}\) above):</p>
+    <p><strong>Proof</strong>: We reinterpret the statement above: if I sample a bunch of \(x\)s from \(G(0,1)\), and add \(a\) to them, they’re as good as samples from \(G(a,1)\). In other words: the \(\texttt{pdf}\) value of \(x \sim G(0, 1)\) and \((x+a) \sim G(a,1)\) are identical. Let’s consider \(p(x+a\vert G(a,1))\). This is the \(z\) we’ll have to use in the \(\texttt{pdf}\) expression (see Gumbel \(\texttt{pdf}\) above):</p>
 
 \[z = ((x+a)-a) = x\]
 
@@ -246,7 +246,7 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
 
     <p>The surprising bit is their <strong>exact</strong> equivalence!</p>
 
-    <p><em>Proof</em>: I’m going to use some Gumbel properties to make the proof concise - it shouldn’t be too hard to find proofs from scratch online.</p>
+    <p><strong>Proof</strong>: I’m going to use some Gumbel properties to make the proof concise - it shouldn’t be too hard to find proofs from scratch online.</p>
 
     <p>So, first off, let’s ask if \(x_a \sim G(a, 1)\) and \(x_b \sim G(b, 1)\), what might be the probability of \(p(x_a&gt;x_b)\)?</p>
 
