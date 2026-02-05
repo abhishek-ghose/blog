@@ -484,10 +484,10 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
 <p>Here  \(c=\sum_{j \in I} (b_j - y_j) b_j\) is defined to be a constant - we can do so since it doesn’t depend on \(i\). This allows us to be further concise and write the gradient across all indices \(\nabla_l R\) as:</p>
 
 <p>\begin{equation}
-\nabla_l R = \frac{2}{\tau} (b \odot (b-y-c))
+\nabla_l R = \frac{2}{\tau} (b \odot (b-y-c\mathbf{1}))
 \end{equation}</p>
 
-<p>In my shorthand above, \(c\) (a scalar) is subtracted from every entry in the \(b-y\) vector. The “\(\odot\)” symbol denotes the element-wise product aka the <em>Hadamard</em> product.</p>
+<p>In my shorthand above, \(c\) (a scalar) is subtracted from every entry in the \(b-y\) vector - I show this with \(c\) multiplied with the identity vector \(\mathbf{1}\). The “\(\odot\)” symbol denotes the element-wise product aka the <em>Hadamard</em> product.</p>
 
 <p>Alright, time for some code - pay heed to the comments!</p>
 
