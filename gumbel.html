@@ -106,7 +106,7 @@
     <br/>Tags:
         
           <a style="color: #fb8500" href="/archive.html#ai-ml">
-            #ai-ml
+             &middot;ai-ml
           </a>
         
     
@@ -115,8 +115,17 @@
   </header>
 
   <div class="post-content" itemprop="articleBody">
-    <script type="text/javascript" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    <script>
+window.MathJax = {
+  loader: {load: ['[tex]/ams']},   // <-- important in v3
+  tex: {
+    tags: 'ams',
+    packages: {'[+]': ['ams']}
+  }
+};
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 <figure>
   <p><img src="/assets/gumbel/loaded_die_banner_credits.png" alt="biased_die" width="100%" /></p>
@@ -126,7 +135,7 @@
   </figcaption>
 </figure>
 
-<p>When we set out to learn a function or some property of it (like its maximum), we hope it is <em>differentiable</em>, because that means we have at our disposal a host of well-studied, and often fast, techniques. But sometimes we are not so lucky - and then there are broadly two options: (a) use a technique that doesn’t rely on differentiability, e.g., Bayesian Optimization, or (b) use an approximation that is differentiable. The topic of this post is a very useful and elegant instance of the latter. It’s a technique to make sampling from a categorical distribution differentiable, using the <em>Gumbel</em> distribution <a class="citation" href="#mcfadden_conditional_1974">(McFadden, 1974; Jang et al., 2017; Maddison et al., 2017)</a>. The need to differentiate through the categorical distribution shows up in various places <a class="citation" href="#gumbel_review">(Huijben et al., 2023)</a>. JAX <a href="https://docs.jax.dev/en/latest/_autosummary/jax.random.categorical.html">implements</a> a differentiable version of categorical sampling using the Gumbel-max trick. About it <a href="https://arxiv.org/pdf/1903.06059">this</a> paper <a class="citation" href="#DBLP:journals/corr/abs-1903-06059">(Kool et al., 2019)</a> says:</p>
+<p>When we set out to learn a function or some property of it (like its maximum), we hope it is <em>differentiable</em>, because that means we have at our disposal a host of well-studied, and often fast, techniques. But sometimes we are not so lucky - and then there are broadly two options: (a) use a technique that doesn’t rely on differentiability, e.g., Bayesian Optimization, or (b) use an approximation that is differentiable. The topic of this post is a very useful and elegant instance of the latter. It’s a technique to make sampling from a categorical distribution differentiable, using the <em>Gumbel</em> distribution <a class="citation" href="#mcfadden_conditional_1974">(McFadden, 1974; Jang et al., 2017; Maddison et al., 2017)</a>. The need to differentiate through the categorical distribution shows up in various places <a class="citation" href="#gumbel_review">(Huijben et al., 2023)</a>. JAX <a href="https://docs.jax.dev/en/latest/_autosummary/jax.random.categorical.html">implements</a> a differentiable version of categorical sampling using the Gumbel-max trick. About it <a class="citation" href="#DBLP:journals/corr/abs-1903-06059">Kool, van Hoof, &amp; Welling (2019)</a> says:</p>
 
 <blockquote>
   <p>We think the Gumbel-Max trick is like a magic trick.</p>
@@ -205,7 +214,10 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
 
 <p>For the Exponential distribution (the middle plot) it is possible to define this distribution analytically. And that’s the Gumbel distribution. Its <em>probability density function</em> (\(\texttt{pdf}\)) is written as \(G(\mu, \beta)\):</p>
 
-\[e^{-(z+e^{-z})}/\beta\text{, where } z=\frac{x-\mu}{\beta}, z \in \mathbb{R}, \beta &gt; 0\]
+<p>\begin{equation}
+ e^{-(z+e^{-z})}/\beta\text{, where } z=\frac{x-\mu}{\beta}, z \in \mathbb{R}, \beta &gt; 0
+\label{eq:gumbel_pdf}
+\end{equation}</p>
 
 <p>\(\mu\) and \(\beta\) are known as <em>location</em> and <em>scale</em> respectively. In this post, we’ll only need to use \(\beta=1\), so I’ll entirely drop the symbol. <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gumbel_r.html">scipy</a> has an implementation if you want to try it out. Below I have redrawn the empirical maximum value distribution for the Exponential - like in the middle plot above - and have also shown the corresponding Gumbel distribution (with appropriate shifting/scaling). They match pretty well, and of course, one sees the right skew here too.</p>
 
@@ -217,9 +229,11 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
   <li>
     <p><strong>Property 1</strong>: 🔺Sampling from \(G(a, 1)\) is equivalent to sampling from \(G(0,1)\) and adding \(a\) to the sampled values.</p>
 
-    <p><strong>Proof</strong>: We reinterpret the statement above: if I sample a bunch of \(x\)s from \(G(0,1)\), and add \(a\) to them, they’re as good as samples from \(G(a,1)\). In other words: the \(\texttt{pdf}\) value of \(x \sim G(0, 1)\) and \((x+a) \sim G(a,1)\) are identical. Let’s consider \(p(x+a\vert G(a,1))\). This is the \(z\) we’ll have to use in the \(\texttt{pdf}\) expression (see Gumbel \(\texttt{pdf}\) above):</p>
+    <p><strong>Proof</strong>: We reinterpret the statement above: if I sample a bunch of \(x\)s from \(G(0,1)\), and add \(a\) to them, they’re as good as samples from \(G(a,1)\). In other words: the \(\texttt{pdf}\) value of \(x \sim G(0, 1)\) and \((x+a) \sim G(a,1)\) are identical. Let’s consider \(p(x+a\vert G(a,1))\). This is the \(z\) we’ll have to use in the \(\texttt{pdf}\) expression - recall the Gumbel \(\texttt{pdf}\) in Equation \eqref{eq:gumbel_pdf}:</p>
 
-\[z = ((x+a)-a) = x\]
+    <p>\begin{equation}
+   z = ((x+a)-a) = x
+\end{equation}</p>
 
     <p>But \(z=x\) is also what we need to use in the \(\texttt{pdf}\) for \(G(0, 1)\). Hence the probability of sampling \(x \sim G(0,1)\) and \(x+a \sim G(a,1)\) are identical.</p>
   </li>
@@ -230,7 +244,9 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
 
     <p>🔺Let’s formalize our claim - we are saying that for \(x_i \sim G(log\;p_i, 1)\) and a specific category \(k\):</p>
 
-\[p(x_k &gt; x_j) = p_k,\;\text{where } j \in I/k\]
+    <p>\begin{equation}
+  p(x_k &gt; x_j) = p_k,\;\text{where } j \in I/k
+\end{equation}</p>
 
     <p>Note that \(p_k\), our RHS, is the probability of category \(k\) being picked when sampling from the categorical distribution.</p>
 
@@ -254,25 +270,35 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
 
     <p>Since we want \(p(X&gt;0)\), where \(X=x_a-x_b\), all we need is to calculate \(1 - p(X \leq 0 )\) or \(1-F(0)\). This is:</p>
 
-\[1 - \frac{1}{1+e^{a-b}} = \frac{e^{a-b}}{1+e^{a-b}}\]
+    <p>\begin{equation}
+  1 - \frac{1}{1+e^{a-b}} = \frac{e^{a-b}}{1+e^{a-b}}
+\end{equation}</p>
 
     <p>Looks complicated. But let’s say that \(a=log\; p_a\) and \(b=log\; p_b\). This simplifies things quite a bit, and we have:</p>
 
-\[\frac{e^{log\; \frac{p_a}{p_b}}}{1 + e^{log\;\frac{p_a}{p_b}}} = \frac{p_a}{p_a+p_b}\]
+    <p>\begin{equation}
+  \frac{e^{log\; \frac{p_a}{p_b}}}{1 + e^{log\;\frac{p_a}{p_b}}} = \frac{p_a}{p_a+p_b}
+\end{equation}</p>
 
     <p>This is intuitive: larger \(p_a\) is (relatively), its Gumbel shifts farther to the right on the x-axis, leading to greater possibility of \(x_a &gt; x_b\).</p>
 
     <p>OK, so we have inferred an interesting relationship. How does that help us? Remember, what we really want to show is \(p(x_k &gt; x_j) = p_k, \forall j \in I/k\). We can rephrase that to find:</p>
 
-\[p(x_k &gt; max_{j \in I/k}\{x_j\} )\]
+    <p>\begin{equation}
+  p(x_k &gt; max_{j \in I/k}{x_j} )
+\end{equation}</p>
 
     <p>Effectively, we’re saying that \(x_k &gt; x_j\) is the same as \(x_k\) being larger than the maximum of the rest of the Gumbel samples. Another <a href="https://mathoverflow.net/a/221677s">property</a> is helpful here: the maximum of independent Gumbels with the same scale (true for us - all scales are \(1\)) is <em>also</em> a Gumbel! This property allows us to rewrite the RHS:</p>
 
-\[max_{j \in I/k}\{x_j\}   = G(log\; \sum_{j \in I/k} e^{log\;p_j}, 1 )\]
+    <p>\begin{equation}
+  max_{j \in I/k}{x_j}   = G(log\; \sum_{j \in I/k} e^{log\;p_j}, 1 )
+\end{equation}</p>
 
     <p>This simplifies to \(G(log\; \sum_j p_j, 1)\). So now we’re asking what’s the probability that a sample from \(G(log\;p_k, 1)\) is larger than one from \(G(log\; \sum_j e^{log\;p_j}, 1 )\). But hey, we just found the answer to this! This probability is:</p>
 
-\[\frac{p_k}{p_k + \sum_{j \in I/k} p_j} = p_k\]
+    <p>\begin{equation}
+  \frac{p_k}{p_k + \sum_{j \in I/k} p_j} = p_k
+\end{equation}</p>
 
     <p>The denominator is the sum of the all the categorical probabilities and therefore must sum to \(1\). So the probability we set out to find is just \(p_k\).</p>
   </li>
@@ -289,18 +315,24 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
 
 <p>Referring to the \(i^{th}\) sample from \(G(0,1)\) as \(g_i\), we may distill this recipe as follows:</p>
 
-\[argmax_{i \in I}(log\;p_i+g_i)\]
+<p>\begin{equation}
+   \operatorname*{argmax}_{i \in I}(log\;p_i+g_i)
+\end{equation}</p>
 
 <p>To connect this back to our neural network pipeline, we’ll need to circle back to the logits - the values we actually get from the last layer. Let’s refer to these as \(l_i\) and assume we’ve \(K\) of these. Note that \(l_i \in (-\infty, \infty)\). These may be transformed into probabilities, i.e., for every \(l_i\) we can create a \(p_i\) such that \(0 \leq p_i \leq 1\) and \(\sum_{i \in I}p_i = 1\) in the following way:</p>
 
-\[p_i = \frac{e^{l_i}}{\sum_{j \in I} e^{l_j}}\]
+<p>\begin{equation}
+  p_i = \frac{e^{l_i}}{\sum_{j \in I} e^{l_j}} 
+\end{equation}</p>
 
 <p>The denominator doesn’t depend on \(i\), so we’ll represent it with the constant \(C=\sum_{j \in I} e^{l_j}\). Then we have \(log\;p_i=l_i-log\;C\). It follows that:</p>
 
-\[\begin{aligned}
-  argmax_i (log\;p_i+g_i) &amp;= argmax_i (l_i-log\;C+g_i) \\\\
-  &amp;= argmax_i (l_i+g_i)
-  \end{aligned}\]
+<div class="mathjax-block">
+  \begin{align}
+    \operatorname*{argmax}_i (log\;p_i+g_i) &amp;= \operatorname*{argmax}_i (l_i-log\;C+g_i) \notag \\
+    &amp;= \operatorname*{argmax}_i (l_i+g_i)
+  \end{align}
+</div>
 
 <p>This is because subtracting the same constant term from each of the quantities we’re \(argmax\)-ing over doesn’t change where the maximum occurs, i.e., the \(argmax\). It reduces the maxima itself - by \(log\;C\) - but we’re not interested in it. So now we have connected our new sampling strategy to the outputs of the network: add each logit \(l_i\) to a sample from \(G(0,1)\) and report the \(i\) where the sum is the largest.</p>
 
@@ -316,7 +348,9 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
 
 <p>If you haven’t already guessed, the solution is to replace the \(argmax\) with the standard \(softmax\). This gives us a \(K\)-dimensional vector. For index \(i\), we now compute:</p>
 
-\[\frac{e^{(l_i+g_i)/\tau}}{\sum_{j \in I} e^{(l_j+g_j)/\tau}}\]
+<p>\begin{equation}
+  \frac{e^{(l_i+g_i)/\tau}}{\sum_{j \in I} e^{(l_j+g_j)/\tau}}
+\end{equation}</p>
 
 <p>\(\tau\), the <em>temperature</em>, decides the discreteness of the \(softmax\); ideally we want only one dimension in this vector have a value of \(1\) while everything else is set to \(0\), to perfectly mimic \(argmax\). But this is not differentiable. \(\tau\) makes the vector <em>smooth</em>, i.e., spreads values across dimensions. Larger \(\tau\) values promote this spread, making gradient-based optimization easier, while lower values better mimic \(argmax\). The standard process is to <em>anneal</em> the value for \(\tau\), i.e., start with a high value, but gradually lower it over iterations. Here’s how \(\tau\) affects the final values - note, how at at \(\tau=0.1\) this behaves like \(argmax\):</p>
 
@@ -352,7 +386,9 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
 
 <p>We use this observation to train our logits \(l_i\) directly. Yes, to keep things simple, we won’t be looking at a full-fledged network. The logit values will be our starting point, which we’ll learn using gradient descent. We’ll compare one softmax sample with the observation vector we created above, using the <em>Sum of Squared Errors (SSE)</em> loss. Let’s say our one softmax sample is \([0.1, 0.1, 0.1, 0.3, 0.2, 0.2]\). The SSE value then is:</p>
 
-<p>\((0.67-0.1)^2 + (0-0.1)^2 + (0-0.1)^2 + (0.33-0.3)^2+ (0-0.2)^2+ (0-0.2)^2=0.4258\).</p>
+<p>\begin{equation}
+  (0.67-0.1)^2 + (0-0.1)^2 + (0-0.1)^2 + (0.33-0.3)^2+ (0-0.2)^2+ (0-0.2)^2=0.4258
+\end{equation}</p>
 
 <p>You can use other losses - <a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">KL Divergence</a> is popular - but we want to keep it simple here.</p>
 
@@ -374,64 +410,82 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
 
 <p>We want to know how the loss \(R\) is affected by a logit \(l_i\). Time for the chain rule:</p>
 
-\[\begin{aligned}
-  \frac{\partial R}{\partial l_i} &amp;= \frac{ \partial R}{\partial a_i} \times \frac{\partial \color{WildStrawberry}{a_i}}{\partial l_i}\\
-  &amp;=\Bigg[\sum_{j \in I}\Big(\frac{ \partial R}{ \partial b_j} \times  \frac{\partial b_j}{\partial a_i}\Big) \Bigg]\times \frac{\partial \color{WildStrawberry}{a_i}}{\partial l_i}
-\end{aligned}\]
+<div class="mathjax-block">
+  \begin{align}
+    \frac{\partial R}{\partial l_i} &amp;= \frac{ \partial R}{\partial a_i} \times \frac{\partial \color{WildStrawberry}{a_i}}{\partial l_i} \notag \\
+    &amp;=\Bigg[\sum_{j \in I}\Big(\frac{ \partial R}{ \partial b_j} \times  \frac{\partial b_j}{\partial a_i}\Big) \Bigg]\times \frac{\partial \color{WildStrawberry}{a_i}}{\partial l_i} 
+  \end{align}
+</div>
 
 <p>We will deal with the \(\texttt{softmax}\) in while, i.e., the \(b\) terms, but let’s follow the other term for now:</p>
 
-\[\begin{aligned}
-    \frac{\partial R}{\partial l_i} = &amp;\Bigg[\sum_{j \in I}\Big(\frac{ \partial R}{ \partial b_j} \times  \frac{\partial b_j}{\partial a_i}\Big) \Bigg]\times \frac{\partial \color{WildStrawberry}{a_i}}{\partial l_i}\\ 
-                = &amp; \Bigg[\sum_{j \in I}\Big(\frac{ \partial R}{ \partial b_j} \times  \frac{\partial b_j}{\partial a_i}\Big) \Bigg] \times \frac{\partial (l_i + {\color{WildStrawberry}{g_i}})}{\partial l_i}\\
-                 = &amp; \Bigg[\sum_{j \in I}\Big(\frac{ \partial R}{ \partial b_j} \times  \frac{\partial b_j}{\partial a_i}\Big) \Bigg] \times (1+{\color{WildStrawberry}{0}})\\
-  \end{aligned}\]
+<div class="mathjax-block">
+  \begin{align}
+    \frac{\partial R}{\partial l_i} = &amp;\Bigg[\sum_{j \in I}\Big(\frac{ \partial R}{ \partial b_j} \times  \frac{\partial b_j}{\partial a_i}\Big) \Bigg]\times \frac{\partial \color{WildStrawberry}{a_i}}{\partial l_i} \notag \\ 
+                = &amp; \Bigg[\sum_{j \in I}\Big(\frac{ \partial R}{ \partial b_j} \times  \frac{\partial b_j}{\partial a_i}\Big) \Bigg] \times \frac{\partial (l_i + {\color{WildStrawberry}{g_i}})}{\partial l_i} \notag \\
+                 = &amp; \Bigg[\sum_{j \in I}\Big(\frac{ \partial R}{ \partial b_j} \times  \frac{\partial b_j}{\partial a_i}\Big) \Bigg] \times (1+{\color{WildStrawberry}{0}})  \\
+  \end{align}
+</div>
 
 <p>This is our <em>pièce de résistance</em>: we got rid of the Gumbel term \(g_i\) because it doesn’t depend on the logits. That’s it - we’re actually done with dealing with the sampling step!</p>
 
 <p>All we are left with is this:</p>
 
-\[\frac{\partial R}{\partial l_i} = \sum_{j \in I}\Big(\frac{ \partial R}{ \partial b_j} \times  \frac{\partial b_j}{\partial a_i}\Big) = \sum_{j \in I}\Big(\frac{ \partial R}{ \partial b_j} \times  \frac{\partial S_\tau(a_j)}{\partial a_i}\Big)\]
+<p>\begin{equation}
+\frac{\partial R}{\partial l_i} = \sum_{j \in I}\Big(\frac{ \partial R}{ \partial b_j} \times  \frac{\partial b_j}{\partial a_i}\Big) = \sum_{j \in I}\Big(\frac{ \partial R}{ \partial b_j} \times  \frac{\partial S_\tau(a_j)}{\partial a_i}\Big) 
+\end{equation}</p>
 
 <p>The math here might seem overly detailed, but it is a <a href="https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/">well-trodden path</a>. Let’s carefully walk through this. Note that we’re having to sum over all \(j \in I\) since a single \(\texttt{softmax}\) term uses all the \(a\)s in its calculation: one in the numerator, all in the denominator, e.g., \(b_i = e^{a_i/\tau}/(\sum_{j \in I} e^{a_j/\tau})\). Thus, to determine the influence of \(a_i\), we need to look at all \(b_j\). The expression for the \(\texttt{softmax}\) gradient may be concisely written as:</p>
 
-\[\begin{aligned}
+<div class="mathjax-block">
+  \begin{align}
   \frac{\partial S_\tau(a_j)}{a_i} &amp;= \frac{1}{\tau} \times S_\tau(a_j)(\delta_{ji}-S_\tau(a_i)) \;\;\text{where }\;\;  \delta_{ji}= \begin{cases}
-    1 \text{ if } j=i \\
-    0 \; \text{otherwise}
-  \end{cases} \\
-  &amp;=\frac{1}{\tau} \times b_j(\delta_{ji} - b_i)
-  \end{aligned}\]
+    1 \text{ if } j=i  \notag \\
+    0 \; \text{otherwise} 
+  \end{cases}  \notag \\
+  &amp;=\frac{1}{\tau} \times b_j(\delta_{ji} - b_i) \label{eq:grad_softmax}
+  \end{align}
+</div>
 
 <p>The gradient of the other term is simple:</p>
 
-\[\frac{\partial R}{b_j} = -2(y_j-b_j)\]
+<p>\begin{equation}
+  \frac{\partial R}{b_j} = -2(y_j-b_j)
+\label{eq:grad_sse}
+\end{equation}</p>
 
-<p>Combining and writing the overall gradient:</p>
+<p>Using Equations \eqref{eq:grad_softmax} and \eqref{eq:grad_sse}  and we write the overall gradient as:</p>
 
-\[\begin{aligned}
-  \frac{\partial R}{\partial l_i} &amp;= \sum_{j \in I}\Big( -2(y_j-b_j) \times \frac{1}{\tau} \times b_j(\delta_{ji}-b_i)) \Big)\\
-  &amp;=\frac{2}{\tau} \sum_{j \in I} (b_j - y_j) b_j(\delta_{ji}-b_i)\\
-  &amp;=\frac{2}{\tau}\Big( \sum_{j \in I} (b_j - y_j) b_j\delta_{ji}   - \sum_{j \in I} (b_j - y_j) b_j b_i  \Big)
-\end{aligned}\]
+<div class="mathjax-block">
+\begin{align}
+  \frac{\partial R}{\partial l_i} &amp;= \sum_{j \in I}\Big( -2(y_j-b_j) \times \frac{1}{\tau} \times b_j(\delta_{ji}-b_i)) \Big) \notag \\
+  &amp;=\frac{2}{\tau} \sum_{j \in I} (b_j - y_j) b_j(\delta_{ji}-b_i) \notag \\
+  &amp;=\frac{2}{\tau}\Big( \sum_{j \in I} (b_j - y_j) b_j\delta_{ji}   - \sum_{j \in I} (b_j - y_j) b_j b_i  \Big) \label{eq:simple_grad_1}
+\end{align}
+</div>
 
 <p>Since \(\delta_{ji}=1\) only when \(j=i\), we can simplify the first term thus:</p>
 
-\[\sum_{j \in I} (b_j - y_j) b_j\delta_{ji} = (b_i - y_i) b_i\]
+<p>\begin{equation}
+  \sum_{j \in I} (b_j - y_j) b_j\delta_{ji} = (b_i - y_i) b_i
+\label{eq:kronecker}
+\end{equation}</p>
 
-<p>Rewriting:</p>
+<p>Using Equation \eqref{eq:kronecker}, we may rewrite Equation \eqref{eq:simple_grad_1} as:</p>
 
-\[\begin{aligned}
-  \frac{\partial R}{\partial l_i} &amp;=\frac{2}{\tau}\Big( (b_i - y_i) b_i   - \sum_{j \in I} (b_j - y_j) b_j b_i  \Big)\\
-          &amp;=\frac{2b_i}{\tau}\Big( (b_i - y_i)    - \sum_{j \in I} (b_j - y_j) b_j   \Big)\\
+<div class="mathjax-block">
+\begin{align}
+  \frac{\partial R}{\partial l_i} &amp;=\frac{2}{\tau}\Big( (b_i - y_i) b_i   - \sum_{j \in I} (b_j - y_j) b_j b_i  \Big) \notag \\
+          &amp;=\frac{2b_i}{\tau}\Big( (b_i - y_i)    - \sum_{j \in I} (b_j - y_j) b_j   \Big) \notag \\
           &amp;=\frac{2b_i}{\tau}\Big( (b_i - y_i)    - c \Big)
-\end{aligned}\]
+\end{align}
+</div>
 
-<p>Here  \(c=\sum_{j \in I} (b_j - y_j) b_j\) is defined to be a constant - we can do so since it doesn’t depend on \(i\). This allows us to be further concise and write the gradient across all indices as:</p>
+<p>Here  \(c=\sum_{j \in I} (b_j - y_j) b_j\) is defined to be a constant - we can do so since it doesn’t depend on \(i\). This allows us to be further concise and write the gradient across all indices \(\nabla_l R\) as:</p>
 
-\[\begin{aligned}
+<p>\begin{equation}
 \nabla_l R = \frac{2}{\tau} (b \odot (b-y-c))
-\end{aligned}\]
+\end{equation}</p>
 
 <p>In my shorthand above, \(c\) (a scalar) is subtracted from every entry in the \(b-y\) vector. The “\(\odot\)” symbol denotes the element-wise product aka the <em>Hadamard</em> product.</p>
 
@@ -492,8 +546,8 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
         <span class="c1"># note that we store the non-temperature scaled value for later plotting, this
 </span>        <span class="c1"># is what we're really interested in
 </span>        <span class="n">probs_history</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">power</span><span class="p">(</span><span class="n">true_probs</span> <span class="o">-</span> <span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">),</span> <span class="mi">2</span><span class="p">)))</span>
-        <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"[</span><span class="si">{</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s">/</span><span class="si">{</span><span class="n">num_steps</span><span class="si">}</span><span class="s">] SSE with temp. scaled softmax: </span><span class="si">{</span><span class="n">error</span><span class="p">:.</span><span class="mi">4</span><span class="n">f</span><span class="si">}</span><span class="s">, "</span>
-              <span class="sa">f</span><span class="s">"SSE with standard softmax: </span><span class="si">{</span><span class="n">probs_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:.</span><span class="mi">4</span><span class="n">f</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"[</span><span class="si">{</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s">/</span><span class="si">{</span><span class="n">num_steps</span><span class="si">}</span><span class="s">] SSE with temp. scaled softmax: </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="p">.</span><span class="mi">4</span><span class="n">f</span><span class="si">}</span><span class="s">, "</span>
+              <span class="sa">f</span><span class="s">"SSE with standard softmax: </span><span class="si">{</span><span class="n">probs_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="p">.</span><span class="mi">4</span><span class="n">f</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
 
         <span class="c1"># calculate gradient
 </span>        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">y</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
@@ -521,7 +575,7 @@ Finding the weights of the network comes down to minimizing, wrt weights, the di
     <span class="n">sns</span><span class="p">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">'Category'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">'Probability'</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s">'Type'</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span>
                 <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="s">'Initial'</span><span class="p">:</span> <span class="s">'#fed0bb'</span><span class="p">,</span> <span class="s">'Final'</span><span class="p">:</span> <span class="s">'#e56b6f'</span><span class="p">,</span> <span class="s">'True'</span><span class="p">:</span> <span class="s">'#355070'</span><span class="p">})</span>
     <span class="n">ax2</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s">"Category"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">"Probability"</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s">"# steps=</span><span class="si">{</span><span class="n">num_steps</span><span class="si">}</span><span class="s">, "</span>
-                                                <span class="sa">f</span><span class="s">"learning rate=</span><span class="si">{</span><span class="n">learning_rate</span><span class="p">:.</span><span class="mi">04</span><span class="n">f</span><span class="si">}</span><span class="s">, "</span>
+                                                <span class="sa">f</span><span class="s">"learning rate=</span><span class="si">{</span><span class="n">learning_rate</span><span class="si">:</span><span class="p">.</span><span class="mi">04</span><span class="n">f</span><span class="si">}</span><span class="s">, "</span>
                                                 <span class="sa">f</span><span class="s">"various categorical probs shown"</span><span class="p">)</span>
 
     <span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
