@@ -99,16 +99,16 @@
   <header class="post-header">
     <h1 class="post-title" itemprop="name headline">Bayesian Optimization, Part 1: Key Ideas, Gaussian Processes</h1>
     <p class="post-meta">
-      <time datetime="2023-11-19T00:30:00+05:30" itemprop="datePublished">
+      <time datetime="2023-11-18T11:00:00-08:00" itemprop="datePublished">
         
-        Created: Nov 19, 2023.    Last major update:
+        Created: Nov 18, 2023.    Last major update:
         Jul 1, 2024. 
       </time>
     
     <br/>Tags:
         
           <a style="color: #fb8500" href="/archive.html#ai-ml">
-            #ai-ml
+             &middot;ai-ml
           </a>
         
     
@@ -142,6 +142,7 @@
 <ul>
   <li>Hyperparameter Optimization (HPO) <a class="citation" href="#bayesopt_is_superior">(Turner et al., 2021)</a>.</li>
   <li>Neural Architecture Search (NAS) <a class="citation" href="#white2019bananas">(White et al., 2021)</a>.</li>
+  <li>Prompt Optimization for LLMs, e.g., <a href="https://dspy.ai/api/optimizers/MIPROv2/">MIPROv2 in DSPy</a> <a class="citation" href="#opsahl-ong-etal-2024-optimizing">(Opsahl-Ong et al., 2024)</a>.</li>
   <li>Molecule discovery <a class="citation" href="#LSBO_paper">(Gómez-Bombarelli et al., 2018)</a>.</li>
   <li>Liquid chromatography <a class="citation" href="#BOELRIJK2023340789">(Boelrijk et al., 2023)</a>.</li>
   <li>Creating low-carbon concrete <a class="citation" href="#ament2023sustainable">(Ament et al., 2023)</a>.</li>
@@ -151,7 +152,9 @@
 
 <p>My own usage has been tamer, but also varied: I’ve used it to (a) learn distributions <a class="citation" href="#frontiers_density_tree_nopdf">(Ghose &amp; Ravindran, 2020; Ghose &amp; Ravindran, 2019)</a>, and (b) tune SHAP model explanations to identify informative training instances <a class="citation" href="#XAI_human_in_the_loop">(Nguyen &amp; Ghose, 2023)</a>.</p>
 
-<p>Why is BayesOpt everywhere? Because the problems it solves are everywhere. It provides tools to optimize an <em>noisy and expensive black-box</em> function: given an input, you can only query your function for an output, and you don’t have any other information such as its gradients. Sometimes you mightn’t even have a mathematical form for it. Since its expensive, you can’t query it a lot. Plus, function evaluations might be noisy, i.e., the same input might produce slightly different outputs. The lack of function information is in contrast to the plethora of Gradient Descent variants that seem to be fueling the Deep Learning revolution. But if you think about it, this is a very practical problem. For example, you want to optimize various small and large processes in a factory to increase throughput - what does a gradient even mean here?</p>
+<p>Why is BayesOpt everywhere? Because the problems it solves are everywhere. It provides tools to optimize an <em>noisy and expensive black-box</em> function: given an input, you can only query your function for an output; you don’t have any other information such as its gradients. Sometimes you mightn’t even have a mathematical form for it. And since its expensive, you can’t query it a lot. Plus, function evaluations are noisy, i.e., the same input might produce slightly different outputs at different times.</p>
+
+<p>The lack of function information is in contrast to the plethora of Gradient Descent variants that are fueling the Deep Learning revolution. But if you think about it, this is a very practical problem. For example, you want to optimize various small and large processes in a factory to increase throughput - what does a gradient even mean here?</p>
 
 <p>I encountered the area in 2018, when, as part of my Ph.D.,  I’d run out of ways to maximize a certain function. And the area has only grown since then. If you’re interested, I’ve an introductory write-up of BayesOpt in my <a href="https://drive.google.com/file/d/1zf_MIWyLY7nxEr5UioUQ7KhOQ1_clYYl/view?usp=drive_link">dissertation</a> (Section 2.1) too, and Section 2.3 there talks about the general problem I wanted to solve. Much of the material here though comes from a talk I gave a while ago (<a href="https://drive.google.com/file/d/1AFs1IqJT6qUi50yZ5XO_uHfgUVEBn2pz/view?usp=drive_link">slides</a>).</p>
 
@@ -202,7 +205,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
     
 </div>
 
-<p>The problem is: <em>find a recipe, i.e., amount of flour, sugar, baking temperature and time, etc.,</em> for baking cookies that is <em>optimal wrt taste</em>. Taste assessment is made by multiple human raters. The objective function \(f\) is the assessment (averaged, if there are multiple human raters) given the input vector \(x\) of various cookie ingredients, e.g., quantity of flour, amount of chocolate chips, and cooking conditions, e.g., oven temperature, time to bake. In other words, \(x\) encodes the recipe.</p>
+<p>The problem is: <em>find a recipe, i.e., amount of flour, sugar, baking temperature and time, etc.,</em> for baking cookies that is <em>optimal wrt taste</em>. Taste assessment is made by multiple human raters. The objective function \(f\) is the assessment (averaged, if there are multiple human raters) given the input vector \(x\) of various cookie ingredients, e.g., quantity of flour, amount of chocolate chips, and cooking conditions such as oven temperature and time to bake. In other words, \(x\) encodes the recipe.</p>
 
 <p>Why is this a good use case for BayesOpt?</p>
 <ol>
@@ -222,7 +225,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
   <li>It can also be noisy, e.g., randomly initialized learning like with gradient descent.</li>
 </ol>
 
-<p><a href="http://hyperopt.github.io/hyperopt/">Hyperopt</a> is a popular library that implements this approach, using a specific form of BayesOpt known as the <em>Tree-structured Parzen Estimator (TPE)</em> <a class="citation" href="#Bergstra:2011:AHO:2986459.2986743">(Bergstra et al., 2011)</a>. There are others such as <a href="https://botorch.org/">BoTorch</a>, <a href="https://docs.ray.io/en/latest/tune/examples/bayesopt_example.html">Ray Tune</a> and <a href="https://github.com/bayesian-optimization/BayesianOptimization">BayesianOptimization</a>.</p>
+<p><a href="http://hyperopt.github.io/hyperopt/">Hyperopt</a> is a popular library that implements this approach, using a specific form of BayesOpt known as the <em>Tree-structured Parzen Estimator (TPE)</em> <a class="citation" href="#Bergstra:2011:AHO:2986459.2986743">(Bergstra et al., 2011)</a>. There are others such as <a href="https://botorch.org/">BoTorch</a>, <a href="https://docs.ray.io/en/latest/tune/examples/bayesopt_example.html">Ray Tune</a>, <a href="https://syne-tune.readthedocs.io/en/latest/">Syne Tune</a> and <a href="https://bayesian-optimization.github.io/BayesianOptimization/3.2.1/">Bayesian Optimization</a>.</p>
 
 <p>These kinds of problems are ubiquitous - and the preamble to this article listed diverse settings where BayesOpt crops up. Applications aside, BayesOpt itself is evolving, e.g., <em>InfoBAX</em> <a class="citation" href="#infobax">(Neiswanger et al., 2021)</a>  uses BayesOpt-like ideas to compute arbitrary function properties (as opposed to just extrema) in a sample-efficient manner, <em>grey-box optimization</em> <a class="citation" href="#astudillo2022thinking">(Astudillo &amp; Frazier, 2022)</a> relaxes the black-box setting to utilize additional information like gradients.</p>
 
@@ -291,11 +294,11 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
     
 </div>
 
-<p>Notice something interesting? In the last iteration the acquisition function has grown <em>less</em> sure about where valuable points are located. This “jumping around” is characteristic of BayesOpt: as newer evaluations become available, the acquisition function revises its notion of valuable locations. In fact, the amount of “fat” envelopes might increase as well, when regions of surprising behavior are discovered. Uncertainty decreases asymptotically but occasional fluctuations are to be expected.</p>
+<p>Notice something interesting? In the last iteration the acquisition function has grown <em>less</em> sure about where valuable points are located - lots of new green regions in the bottom plot. These kinds of “occassional discoveries” are a characteristic of BayesOpt: as newer evaluations become available, the acquisition function revises its notion of valuable locations. In fact, the amount of “fat” envelopes (the top plots) might increase as well, when regions of surprising behavior are discovered. Uncertainty decreases asymptotically but occasional fluctuations are to be expected.</p>
 
 <p>For this example, I’d argue this is a good thing because we still haven’t discovered the actual global maxima. More exploration is great if we have the budget for it.</p>
 
-<p>Unfortunately, this also makes it challenging to have a simple <em>stopping criteria</em> for BayesOpt (there are some, e.g., <a class="citation" href="#makarova2022automatic">(Makarova et al., 2022)</a>), relative to, say, Gradient Descent (GD), where you might stop when the changes in the extrema become vanishingly small. Typically, you decide on an <em>optimization budget</em>, e.g., number of iterations \(T\), run it all the way through, and pick the best value (again, this is different from GD, where we might pick the last value).</p>
+<p>Unfortunately, this also makes it challenging to have a simple <em>stopping criteria</em> for BayesOpt (there are some, e.g., <a class="citation" href="#makarova2022automatic">Makarova et al. (2022)</a>), relative to, say, Gradient Descent (GD), where you might stop when the changes in the extrema become vanishingly small. Typically, you decide on an <em>optimization budget</em>, e.g., number of iterations \(T\), run it all the way through, and pick the best value (again, this is different from GD, where we might pick the last value).</p>
 
 <p>Here’s the high-level BayesOpt algo summarized:</p>
 
@@ -315,7 +318,7 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 
 <p>The answer is yes, there is another optimization problem we need to solve <em>per iteration</em> of BayesOpt, using what we refer to as the <strong>auxiliary optimizer</strong>. What we gain is this optimizer works with a tractable function - the surrogate model - instead of the original real-life function, which may or may not have a known form (like in the cookie example). The auxiliary optimization can be performed way quicker, relatively speaking, because the surrogate model exists on your computer, and you’re free to make as many calls to it as you like. It still needs to be fast, since this optimization needs to occur per iteration of BayesOpt.</p>
 
-<p>Common choices for this optimizer are <a href="https://websites.umich.edu/~mdolaboratory/pdf/Jones2020a.pdf"><em>DIRECT</em></a> and <a href="https://en.wikipedia.org/wiki/CMA-ES"><em>CMA-ES</em></a>. We won’t go into details here, but this <a href="https://stats.stackexchange.com/a/199268">StackOverflow answer</a> provides some information. There has been work to get rid of the auxiliary optimization <a class="citation" href="#pmlr-v33-wang14d">(Wang et al., 2014)</a>.</p>
+<p>Common choices for this optimizer are <a href="https://websites.umich.edu/~mdolaboratory/pdf/Jones2020a.pdf"><em>DIRECT</em></a> and <a href="https://botorch.org/docs/tutorials/optimize_with_cmaes/"><em>CMA-ES</em></a>. We won’t go into details here, but this <a href="https://stats.stackexchange.com/a/199268">StackOverflow answer</a> provides some information. There has been work to get rid of the auxiliary optimization <a class="citation" href="#pmlr-v33-wang14d">(Wang et al., 2014)</a>.</p>
 
 <p><br /></p>
 <hr style="height:1px;border-width:0;background-color:#EE2967" />
@@ -993,6 +996,22 @@ In a way, GPs “cut out the middleman” from the linear model, by replacing wh
     
         
     <div class="dropDownAbstract" id="white2019bananas-abstract">
+    
+    </div>
+
+</li>
+<li><span id="opsahl-ong-etal-2024-optimizing">Opsahl-Ong, K., Ryan, M. J., Purtell, J., Broman, D., Potts, C., Zaharia, M., &amp; Khattab, O. (2024). Optimizing Instructions and Demonstrations for Multi-Stage Language Model Programs. In Y. Al-Onaizan, M. Bansal, &amp; Y.-N. Chen (Eds.), <i>Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing</i> (pp. 9340–9366). Association for Computational Linguistics. https://doi.org/10.18653/v1/2024.emnlp-main.525</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="opsahl-ong-etal-2024-optimizing-abstract">
     
     </div>
 
