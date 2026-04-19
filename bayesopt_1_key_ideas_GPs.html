@@ -578,7 +578,7 @@ Hopefully, all of this has whetted your appetite to learn more about the two cri
 
 <p>Where, \(Y\) is a random variable that takes on output values across <em>different</em> inputs, where we assume exactly one “best-guess” output for an input, i.e.,  for an \(x_i\), we just have one specific \(y_i\), and \(Y \in \{y_i\}_{i=1}^N\). Such a \(y_i\) is known as a <a href="https://en.wikipedia.org/wiki/Point_estimation">point estimate</a>. This is also why the \(y_i\)s are in lower case - they are not random variables. This is how regression models are commonly used: you plug in an input and receive an output. Instead of a covariance matrix \(\Sigma\), I am using the standard notation for variance \(\sigma^2\), since this is a 1D Gaussian.</p>
 
-<p>So, what <em>are</em> we saying? We have one Gausian random variable dedicated to possible outputs for one given input. The <em>distributions</em> of the outputs together is a multivariate Gaussian, and it describes our current knowledge (or uncertainty) of the function. The extent of coupling between individual distributions is decided by the similarity in their inputs. Mathematically, this is what we <strong>ARE</strong> saying:</p>
+<p>So, what <em>are</em> we saying? We have one Gausian random variable <em>dedicated to possible outputs for</em> <strong>one input</strong>. The <em>distributions</em> of the outputs considered together <em>across inputs</em> is a multivariate Gaussian, and it describes our current knowledge (or uncertainty) of the function. The extent of coupling between individual distributions is decided by the similarity in their inputs. Mathematically, this is what we <strong>ARE</strong> saying:</p>
 
 \[p(Y_1, Y_2, Y_3, ...) \sim \mathcal{N}(\mu, \Sigma)\]
 
