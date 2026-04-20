@@ -152,7 +152,12 @@
 
 <p>My own usage has been tamer, but also varied: I’ve used it to (a) learn distributions <a class="citation" href="#frontiers_density_tree_nopdf">(Ghose &amp; Ravindran, 2020; Ghose &amp; Ravindran, 2019)</a>, and (b) tune SHAP model explanations to identify informative training instances <a class="citation" href="#XAI_human_in_the_loop">(Nguyen &amp; Ghose, 2023)</a>.</p>
 
-<p>Why is BayesOpt everywhere? Because the problems it solves are everywhere. It provides tools to optimize an <em>noisy and expensive black-box</em> function: given an input, you can only query your function for an output; you don’t have any other information such as its gradients. Sometimes you mightn’t even have a mathematical form for it. And since its expensive, you can’t query it a lot. Plus, function evaluations are noisy, i.e., the same input might produce slightly different outputs at different times.</p>
+<p>Why is BayesOpt everywhere? Because the problems it solves are everywhere. It provides tools to optimize a <em>noisy and expensive black-box</em> function:</p>
+<ul>
+  <li>Black-box: Given an input, you can only query your function for an output; you don’t have any other information such as its gradients. Sometimes you mightn’t even have a mathematical form for it.</li>
+  <li>Expensive: You need to be mindful about how many times you query this function because every query is expensive wrt time, compute cost or effort.</li>
+  <li>Noisy: The same input might produce slightly different outputs.</li>
+</ul>
 
 <p>The lack of function information is in contrast to the plethora of Gradient Descent variants that are fueling the Deep Learning revolution. But if you think about it, this is a very practical problem. For example, you want to optimize various small and large processes in a factory to increase throughput - what does a gradient even mean here?</p>
 
