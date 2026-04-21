@@ -194,8 +194,8 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 <p>Here, we are maximizing (or minimizing) wrt \(x\) whose values range over a domain \(\mathcal{X}\). Reiterating what we said before, BayesOpt is useful when \(f(x)\) possesses one or more of these properties:</p>
 <ol>
   <li>Its mathematical expression is unavailable to us or it is not differentiable.</li>
-  <li>Evaluations are noisy, i.e., for the same input \(x\) you might obtain slightly different values of \(f(x)\).</li>
   <li>It is expensive to evaluate.</li>
+  <li>Evaluations are noisy, i.e., for the same input \(x\) you might obtain slightly different values of \(f(x)\).</li>
 </ol>
 
 <p>These are very practical challenges. To ground them, I’ll use the (personally appealing) example of baking a perfect chocolate chip cookie <a class="citation" href="#bayesopt_cookie">(Solnik et al., 2017)</a>.</p>
@@ -215,8 +215,8 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 <p>Why is this a good use case for BayesOpt?</p>
 <ol>
   <li>\(f(x)\) is not available for us to inspect (forget differentiability) - it exists in the heads of the human raters. But it can be invoked: ask people to rate cookies.</li>
-  <li>Does a person rate the same cookie in the same way in a blind test? Mostly yes, but sometimes, may be not. Also, external factors such as humidity might affect the taste for the same \(x\). Safe to assume \(f(x)\) is noisy.</li>
   <li>To evaluate \(f(x)\), you need cookies baked according to the recipe \(x\). Baking a batch of cookies and distributing them for assessment consumes time (order of hours or days) and effort, making it expensive to evaluate \(f(x)\). The only upside is an unending supply of cookies would probably make your raters happy!</li>
+  <li>Does a person rate the same cookie in the same way in a blind test? Mostly yes, but sometimes, may be not. Also, external factors such as humidity might affect the taste for the same \(x\). Safe to assume \(f(x)\) is noisy.</li>
 </ol>
 
 <p>One way to optimize \(f(x)\) is to create the most promising recipe based on a thorough examination of the history of recipes and assessments. Loosely speaking, you tease out parts of past recipes that worked or didn’t, and use that knowledge to assemble a new recipe. Bake a batch of cookies  based on it and have it evaluated by the human raters. Add the current recipe and assessment to your history, and repeat. BayesOpt formalizes this idea.</p>
@@ -225,19 +225,30 @@ As you can probably tell, this is going to be a long-ish series; settle in with 
 
 <ul>
   <li>
-    <p><strong>Hyperparameter Optimization (HPO)</strong> is probably the flagship use-case of BayesOpt <a class="citation" href="#bayesopt_is_superior">(Turner et al., 2021)</a>. We want to increase the predictive accuracy of a model \(f\), by tuning its hyperparams.  <!-- *Cross-validation* is common but it sacrifices coverage of the hyperparam space by looking at a predetermined grid of settings. If we want to be relatively thorough, BayesOpt is a good fit. --> Note the apt prerequisites: 
-    1. \(f\) is effectively black-box if we want our solution to be generic, i.e., it should be usable as much for Decision Trees as for Neural Networks.
-    2. It is computationally expensive to evaluate (since evaluating \(f\) for a hyperparam setting would require us to retrain the model).
-    3. It can also be noisy, e.g., randomly initialized learning like with gradient descent.</p>
+    <p><strong>Hyperparameter Optimization (HPO)</strong> is probably the flagship use-case of BayesOpt <a class="citation" href="#bayesopt_is_superior">(Turner et al., 2021)</a>. We want to increase the predictive accuracy of a model \(f\), by tuning its hyperparams. Note the apt prerequisites:</p>
+
+    <ol>
+      <li>\(f\) is effectively black-box if we want our solution to be generic, i.e., it should be usable as much for Decision Trees as for Neural Networks.</li>
+      <li>It is computationally expensive to evaluate (since evaluating \(f\) for a hyperparam setting would require us to retrain the model).</li>
+      <li>It can also be noisy, e.g., randomly initialized learning like with gradient descent.</li>
+    </ol>
   </li>
   <li>
-    <p><strong>Prompt optimization</strong> for LLMs may be thought of as a specific type of HPO. The prompt is a hyperparameter that influences an LLM’s outputs. And all the constraints apply as well. If your LLM isn’t self-hosted, i.e., you’re using an OpenAI or Anthropic model, then it is a black-box. Iterating over prompts to find an optimal one can be expensive - wrt time and cost. And finally, prompting is noisy, given the non-deterministic nature of LLMs. Hence BayesOpt <a class="citation" href="#opsahl-ong-etal-2024-optimizing">(Opsahl-Ong et al., 2024; Schneider et al., 2025)</a>. If you’re using <a href="https://dspy.ai/api/optimizers/MIPROv2/">DSPy’s MIPROv2</a> prompt optimizer, you’re using BayesOpt under the hood.</p>
+    <p><strong>Prompt optimization</strong> for LLMs may be thought of as a specific type of HPO. The prompt is a hyperparameter that influences an LLM’s outputs. And all the constraints apply as well:</p>
+
+    <ol>
+      <li>If your LLM isn’t self-hosted, i.e., you’re using an OpenAI or Anthropic model, then it is a black-box.</li>
+      <li>Iterating over prompts to find an optimal one can be expensive - wrt time and cost.</li>
+      <li>And finally, prompting is noisy, given the non-deterministic nature of LLMs.</li>
+    </ol>
+
+    <p>Hence BayesOpt <a class="citation" href="#opsahl-ong-etal-2024-optimizing">(Opsahl-Ong et al., 2024; Schneider et al., 2025)</a>. If you’re using <a href="https://dspy.ai/api/optimizers/MIPROv2/">DSPy’s MIPROv2</a> prompt optimizer, you’re using BayesOpt under the hood.</p>
   </li>
 </ul>
 
-<p><a href="http://hyperopt.github.io/hyperopt/">Hyperopt</a> is a popular library that implements a specific form of BayesOpt known as the <em>Tree-structured Parzen Estimator (TPE)</em> <a class="citation" href="#Bergstra:2011:AHO:2986459.2986743">(Bergstra et al., 2011)</a>. There are others such as <a href="https://botorch.org/">BoTorch</a>, <a href="https://docs.ray.io/en/latest/tune/examples/bayesopt_example.html">Ray Tune</a>, <a href="https://syne-tune.readthedocs.io/en/latest/">Syne Tune</a> and <a href="https://bayesian-optimization.github.io/BayesianOptimization/3.2.1/">Bayesian Optimization</a>.</p>
-
 <p>These kinds of problems are ubiquitous - and the preamble to this article listed diverse settings where BayesOpt crops up. Applications aside, BayesOpt itself is evolving, e.g., <em>InfoBAX</em> <a class="citation" href="#infobax">(Neiswanger et al., 2021)</a>  uses BayesOpt-like ideas to compute arbitrary function properties (as opposed to just extrema) in a sample-efficient manner, <em>grey-box optimization</em> <a class="citation" href="#astudillo2022thinking">(Astudillo &amp; Frazier, 2022)</a> relaxes the black-box setting to utilize additional information like gradients.</p>
+
+<p>As for libraries, <a href="http://hyperopt.github.io/hyperopt/">Hyperopt</a> is a popular library that implements a specific form of BayesOpt known as the <em>Tree-structured Parzen Estimator (TPE)</em> <a class="citation" href="#Bergstra:2011:AHO:2986459.2986743">(Bergstra et al., 2011)</a>. There are others such as <a href="https://botorch.org/">BoTorch</a>, <a href="https://docs.ray.io/en/latest/tune/examples/bayesopt_example.html">Ray Tune</a>, <a href="https://syne-tune.readthedocs.io/en/latest/">Syne Tune</a> and <a href="https://bayesian-optimization.github.io/BayesianOptimization/3.2.1/">Bayesian Optimization</a>.</p>
 
 <!-- _includes/image.html -->
 <div class="image-wrapper">
@@ -1189,22 +1200,6 @@ In a way, GPs “cut out the middleman” from the linear model, by replacing wh
     </div>
 
 </li>
-<li><span id="Bergstra:2011:AHO:2986459.2986743">Bergstra, J., Bardenet, R., Bengio, Y., &amp; Kégl, B. (2011). Algorithms for Hyper-parameter Optimization. <i>Proceedings of the 24th International Conference on Neural Information Processing Systems</i>, 2546–2554. http://dl.acm.org/citation.cfm?id=2986459.2986743</span>
-    
-
-    
-
-    
-    
-    
-
-    
-        
-    <div class="dropDownAbstract" id="Bergstra:2011:AHO:2986459.2986743-abstract">
-    
-    </div>
-
-</li>
 <li><span id="infobax">Neiswanger, W., Wang, K. A., &amp; Ermon, S. (2021). Bayesian Algorithm Execution: Estimating Computable Properties of Black-box Functions Using Mutual Information. In M. Meila &amp; T. Zhang (Eds.), <i>Proceedings of the 38th International Conference on Machine Learning</i> (Vol. 139, pp. 8005–8015). PMLR. https://proceedings.mlr.press/v139/neiswanger21a.html</span>
     
 
@@ -1233,6 +1228,22 @@ In a way, GPs “cut out the middleman” from the linear model, by replacing wh
     
         
     <div class="dropDownAbstract" id="astudillo2022thinking-abstract">
+    
+    </div>
+
+</li>
+<li><span id="Bergstra:2011:AHO:2986459.2986743">Bergstra, J., Bardenet, R., Bengio, Y., &amp; Kégl, B. (2011). Algorithms for Hyper-parameter Optimization. <i>Proceedings of the 24th International Conference on Neural Information Processing Systems</i>, 2546–2554. http://dl.acm.org/citation.cfm?id=2986459.2986743</span>
+    
+
+    
+
+    
+    
+    
+
+    
+        
+    <div class="dropDownAbstract" id="Bergstra:2011:AHO:2986459.2986743-abstract">
     
     </div>
 
