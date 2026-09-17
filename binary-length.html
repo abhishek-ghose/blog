@@ -166,7 +166,7 @@ window.MathJax = {
 <p><br />
 My question is: what is an approximate value for the last column? Especially for large \(n\).</p>
 
-<p>To answer, first think about how we might mathematically calculate the string length of a number \(n\), when represented in decimal. I will denote this by \(L_{10}(n)\). One way to approach this is that when you divide \(n\) by \(10\) you move the decimal point leftwards by exactly one position, e.g., \(347/10=34.7\). The number of digits then is how many such left shifts are possible. Or to rephrase, how many such divisions by \(10\) are possible.</p>
+<p>To answer, first think about how we might mathematically calculate the string length of a number \(n\), when represented in decimal. I will denote this by \(L_{10}(n)\). One way to approach this is that when you divide \(n\) by \(10\) you move the decimal point leftwards by exactly one position, e.g., \(347/10=34.7\). The number of digits then is how many such left shifts are possible. Or to rephrase, how many such divisions by \(10\) are possible until the number becomes less than \(1\).</p>
 
 <p>Dividing a number multiple times by \(10\) also (trivially) implies that you could construct that number by multiplying \(10\)s, i.e., \(10^x=n\), where \(x\) is not necessarily an integer. For example, \(10^{2.54} \approx 347\). So really, we need to determine \(x\) to obtain the approximate length of \(n\). But that’s just \(log_{10}(n)\)! Of course, string lengths aren’t fractional, so we’ll make an adjustment: \(L_{10}(n)=\lfloor log_{10}(n) \rfloor + 1\).</p>
 
@@ -174,7 +174,7 @@ My question is: what is an approximate value for the last column? Especially for
 
 <p>Almost there … we want:</p>
 
-\[\frac{L_{2}(n)}{L_{10}(n)} = \frac{\lfloor log_{2}(n) \rfloor + 1}{\lfloor log_{210}(n) \rfloor + 1} \approx\frac{log_{2}(n)}{log_{10}(n)} = log_{2}(10)=3.32\]
+\[\frac{L_{2}(n)}{L_{10}(n)} = \frac{\lfloor log_{2}(n) \rfloor + 1}{\lfloor log_{10}(n) \rfloor + 1} \approx\frac{log_{2}(n)}{log_{10}(n)} = log_{2}(10)=3.32\]
 
 <p>The result is an approximation because we ignored the floor functions and the “\(+1\)”. The final simplification is a property of logarithms: \(log_p(x)/log_q(x)=log_p(q)\).</p>
 
