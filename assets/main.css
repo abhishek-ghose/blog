@@ -271,6 +271,12 @@ pre > code { border: 0; padding-right: 0; padding-left: 0; }
 
 .highlight .il { color: #099; }
 
+.bordered-table { border-collapse: collapse !important; border-spacing: 0 !important; width: auto; }
+
+.bordered-table th, .bordered-table td { border: 1px solid #bbb; padding: 6px 12px; text-align: left; }
+
+.bordered-table th { background-color: #f5f5f5; font-weight: bold; }
+
 .proof-box { background-color: #f5f5f5; border-left: 4px solid #999; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 6px; }
 
 .proof-box .proof-title { font-weight: 600; margin-bottom: 0.5rem; }
